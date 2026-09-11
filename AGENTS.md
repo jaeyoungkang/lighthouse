@@ -66,8 +66,8 @@ repo-local skill을 사용했으면 다음 `pk:remember` note에
 
 ## Project Status
 
-프로젝트 현황, 작업 프로세스 현황, 검색 서비스 현황, `status-tracker`, #688,
-#689 작업은 `docs/project-status.md`에서 시작한다. 관련 child issue·PR·정본 변경이
+프로젝트 현황, 작업 프로세스 현황, 검색 서비스 현황, `status-tracker`, #2,
+#3 작업은 `docs/project-status.md`에서 시작한다. 관련 child issue·PR·정본 변경이
 tracker의 현재 사실, owner, verdict, 다음 행동을 바꾸면 같은 closeout에서 해당
 tracker를 갱신한다. tracker는 정본의 projection이며 별도 backlog나 종합 verdict를
 만들지 않는다. 기계적 checkpoint는 `npm run project-status -- check` 후 권한 범위에

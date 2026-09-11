@@ -9,8 +9,8 @@ Story Chain, Evidence Ledger, runtime-flow, Operational Readiness, child issue�
 
 | 구분 | Tracker | 기간 | 담당자 |
 | --- | --- | --- | --- |
-| 작업 프로세스 | [#688](https://github.com/jaeyoungkang/lighthouse/issues/688) | 2026-08-25~2026-09-22 | GitHub assignee |
-| 검색 서비스 | [#689](https://github.com/jaeyoungkang/lighthouse/issues/689) | 2026-08-25~2026-09-22 | GitHub assignee |
+| 작업 프로세스 | [#2](https://github.com/jaeyoungkang/lighthouse/issues/2) | 2026-08-25~2026-09-22 | GitHub assignee |
+| 검색 서비스 | [#3](https://github.com/jaeyoungkang/lighthouse/issues/3) | 2026-08-25~2026-09-22 | GitHub assignee |
 
 자동화 설정은 `scripts/project-status/config.json`이 소유한다. 이 파일에는 활성
 tracker, 기간, 연결된 child issue, 기계적 수집이 확인할 정본 경로만 둔다. 의미

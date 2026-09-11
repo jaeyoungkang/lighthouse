@@ -193,7 +193,7 @@ describe("tracker body synchronization", () => {
     const { config, state, output } = mockGithub("process");
     state.patchStatus = 403;
     await expect(syncLane(config, "process", "test-token", false)).rejects.toThrow(
-      "GitHub PATCH /issues/688 failed: 403",
+      "GitHub PATCH /issues/2 failed: 403",
     );
     expect(output).not.toHaveBeenCalled();
   });
