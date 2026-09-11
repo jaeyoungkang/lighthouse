@@ -1,0 +1,217 @@
+{
+  "schema": "lighthouse.skill-routing-evaluation.v1",
+  "model": "gpt-6-astra",
+  "evaluatedAt": "2026-09-07",
+  "seal": "52ae0f2174938c28c9137fdaba98849a4209ee7768338ab762060ff0d8c97e07",
+  "inputs": [
+    {
+      "id": "case-01",
+      "prompt": "한국어 /about 약속 문구의 의미와 문장을 함께 고쳐라."
+    },
+    {
+      "id": "case-02",
+      "prompt": "왜 검색 first paint에서 DB를 읽지 않기로 했는지 기존 결정을 찾아 설명하라."
+    },
+    {
+      "id": "case-03",
+      "prompt": "사용자에게 보이는 AI 응답 실패 정책과 Promise를 바꾸고 runtime 처리 순서에도 전파하라."
+    },
+    {
+      "id": "case-04",
+      "prompt": "도그푸딩 중 논문 카드가 답답하다는 관찰을 제품 피드백으로 정리하고 다음 판단 지점을 찾아라."
+    },
+    {
+      "id": "case-05",
+      "prompt": "runtime-flow 정본의 실행 순서를 바꾸고 그 결과를 derived Contract Map에 반영하라."
+    },
+    {
+      "id": "case-06",
+      "prompt": "근거와 범위가 정리된 새 사용자-facing 제품 정책을 Human이 선택할 수 있는 proposal로 만들어라."
+    },
+    {
+      "id": "case-07",
+      "prompt": "한국어로 된 DB 접근 기술 가이드의 문장만 다듬어라. 공개 commitment 문구는 아니다."
+    },
+    {
+      "id": "case-08",
+      "prompt": "PR의 CodeRabbit inline comment를 확인하고 valid finding을 수정해 thread를 닫아라."
+    },
+    {
+      "id": "case-09",
+      "prompt": "사용자-facing 의미는 그대로 두고 내부 provider fallback 실행 순서 문서만 현재 코드와 맞춰라."
+    },
+    {
+      "id": "case-10",
+      "prompt": "로컬 exact content head를 독립 리뷰하고 finding과 closeout record를 남겨라."
+    },
+    {
+      "id": "case-11",
+      "prompt": "runtime-flow 정본은 이미 맞다. 깨진 링크와 읽기 순서만 Contract Map에서 고쳐라."
+    },
+    {
+      "id": "case-12",
+      "prompt": "quality:guards에 들어가는 검증기의 false-pass와 CI 배선을 수정하라."
+    },
+    {
+      "id": "case-13",
+      "prompt": "Promise 의미를 바꾸는 새 제품 용어를 정하고 glossary에 등록하라."
+    },
+    {
+      "id": "case-14",
+      "prompt": "Mission Control에서 범위를 확정했다. 이제 Promise AC와 Evidence Ledger를 같은 변경에서 갱신하라."
+    },
+    {
+      "id": "case-15",
+      "prompt": "Mission Control 범위가 확정된 analytics event schema와 실제 emitter를 함께 갱신하라."
+    },
+    {
+      "id": "case-16",
+      "prompt": "TypeScript 함수 시그니처를 바꾸며 definition과 모든 call site, diagnostics를 추적해 구현하라."
+    },
+    {
+      "id": "case-17",
+      "prompt": "제품 의미, DB·repository 경계, runtime 순서, quality gate를 바꾸지 않는 작은 TypeScript 순수 helper 리팩터를 구현하라."
+    },
+    {
+      "id": "case-18",
+      "prompt": "workflow 의미는 바꾸지 않고 기존 화면을 명령 보드처럼 강한 우선순위 시각으로 다듬어라."
+    },
+    {
+      "id": "case-19",
+      "prompt": "repo-local skill의 trigger와 First-Route Rules, references 감사 절차를 바꿔라."
+    },
+    {
+      "id": "case-20",
+      "prompt": "현재 아이디어나 diff를 고치거나 closeout하지 말고 두 독립 모델에게 의견을 받아 차이만 정리하라."
+    }
+  ],
+  "predictions": {
+    "schema": "lighthouse.skill-routing-predictions.v3",
+    "inputsDigest": "eedd4be5700e4dd33221517c4cbfd187866aecc0829d79fd9ec3230b91d65079",
+    "evaluationSpecDigest": "384e75d7fa9a2e8748b3c03e9e1dccd9deecb93558cd5aa01101a594a5abeac3",
+    "routingSourceDigest": "dc7eda9df7761af5d76c46ee7737c0e4cfb185d89cdcb354fdb5072d3f5f86b4",
+    "predictions": [
+      {
+        "id": "case-01",
+        "firstRoute": "about-prose",
+        "additionalRoutes": ["korean-prose"]
+      },
+      {
+        "id": "case-02",
+        "firstRoute": "project-knowledge",
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-03",
+        "firstRoute": "mission-control",
+        "additionalRoutes": ["runtime-flow-sync", "story-chain-contract-steward"]
+      },
+      {
+        "id": "case-04",
+        "firstRoute": "product-discovery-steward",
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-05",
+        "firstRoute": "runtime-flow-sync",
+        "additionalRoutes": ["contract-map-steward"]
+      },
+      {
+        "id": "case-06",
+        "firstRoute": "jaeyoung-think",
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-07",
+        "firstRoute": "korean-prose",
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-08",
+        "firstRoute": "branch-review-response",
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-09",
+        "firstRoute": "runtime-flow-sync",
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-10",
+        "firstRoute": "review-checklist-steward",
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-11",
+        "firstRoute": "contract-map-steward",
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-12",
+        "firstRoute": "quality-gate-steward",
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-13",
+        "firstRoute": "mission-control",
+        "additionalRoutes": ["glossary-steward"]
+      },
+      {
+        "id": "case-14",
+        "firstRoute": "story-chain-contract-steward",
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-15",
+        "firstRoute": "analytics-event-steward",
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-16",
+        "firstRoute": null,
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-17",
+        "firstRoute": null,
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-18",
+        "firstRoute": "vignelli-command-ui",
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-19",
+        "firstRoute": "skill-governance-steward",
+        "additionalRoutes": []
+      },
+      {
+        "id": "case-20",
+        "firstRoute": "review-checklist-steward",
+        "additionalRoutes": []
+      }
+    ]
+  },
+  "score": {
+    "schema": "lighthouse.skill-routing-score.v3",
+    "corpusSchema": "lighthouse.skill-routing-corpus.v3",
+    "inputsDigest": "eedd4be5700e4dd33221517c4cbfd187866aecc0829d79fd9ec3230b91d65079",
+    "evaluationSpecDigest": "384e75d7fa9a2e8748b3c03e9e1dccd9deecb93558cd5aa01101a594a5abeac3",
+    "routingSourceDigest": "dc7eda9df7761af5d76c46ee7737c0e4cfb185d89cdcb354fdb5072d3f5f86b4",
+    "predictionEnvelopeDigest": "7b9571fecba7cdf5e75776fa7866fef549154ca2d1031bc23bbbcbcf8cf44161",
+    "passed": true,
+    "caseCount": 20,
+    "metrics": {
+      "firstRouteAccuracy": 1,
+      "requiredRouteRecall": 1,
+      "allowedRoutePrecision": 0.9565217391304348,
+      "forbiddenSelections": 0,
+      "unknownRoutes": 0
+    },
+    "misses": [],
+    "forbidden": [],
+    "unknownRoutes": [],
+    "evaluationSeal": "52ae0f2174938c28c9137fdaba98849a4209ee7768338ab762060ff0d8c97e07"
+  }
+}

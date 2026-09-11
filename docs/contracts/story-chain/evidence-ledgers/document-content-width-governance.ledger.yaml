@@ -1,0 +1,60 @@
+schemaVersion: 2
+slug: document-content-width-governance
+review: reviews/document-content-width-governance.reviews.md
+sourcePromises:
+  - promise:route-view-ai-comment-inline-surface
+appliedAspects:
+  - aspect:document-content-width-governance
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-embedded-content-rail
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx` ("renders search reactions at the top of the main content"). `research-route-inline-reaction` test id가 current ResearchRoutePayload의 content rail 안에서 본문보다 먼저 렌더되고 inline-only reaction renderer는 `data-layout="inline"` / `research-route-inline-reaction-content`로 mount된다
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-inline-frame-treatment
+    assertion: vitest @ `app/components/research/__tests__/AgentPanel.test.tsx` + `app/components/research/__tests__/ResearchRouteLayout.view-mode.test.tsx`. ResearchRoutePayload 내장 반응은 host AI comment frame의 기준선에 맞춘 inline text flow로 렌더하고, 생성 중 상태는 옅은 배경 문단을 채우며, 내용이 길어져도 부모 ResearchRoutePayload column 폭을 넓히지 않는다. 검색 결과의 연구 공백 진입은 결과 기준 row 우측의 `연구 공백 지도 만들기` action이 담당한다
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-reactions-scoped-per-view
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx` ("renders only the current route panel reaction as a child of that panel"). `research-route-inline-reaction` test id는 active execution의 scalar reaction/history projection을 읽어 현재 ResearchRoutePayload의 reaction만 렌더한다 (cross-execution mixing 없음)
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-title-body-only
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx` ("renders inline reaction text without chip-derived button surfaces"). `research-route-inline-reaction` test id는 title/body reaction을 같은 ResearchRoutePayload 상단 흐름 안에서 렌더한다
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-exempt-initial-search-and-gap-network
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx` ("hides the inline reaction surface for gap ResearchRoutePayloads") + `app/components/research/__tests__/InitialSearchScreen.test.tsx` ("renders the route-owned centered initial search screen without an inline reaction surface"). route-owned 초기 빈 검색 화면과 `gap_network` ResearchRoutePayload에서는 inline reaction slot을 mount하지 않는다
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-responsive-flow
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteLayout.narrow.test.tsx` ("keeps route AI comments inline on narrow viewports"; "keeps route AI comments inline when the %s panel is narrow"). viewport 폭이나 패널 폭과 관계없이 reaction이 ResearchRoutePayload content rail 상단 inline flow에 남는다
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-empty-state-no-reserve
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx` ("does not reserve the inline reaction surface before a block or loading state exists"; "renders search reactions at the top of the main content"). 실제 reaction block이나 generation 상태가 없으면 `AgentPanel`과 `research-route-inline-reaction`을 렌더하지 않고, 초기 빈 검색·gap network는 inline reaction slot을 만들지 않는다
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research/__tests__/AgentPanel.test.tsx
+      - app/components/research/__tests__/ResearchRouteLayout.narrow.test.tsx
+      - app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx
+      - app/components/research/__tests__/ResearchRouteLayout.view-mode.test.tsx
+      - app/components/research/__tests__/InitialSearchScreen.test.tsx
+implementationContracts:
+  - The listed Promise(s) are verified by the Acceptance Check entries and structured executions on this ledger.
+  - This ledger is the covering ledger for `aspect:document-content-width-governance`, but its Source Promise remains `promise:route-view-ai-comment-inline-surface`. Search, citation-lineage, graph-neighbor, and gap width evidence is owned by their respective ledgers and referenced by the Aspect rather than repeated in this width-governance ledger.
+verdict: met

@@ -1,0 +1,118 @@
+{
+  "schemaVersion": "4",
+  "generatedAt": "2026-07-17T03:04:43.276Z",
+  "runLabel": "q3-pr338-controlled-u2",
+  "node": "v24.5.0",
+  "config": {
+    "baseUrl": "http://127.0.0.1:3001",
+    "query": "transformer attention",
+    "timeoutMs": 30000,
+    "mode": "one-shot",
+    "targetRevision": "a02caaf757b2050aab062816249f96269dd052cf",
+    "workingTreeDirty": false,
+    "runOwner": "architecture-fitness-local",
+    "inputProfile": "deterministic-3-paper-v1",
+    "providerProfile": "local-fixture-healthy-v1",
+    "topologyProfile": "local-single-next-process",
+    "users": 2
+  },
+  "cohorts": [
+    {
+      "users": 2,
+      "wallClockMs": 389.65770899999995,
+      "endpoints": [
+        {
+          "endpoint": "GET /search",
+          "count": 2,
+          "outcomes": {
+            "2xx": 2,
+            "4xx": 0,
+            "5xx": 0,
+            "timeout": 0,
+            "network-error": 0
+          },
+          "p50": 227.60891600000002,
+          "p95": 227.935,
+          "p99": 227.935,
+          "max": 227.935
+        },
+        {
+          "endpoint": "GET /search?q= (query execution)",
+          "count": 2,
+          "outcomes": {
+            "2xx": 2,
+            "4xx": 0,
+            "5xx": 0,
+            "timeout": 0,
+            "network-error": 0
+          },
+          "p50": 128.247542,
+          "p95": 128.86850000000004,
+          "p99": 128.86850000000004,
+          "max": 128.86850000000004
+        },
+        {
+          "endpoint": "GET /search?q= (seeded follow-up execution)",
+          "count": 2,
+          "outcomes": {
+            "2xx": 2,
+            "4xx": 0,
+            "5xx": 0,
+            "timeout": 0,
+            "network-error": 0
+          },
+          "p50": 28.996374999999944,
+          "p95": 31.265999999999963,
+          "p99": 31.265999999999963,
+          "max": 31.265999999999963
+        }
+      ],
+      "serverTimingPhases": [],
+      "searchReadiness": [
+        {
+          "userIndex": 0,
+          "paperCount": 3
+        },
+        {
+          "userIndex": 1,
+          "paperCount": 3
+        }
+      ],
+      "totalErrorCount": 0,
+      "firstRequestFailure": null
+    }
+  ],
+  "providerFixtureEvidence": {
+    "source": "loopback-provider-fixture",
+    "statsUrl": "http://127.0.0.1:43123/__stats",
+    "attribution": "zero-baseline",
+    "baseline": {
+      "profile": "healthy",
+      "configuredDelayMs": 350,
+      "configuredPaperCount": 3,
+      "searchRequests": 0,
+      "inFlight": 0,
+      "maxInFlight": 0,
+      "responses": {
+        "success": 0,
+        "rateLimited": 0,
+        "serverError": 0
+      }
+    },
+    "final": {
+      "profile": "healthy",
+      "configuredDelayMs": 350,
+      "configuredPaperCount": 3,
+      "searchRequests": 4,
+      "inFlight": 0,
+      "maxInFlight": 1,
+      "responses": {
+        "success": 4,
+        "rateLimited": 0,
+        "serverError": 0
+      }
+    },
+    "completedJourneys": 2,
+    "requestsPerCompletedJourney": 2
+  }
+}

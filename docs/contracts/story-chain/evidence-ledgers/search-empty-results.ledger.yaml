@@ -1,0 +1,31 @@
+schemaVersion: 2
+slug: search-empty-results
+review: reviews/search-empty-results.reviews.md
+sourcePromises:
+  - promise:search-empty-results-next-action
+appliedAspects:
+  - aspect:user-facing-language-governance
+  - aspect:ux-writing-voice-and-tone
+  - aspect:visible-explanation-sufficiency
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:search-empty-results-next-action#acceptance-check:search-empty-results-next-action-distinct-state
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view-states.test.tsx` ("distinguishes a successful zero-result search from provider failure") — 성공한 검색의 결과가 0편이면 같은 검색 결과 surface에서 명시적인 결과 없음 안내와 검색어·필터 변경 단서를 보여 주고, provider 실패 안내나 재시도 affordance를 렌더하지 않는다.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-empty-results
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-view-states.test.tsx
+    testNamePattern: distinguishes a successful zero-result search from provider failure
+implementationContracts:
+  - The listed Promise is verified by the Acceptance Check entry and structured execution on this ledger.
+  - The zero-result state renders only after a successful completed search and remains distinct from route-owned processing and provider failure surfaces.
+  - Fixed copy routes through the i18n registry and gives the user a concrete next search action without claiming that the scholarly corpus contains no matching work.
+verdict: met

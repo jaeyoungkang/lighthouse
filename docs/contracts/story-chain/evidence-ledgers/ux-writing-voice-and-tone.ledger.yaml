@@ -1,0 +1,49 @@
+schemaVersion: 2
+slug: ux-writing-voice-and-tone
+review: reviews/ux-writing-voice-and-tone.reviews.md
+sourcePromises:
+  - promise:search-results-fast-window
+  - promise:search-reaction-summarizes-terrain
+  - promise:invited-user-access-management
+appliedAspects:
+  - aspect:ux-writing-voice-and-tone
+intent:
+  mode: explicit
+  checks:
+    - key: promise:search-reaction-summarizes-terrain#intent-check:search-reaction-ux-writing-voice
+      evidence: Qualitative track. Live judge @ `app/server/services/__tests__/search-awareness-intent-qualitative.live.test.ts` ("search completion route AI comment generation answers the UX-writing voice·tone Critical Intent Questions") judges the real route AI comment generation output against the UX-writing voice·tone principles (weed-cutting, active/positive phrasing, universal words, suggestion over force). The 2026-06-30 recorded live run is `met`.
+    - key: promise:search-reaction-summarizes-terrain#intent-check:result-set-terrain-is-not-query-repetition
+      evidence: live judge over the real route AI comment generation output at `app/server/services/__tests__/search-awareness-intent-qualitative.live.test.ts` ("search completion route AI comment generation answers the terrain Critical Intent Questions").
+  delegations: []
+acceptanceChecks:
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-result-basis-visible
+    assertion: Deterministic track. `check-message-registry-contract.ts` enforces the UX-writing machine-checkable rules on the search direct-user microcopy group (no error codes / English dev jargon, consistent direct-user endings), keeping the search result-basis and surrounding microcopy in one readable voice.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:invited-user-access-management#acceptance-check:invited-user-access-management-admin-surface
+    assertion: Deterministic track. `check-message-registry-contract.ts` classifies `admin.access.*` as direct-user microcopy owned by this Promise and rejects developer jargon or raw error codes; the rendered admin-page test keeps the result-naming add/remove actions and explicit load/save feedback on the real surface.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: registered-script
+    script: message-registry-contract
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/server/services/__tests__/search-awareness-intent-qualitative.live.test.ts
+    testNamePattern: UX-writing voice
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/admin/__tests__/admin-access.test.tsx
+implementationContracts:
+  - The deterministic UX-writing rules extend the fixed-copy registry contract (`scripts/mission-control/check-message-registry-contract.ts`). Each registry owner group declares `aspect:ux-writing-voice-and-tone` alongside `aspect:user-facing-language-governance`. Direct-user microcopy groups additionally reject developer jargon and raw error codes; document-style internal/about groups are exempt from the jargon rule because they may name technical concepts explanatorily, but still follow the voice principles.
+  - The qualitative track routes through a live judge over rendered microcopy. The Intent Check on `promise:search-results-fast-window` is the qualitative entry point; its judge output, once run, closes the craft principles the deterministic rules cannot express.
+  - "`aspect:user-facing-language-governance` owns fixed/generated track routing and the tone-track split. `aspect:visible-explanation-sufficiency` owns source/input/limit information structure. `aspect:reaction-prefers-load-bearing-facts` owns generated reaction prose density. This ledger owns how copy reads as voice·tone craft."
+verdict: met

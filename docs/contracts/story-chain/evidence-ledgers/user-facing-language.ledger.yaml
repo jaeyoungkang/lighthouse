@@ -1,0 +1,75 @@
+schemaVersion: 2
+slug: user-facing-language
+review: reviews/user-facing-language.reviews.md
+sourcePromises:
+  - promise:search-results-fast-window
+  - promise:search-reaction-summarizes-terrain
+  - promise:search-result-library-add
+  - promise:invited-user-access-management
+appliedAspects:
+  - aspect:user-facing-language-governance
+intent:
+  mode: explicit
+  checks:
+    - key: promise:search-reaction-summarizes-terrain#intent-check:result-set-terrain-is-not-query-repetition
+      evidence: Generated-copy track. Live judge @ `app/server/services/__tests__/search-awareness-intent-qualitative.live.test.ts` ("search completion route AI comment generation answers the terrain Critical Intent Questions") confirms generated search reaction prose summarizes the current result-set terrain rather than echoing the query or using decorative copy.
+    - key: promise:search-reaction-summarizes-terrain#intent-check:search-reaction-ux-writing-voice
+      evidence: live judge over the real route AI comment generation output at `app/server/services/__tests__/search-awareness-intent-qualitative.live.test.ts` ("search completion route AI comment generation answers the UX-writing voice·tone Critical Intent Questions") plus `app/server/agent/__tests__/route-ai-comment-generation.test.ts` ("adds next-path guidance only for search view snapshots").
+  delegations: []
+acceptanceChecks:
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-result-basis-visible
+    assertion: Fixed-copy track. Vitest @ `app/components/research-route-renderers/__tests__/search-view-content.test.tsx` asserts the initial search state names Moonlight Search, does not show a first-search library reflection row or preview, avoids provider-name branding, and keeps the result basis line tied to the loaded search result set.
+    executionRefs:
+      - execution:run-002
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:search-reaction-summarizes-terrain#acceptance-check:reaction-respond-format
+    assertion: Generated-copy track. Route-view structured generation, `RouteAiComment-or-null`, and search reaction live judge evidence keep generated AI comment title/body inside the visible AI response contract and reject shallow query repetition, so generated search copy remains grounded in the current result set rather than decorative prose.
+    executionRefs:
+      - execution:run-004
+    scenarios:
+      - scenario:search-view-reaction-respond-format
+  - key: promise:search-result-library-add#acceptance-check:search-result-library-add-card-action
+    assertion: Fixed-copy track. Vitest @ `app/components/research-route-renderers/__tests__/search-result-item-library-action.test.tsx` asserts the compact bookmark toggle keeps `라이브러리에 추가` before save and `라이브러리에서 해제` after save as accessibility label/title, removes the repeated visible command/status text, distinguishes saved state through the filled success treatment, and disables the action while a save/remove mutation is pending.
+    executionRefs:
+      - execution:run-003
+    scenarios:
+      - scenario:search-result-library-add
+  - key: promise:invited-user-access-management#acceptance-check:invited-user-access-management-admin-surface
+    assertion: Fixed-copy track. The registry contract assigns every `admin.access.*` message to this Promise and applies the language-governance rules, while the rendered admin-page test proves the title, guidance, actions, state, and failure copy reach the guarded surface through the registry.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: registered-script
+    script: message-registry-contract
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+    testNamePattern: renders the initial search state
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item-library-action.test.tsx
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/server/services/__tests__/search-awareness-intent-qualitative.live.test.ts
+    testNamePattern: search completion route AI comment generation
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/admin/__tests__/admin-access.test.tsx
+implementationContracts:
+  - Fixed copy routes through i18n keys and rendered DOM tests on the target surface.
+  - "`app/i18n/messages.ts` and `app/i18n/messages/*` are the fixed-copy registry. Each registry key must fall into an owner group that names the related Promise(s) and `aspect:user-facing-language-governance`."
+  - The fixed-copy registry also carries semantic tone policies. Direct visitor-facing auth/onboarding copy must not use plain 반말형 endings, document-style public/internal guide copy may use 문서형 다체 when that surface stays consistent, and `[system]` event copy must not drift into direct-user 존댓말.
+  - Generated copy routes through structured route-view AI comment generation, `RouteAiComment-or-null` schema checks, deterministic fixtures, or live judge evidence on the target surface.
+  - "`aspect:visible-explanation-sufficiency` owns source/input/limit information structure. `aspect:reaction-prefers-load-bearing-facts` owns generated reaction prose density. This ledger owns the routing rule between fixed and generated language tracks."
+verdict: met

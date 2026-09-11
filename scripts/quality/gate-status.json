@@ -1,0 +1,60 @@
+{
+  "$comment": "Canonical declaration of GitHub Actions CI gate enforcement status (blocking / advisory / manual / automated). This is the machine-checked source of truth: scripts/quality/check-gate-parity.mjs verifies it against the parsed workflow YAML and against scripts/quality/branch-protection.snapshot.json (the observed live GitHub branch protection state). manualWorkflows are workflow_dispatch-only; automatedWorkflows may also run on push to main. See issue #652 and docs/ci-structure.md.",
+  "requiredContexts": [
+    {
+      "context": "static",
+      "workflow": "quality.yml",
+      "job": "static"
+    },
+    {
+      "context": "test (1)",
+      "workflow": "quality.yml",
+      "job": "test",
+      "matrix": { "shard": 1 }
+    },
+    {
+      "context": "test (2)",
+      "workflow": "quality.yml",
+      "job": "test",
+      "matrix": { "shard": 2 }
+    },
+    {
+      "context": "build",
+      "workflow": "quality.yml",
+      "job": "build"
+    },
+    {
+      "context": "audit",
+      "workflow": "quality.yml",
+      "job": "audit"
+    },
+    {
+      "context": "review-closeout",
+      "workflow": "quality.yml",
+      "job": "review-closeout"
+    },
+    {
+      "context": "db-integration",
+      "workflow": "quality.yml",
+      "job": "db-integration"
+    }
+  ],
+  "advisoryJobs": [],
+  "manualJobs": [
+    {
+      "workflow": "quality.yml",
+      "job": "full",
+      "note": "Dispatch-gated (workflow_dispatch with inputs.full=true); not a pull_request/push required-status-check producer."
+    }
+  ],
+  "manualWorkflows": [
+    "mutation.yml",
+    "architecture-fitness-attestation.yml",
+    "architecture-fitness-rebind-window.yml",
+    "search-quality-evidence.yml"
+  ],
+  "automatedWorkflows": ["project-status-checkpoint.yml"],
+  "invariants": {
+    "scheduleTriggersForbidden": true
+  }
+}

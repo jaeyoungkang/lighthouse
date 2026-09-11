@@ -1,0 +1,34 @@
+schemaVersion: 2
+slug: respond-contract-mutation-pilot
+sourcePromises:
+  - promise:respond-contract-mutation-pilot
+appliedAspects: []
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:respond-contract-mutation-pilot#acceptance-check:respond-contract-mutation-pilot-stryker-wired
+    assertion: vitest @ `scripts/mission-control/lib/__tests__/respond-contract-mutation-pilot.test.ts` ("npm run mutation invokes stryker") + ("Stryker devDependencies are pinned") + ("stryker config files target the current runtime contract slices via vitest runner with perTest coverage") + ("stryker uses the mutation-only vitest config that excludes *.live.test.* (no live LLM calls per mutant)") + ("ignores static mutants to keep the expanded manual slice inside the CI budget"). Asserts `package.json` script + devDeps, all `stryker.*.config.mjs` mutate targets / runner / coverage analysis / `ignoreStatic`, and the dedicated `vitest.config.mutation.mts` that excludes live LLM tests so manual CI does not depend on `GEMINI_API_KEY`.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:respond-contract-mutation-pilot#acceptance-check:respond-contract-mutation-pilot-manual-isolation
+    assertion: vitest @ `scripts/mission-control/lib/__tests__/respond-contract-mutation-pilot.test.ts` ("mutation.yml triggers on workflow_dispatch only — no schedule, pull_request, or push") + ("mutation.yml uploads a per-slice report artifact for inspection") + ("mutation.yml runs all configured mutation slices as a matrix, not only the agent default") + ("mutation.yml carries a per-slice timeout cap so one slow slice cannot consume the whole job budget") + ("PR gate (quality.yml) does not invoke npm run mutation"). Asserts the manual-only mutation workflow trigger surface, matrix-per-slice invocation (`npm run mutation:${{ matrix.slice }}`), per-slice timeout cap, per-slice artifact upload, and absence from PR gate.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/respond-contract-mutation-pilot.test.ts
+implementationContracts:
+  - "`stryker.config.mjs` / `stryker.agent.config.mjs` — agent runtime contract slice scope is `app/server/agent/route-ai-comment-generation.ts`, `app/server/ai-generation/gateway.ts`, `app/components/research/route-ai-comment-generation-client.ts`, and `app/components/research/route-ai-comment-generation-scheduler.ts`."
+  - "`stryker.contracts.config.mjs`, `stryker.domain.config.mjs`, `stryker.research-route.config.mjs` — extend the same manual mutation lane to analytics event contract code, domain access, and research route payload store invariants. Each slice uses the vitest runner with `perTest` coverage, ignores static mutants through the shared base config where applicable, writes HTML + JSON reporters to `reports/mutation/<slice>/`, and carries a `thresholds.break` gate."
+  - "`vitest.config.mutation.mts` — extends the main vitest config and adds `**/*.live.test.*` to `test.exclude` so route-view generation mutants do not trigger real provider calls."
+  - "`package.json` — `mutation`, `mutation:*`, `mutation:all` scripts and Stryker devDependencies are pinned."
+  - "`.github/workflows/mutation.yml` — the only trigger is `workflow_dispatch`; `schedule`, PR, and push triggers are absent. It runs the 4 mutation slices through a GitHub Actions matrix (`agent / contracts / domain / research route payload`) with `fail-fast: false` and a per-slice `timeout-minutes` cap, and uploads one `mutation-report-<slice>` artifact per slice. PR gate (`quality.yml`) does not call `npm run mutation`."
+  - "`docs/contracts/story-chain/evidence-ledgers/respond-contract.ledger.yaml` — carries the mutation-pilot contract evidence referenced by this ledger."
+  - "`docs/contracts/story-chain/hardening-tier-policy.md` §2 — names this ledger as the current pilot owner and retains the historical baseline as evidence rather than active policy authority."
+verdict: met

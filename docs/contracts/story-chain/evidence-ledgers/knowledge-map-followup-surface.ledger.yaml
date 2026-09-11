@@ -1,0 +1,77 @@
+schemaVersion: 2
+slug: knowledge-map-followup-surface
+review: reviews/knowledge-map-followup-surface.reviews.md
+sourcePromises:
+  - promise:search-reaction-summarizes-terrain
+  - promise:gap-network-detection-from-search
+  - promise:citation-lineage
+  - promise:graph-neighbor-papers
+appliedAspects:
+  - aspect:knowledge-map-followup-surface
+intent:
+  mode: delegated
+  checks: []
+  delegations:
+    - key: promise:search-reaction-summarizes-terrain#intent-check:result-set-terrain-is-not-query-repetition
+      ledger: search-reaction
+    - key: promise:search-reaction-summarizes-terrain#intent-check:search-reaction-ux-writing-voice
+      ledger: search-reaction
+    - key: promise:gap-network-detection-from-search#intent-check:cluster-narrative-describes-research-work
+      ledger: gap-network-e2
+    - key: promise:gap-network-detection-from-search#intent-check:representative-papers-show-cluster-grain
+      ledger: gap-network-e2
+    - key: promise:gap-network-detection-from-search#intent-check:adjacency-shows-network-position
+      ledger: gap-network-e2
+    - key: promise:citation-lineage#intent-check:body-explains-citation-flow-not-counts
+      ledger: citation-lineage
+acceptanceChecks:
+  - key: promise:search-reaction-summarizes-terrain#acceptance-check:search-reaction-summarizes-terrain-host-gap-action
+    assertion: Search route AI comment keeps the generated title/body inside the inline AI comment frame. The result-basis row owns the deterministic `상위 논문 40개의 관계를 분석하여 연구 공백 찾아보기 >` new-window action when loaded results exist; representative papers are marked in the search result list.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:search-view-reaction-host-owned-followup
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-entry-from-ai-comment
+    assertion: Search ResearchRoutePayloads expose deterministic `상위 논문 40개의 관계를 분석하여 연구 공백 찾아보기 >` on the right side of the result-basis row when loaded results exist; the action opens the gap map in a new detached window and keeps the current search route in place while generation starts. `search-view-states.test.tsx` ("continues the detached gap handoff after the source search view unmounts") verifies the shared handoff outlives the real source host and still moves the same target to `/gap/:id`.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-gap-analysis-entry
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-ai-reaction-with-followup-gap-surface
+    assertion: "Citation-lineage gap entry is host-owned: the ResearchRoutePayload host renders `현재 논문 묶음의 관계를 분석하여 연구 공백 찾아보기 >` above and outside the top AI comment frame when citation input exists and routes it to the gap-network pipeline. `relationship-view-ai-comment-actions.test.tsx` proves the host enters the same shared detached handoff without same-tab `router.push`; `search-view-states.test.tsx` (\"continues the detached gap handoff after the source search view unmounts\") proves that shared handoff continues beyond a real source host's lifetime."
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-gap-surface
+    assertion: "Graph-neighbor gap entry is host-owned: the ResearchRoutePayload host renders `현재 논문 묶음의 관계를 분석하여 연구 공백 찾아보기 >` above and outside the top AI comment frame, and graph-neighbor snapshot inputs are accepted by the gap-network route and server build path. `relationship-view-ai-comment-actions.test.tsx` proves the host enters the same shared detached handoff without same-tab `router.push`; `search-view-states.test.tsx` (\"continues the detached gap handoff after the source search view unmounts\") proves that shared handoff continues beyond a real source host's lifetime."
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx
+      - app/components/research-route-renderers/__tests__/view-followup-window.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-states.test.tsx
+      - app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx
+      - app/components/research/__tests__/AgentPanel.citation-lineage.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx
+      - app/api/gap-reports/__tests__/route.test.ts
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts
+implementationContracts:
+  - "Research-gap entry visibility is deterministic for search, citation-lineage, and graph-neighbor ResearchRoutePayloads with non-empty gap input, and the entry is host-owned on all three. Each ResearchRoutePayload host renders a text-style relationship-analysis action in its owned location (search: result-basis row with `상위 논문 40개의 관계를 분석하여 연구 공백 찾아보기 >`; citation-lineage / graph-neighbor: the inline reaction action row with `현재 논문 묶음의 관계를 분석하여 연구 공백 찾아보기 >`) when its metadata supplies gap input."
+  - "`InlineAiCommentFrame` (`app/components/research/inline-ai-comment-frame.tsx`) renders the shared comment frame and the above-frame host-owned gap action for citation-lineage and graph-neighbor ResearchRoutePayloads; `CitationLineageView` / `GraphNeighborsView` decide visibility from ResearchRoutePayload metadata (references+citations / graph candidates) and route the action through `openGapNetworkFromCitationLineageCitations` / `openGapNetworkFromGraphNeighbors`."
+  - "`SearchResultsHeader` owns the search gap action placement on the result-basis row; `SearchResultsOverviewBlockView` keeps compact search metadata focused on summary, while research-term exploration lives as AI comment text."
+  - "`AgentPanel` renders only the AI comment title/body in this contract; the host-owned action is the single gap entry."
+  - Route-owned route AI comment generation writes title/body state through the current ResearchRoutePayload store path and leaves gap follow-up ownership with the host renderer.
+  - Once a host starts the shared gap request with a detached target, the target handoff continues independently of the source host's mounted lifetime. Source pending state remains presentation-only.
+  - Graph-neighbor documents are valid gap-network sources. The gap-network server route and domain-access build path accept graph-neighbor snapshot papers rather than assuming every source id points to a persisted `search` or `citation_lineage` document.
+verdict: met

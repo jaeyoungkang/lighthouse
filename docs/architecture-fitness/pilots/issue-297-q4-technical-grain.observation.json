@@ -1,0 +1,507 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-observation",
+  "serviceId": "lighthouse",
+  "policySetRef": "issue-297-q4-technical-grain",
+  "policySetVersion": "2026-08-27.v19",
+  "policyDigest": "74db7a8e3c5feb20834487f5303772144ffaa2b48cc536fa67c13417431eb4fb",
+  "revision": "b9ba8c42b484e933860f591c807f7b6f56f7c543",
+  "collector": {
+    "adapterRef": "scripts/architecture-fitness/collect-q4-technical-grain.mjs",
+    "id": "lighthouse-issue-297-q4-technical-grain-collector",
+    "version": "22",
+    "scope": "materialized exact-revision seam inventory with exclusive current-or-legacy background-inline transport ownership, exclusive current-or-legacy judgment-owner resolution, duplicate-owner rejection, definition-bound full-SHA collector-only historical Gemini, outbound HTTP, and Supabase-owner compatibility, collector-authority source-policy tests, guards, and dependencies across target lock drift, and bounded historical change traces",
+    "definitionDigest": "b8b4daded94582cc76f8b2f6f8d50cb9c60f3a798e759238190eba69107a9a92",
+    "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+    "runRef": "fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+    "command": "node scripts/architecture-fitness/collect-q4-technical-grain.mjs --policy docs/architecture-fitness/pilots/issue-297-q4-technical-grain.policy.json --revision b9ba8c42b484e933860f591c807f7b6f56f7c543 --run-ref fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+    "attestation": {
+      "algorithm": "hmac-sha256",
+      "keyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1",
+      "payloadDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "evidence": [
+    {
+      "id": "technical-grain-coverage-static:issue-297",
+      "kind": "static",
+      "role": "technical-grain-coverage-static",
+      "source": "scripts/architecture-fitness/collect-q4-technical-grain.mjs",
+      "sourceRevision": "b9ba8c42b484e933860f591c807f7b6f56f7c543",
+      "summary": "The inventory contains all four declared seams and both change scenarios.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q4-technical-grain.mjs --policy docs/architecture-fitness/pilots/issue-297-q4-technical-grain.policy.json --revision b9ba8c42b484e933860f591c807f7b6f56f7c543 --run-ref fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "commandExitCode": 0,
+      "artifactDigest": "10ac5d3405edb039caa9fec61549dc401ad523a8bf06b3b00ccafc8abc85109f",
+      "collectorRunRef": "fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "target": {
+        "policyRef": "issue-297:technical-grain-conformance",
+        "capabilityRef": "capability:lighthouse-effect-boundaries",
+        "seamRefs": [
+          "seam:episteme-provider-gateway",
+          "seam:structured-ai-gateway",
+          "seam:reviewed-paper-domain-repository",
+          "seam:client-background-server-effect"
+        ],
+        "changeScenarioRefs": [
+          "scenario:incident-183-release-contract",
+          "scenario:pr-229-ai-trust-contract"
+        ],
+        "factRefs": [
+          "coverage:all-technical-grain-objects"
+        ]
+      }
+    },
+    {
+      "id": "technical-grain-coverage-negative-guard:issue-297",
+      "kind": "test",
+      "role": "technical-grain-coverage-negative-guard",
+      "source": "scripts/architecture-fitness/__tests__/q4-technical-grain-boundaries.test.ts",
+      "sourceRevision": "b9ba8c42b484e933860f591c807f7b6f56f7c543",
+      "summary": "The collector-authority source-policy harness rejects undeclared callers, missing owner responsibilities, raw persistence bypasses, client/server collapse, and incomplete change traces without executing target code.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run <collector-authority>/scripts/architecture-fitness/__tests__/q4-technical-grain-boundaries.test.ts --config <collector-authority>/scripts/architecture-fitness/q4-vitest.config.mts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "94a2230d77579df17f006414d087316acbae84098ee584e9d8584b59781bd665",
+      "collectorRunRef": "fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "target": {
+        "policyRef": "issue-297:technical-grain-conformance",
+        "capabilityRef": "capability:lighthouse-effect-boundaries",
+        "seamRefs": [
+          "seam:episteme-provider-gateway",
+          "seam:structured-ai-gateway",
+          "seam:reviewed-paper-domain-repository",
+          "seam:client-background-server-effect"
+        ],
+        "changeScenarioRefs": [
+          "scenario:incident-183-release-contract",
+          "scenario:pr-229-ai-trust-contract"
+        ],
+        "factRefs": [
+          "coverage:technical-grain-negative-guard"
+        ]
+      }
+    },
+    {
+      "id": "technical-grain-seam-static:episteme-provider-gateway",
+      "kind": "static",
+      "role": "technical-grain-seam-static",
+      "source": "scripts/architecture-fitness/collect-q4-technical-grain.mjs",
+      "sourceRevision": "b9ba8c42b484e933860f591c807f7b6f56f7c543",
+      "summary": "Exact-revision static inventory for seam:episteme-provider-gateway.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q4-technical-grain.mjs --policy docs/architecture-fitness/pilots/issue-297-q4-technical-grain.policy.json --revision b9ba8c42b484e933860f591c807f7b6f56f7c543 --run-ref fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "commandExitCode": 0,
+      "artifactDigest": "10ac5d3405edb039caa9fec61549dc401ad523a8bf06b3b00ccafc8abc85109f",
+      "collectorRunRef": "fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "target": {
+        "policyRef": "issue-297:technical-grain-conformance",
+        "capabilityRef": "capability:lighthouse-effect-boundaries",
+        "seamRefs": [
+          "seam:episteme-provider-gateway"
+        ],
+        "changeScenarioRefs": [],
+        "factRefs": [
+          "seam-observation-sha256:028db8a044f8ca3487770ba022bae730fb74becb30dabb0e8eba9cc7d7a1de79",
+          "structure:seam-observed"
+        ]
+      }
+    },
+    {
+      "id": "technical-grain-behavior-test:episteme-provider-gateway",
+      "kind": "test",
+      "role": "technical-grain-behavior-test",
+      "source": "scripts/architecture-fitness/__tests__/q4-technical-grain-boundaries.test.ts",
+      "sourceRevision": "b9ba8c42b484e933860f591c807f7b6f56f7c543",
+      "summary": "Collector-authority source and negative-policy tests exercise seam:episteme-provider-gateway without loading materialized comparison modules.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run <collector-authority>/scripts/architecture-fitness/__tests__/q4-technical-grain-boundaries.test.ts --config <collector-authority>/scripts/architecture-fitness/q4-vitest.config.mts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "94a2230d77579df17f006414d087316acbae84098ee584e9d8584b59781bd665",
+      "collectorRunRef": "fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "target": {
+        "policyRef": "issue-297:technical-grain-conformance",
+        "capabilityRef": "capability:lighthouse-effect-boundaries",
+        "seamRefs": [
+          "seam:episteme-provider-gateway"
+        ],
+        "changeScenarioRefs": [],
+        "factRefs": [
+          "seam-observation-sha256:028db8a044f8ca3487770ba022bae730fb74becb30dabb0e8eba9cc7d7a1de79",
+          "behavior:invariants-observed"
+        ]
+      }
+    },
+    {
+      "id": "technical-grain-seam-static:structured-ai-gateway",
+      "kind": "static",
+      "role": "technical-grain-seam-static",
+      "source": "scripts/architecture-fitness/collect-q4-technical-grain.mjs",
+      "sourceRevision": "b9ba8c42b484e933860f591c807f7b6f56f7c543",
+      "summary": "Exact-revision static inventory for seam:structured-ai-gateway.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q4-technical-grain.mjs --policy docs/architecture-fitness/pilots/issue-297-q4-technical-grain.policy.json --revision b9ba8c42b484e933860f591c807f7b6f56f7c543 --run-ref fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "commandExitCode": 0,
+      "artifactDigest": "10ac5d3405edb039caa9fec61549dc401ad523a8bf06b3b00ccafc8abc85109f",
+      "collectorRunRef": "fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "target": {
+        "policyRef": "issue-297:technical-grain-conformance",
+        "capabilityRef": "capability:lighthouse-effect-boundaries",
+        "seamRefs": [
+          "seam:structured-ai-gateway"
+        ],
+        "changeScenarioRefs": [],
+        "factRefs": [
+          "seam-observation-sha256:ed91531235aa1dac6d61fb19f6b2136eed123d0c5833fc73019daaad215d8a12",
+          "structure:seam-observed"
+        ]
+      }
+    },
+    {
+      "id": "technical-grain-behavior-test:structured-ai-gateway",
+      "kind": "test",
+      "role": "technical-grain-behavior-test",
+      "source": "scripts/architecture-fitness/__tests__/q4-technical-grain-boundaries.test.ts",
+      "sourceRevision": "b9ba8c42b484e933860f591c807f7b6f56f7c543",
+      "summary": "Collector-authority source and negative-policy tests exercise seam:structured-ai-gateway without loading materialized comparison modules.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run <collector-authority>/scripts/architecture-fitness/__tests__/q4-technical-grain-boundaries.test.ts --config <collector-authority>/scripts/architecture-fitness/q4-vitest.config.mts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "94a2230d77579df17f006414d087316acbae84098ee584e9d8584b59781bd665",
+      "collectorRunRef": "fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "target": {
+        "policyRef": "issue-297:technical-grain-conformance",
+        "capabilityRef": "capability:lighthouse-effect-boundaries",
+        "seamRefs": [
+          "seam:structured-ai-gateway"
+        ],
+        "changeScenarioRefs": [],
+        "factRefs": [
+          "seam-observation-sha256:ed91531235aa1dac6d61fb19f6b2136eed123d0c5833fc73019daaad215d8a12",
+          "behavior:invariants-observed"
+        ]
+      }
+    },
+    {
+      "id": "technical-grain-seam-static:reviewed-paper-domain-repository",
+      "kind": "static",
+      "role": "technical-grain-seam-static",
+      "source": "scripts/architecture-fitness/collect-q4-technical-grain.mjs",
+      "sourceRevision": "b9ba8c42b484e933860f591c807f7b6f56f7c543",
+      "summary": "Exact-revision static inventory for seam:reviewed-paper-domain-repository.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q4-technical-grain.mjs --policy docs/architecture-fitness/pilots/issue-297-q4-technical-grain.policy.json --revision b9ba8c42b484e933860f591c807f7b6f56f7c543 --run-ref fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "commandExitCode": 0,
+      "artifactDigest": "10ac5d3405edb039caa9fec61549dc401ad523a8bf06b3b00ccafc8abc85109f",
+      "collectorRunRef": "fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "target": {
+        "policyRef": "issue-297:technical-grain-conformance",
+        "capabilityRef": "capability:lighthouse-effect-boundaries",
+        "seamRefs": [
+          "seam:reviewed-paper-domain-repository"
+        ],
+        "changeScenarioRefs": [],
+        "factRefs": [
+          "seam-observation-sha256:be71f329891749b719985a89b327bf55deb533ea6fe245502d84ea147e997fae",
+          "structure:seam-observed"
+        ]
+      }
+    },
+    {
+      "id": "technical-grain-behavior-test:reviewed-paper-domain-repository",
+      "kind": "test",
+      "role": "technical-grain-behavior-test",
+      "source": "scripts/architecture-fitness/__tests__/q4-technical-grain-boundaries.test.ts",
+      "sourceRevision": "b9ba8c42b484e933860f591c807f7b6f56f7c543",
+      "summary": "Collector-authority source and negative-policy tests exercise seam:reviewed-paper-domain-repository without loading materialized comparison modules.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run <collector-authority>/scripts/architecture-fitness/__tests__/q4-technical-grain-boundaries.test.ts --config <collector-authority>/scripts/architecture-fitness/q4-vitest.config.mts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "94a2230d77579df17f006414d087316acbae84098ee584e9d8584b59781bd665",
+      "collectorRunRef": "fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "target": {
+        "policyRef": "issue-297:technical-grain-conformance",
+        "capabilityRef": "capability:lighthouse-effect-boundaries",
+        "seamRefs": [
+          "seam:reviewed-paper-domain-repository"
+        ],
+        "changeScenarioRefs": [],
+        "factRefs": [
+          "seam-observation-sha256:be71f329891749b719985a89b327bf55deb533ea6fe245502d84ea147e997fae",
+          "behavior:invariants-observed"
+        ]
+      }
+    },
+    {
+      "id": "technical-grain-seam-static:client-background-server-effect",
+      "kind": "static",
+      "role": "technical-grain-seam-static",
+      "source": "scripts/architecture-fitness/collect-q4-technical-grain.mjs",
+      "sourceRevision": "b9ba8c42b484e933860f591c807f7b6f56f7c543",
+      "summary": "Exact-revision static inventory for seam:client-background-server-effect.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q4-technical-grain.mjs --policy docs/architecture-fitness/pilots/issue-297-q4-technical-grain.policy.json --revision b9ba8c42b484e933860f591c807f7b6f56f7c543 --run-ref fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "commandExitCode": 0,
+      "artifactDigest": "10ac5d3405edb039caa9fec61549dc401ad523a8bf06b3b00ccafc8abc85109f",
+      "collectorRunRef": "fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "target": {
+        "policyRef": "issue-297:technical-grain-conformance",
+        "capabilityRef": "capability:lighthouse-effect-boundaries",
+        "seamRefs": [
+          "seam:client-background-server-effect"
+        ],
+        "changeScenarioRefs": [],
+        "factRefs": [
+          "seam-observation-sha256:f1d86490641fc5c58e0ad79859e7c5c7d01ca7a3ab5db07aea36d7574b0599a3",
+          "structure:seam-observed"
+        ]
+      }
+    },
+    {
+      "id": "technical-grain-behavior-test:client-background-server-effect",
+      "kind": "test",
+      "role": "technical-grain-behavior-test",
+      "source": "scripts/architecture-fitness/__tests__/q4-technical-grain-boundaries.test.ts",
+      "sourceRevision": "b9ba8c42b484e933860f591c807f7b6f56f7c543",
+      "summary": "Collector-authority source and negative-policy tests exercise seam:client-background-server-effect without loading materialized comparison modules.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run <collector-authority>/scripts/architecture-fitness/__tests__/q4-technical-grain-boundaries.test.ts --config <collector-authority>/scripts/architecture-fitness/q4-vitest.config.mts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "94a2230d77579df17f006414d087316acbae84098ee584e9d8584b59781bd665",
+      "collectorRunRef": "fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "target": {
+        "policyRef": "issue-297:technical-grain-conformance",
+        "capabilityRef": "capability:lighthouse-effect-boundaries",
+        "seamRefs": [
+          "seam:client-background-server-effect"
+        ],
+        "changeScenarioRefs": [],
+        "factRefs": [
+          "seam-observation-sha256:f1d86490641fc5c58e0ad79859e7c5c7d01ca7a3ab5db07aea36d7574b0599a3",
+          "behavior:invariants-observed"
+        ]
+      }
+    },
+    {
+      "id": "technical-grain-change-trace:incident-183-release-contract",
+      "kind": "static",
+      "role": "technical-grain-change-trace",
+      "source": "358c1269",
+      "sourceRevision": "b9ba8c42b484e933860f591c807f7b6f56f7c543",
+      "summary": "Bounded historical trace for scenario:incident-183-release-contract.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "git diff-tree --no-commit-id --name-only -r 358c1269^ 358c1269",
+      "commandExitCode": 0,
+      "artifactDigest": "87ffc3647ff87f2712ff8b0213751617ae642bc6b72cc74bcedb95d2d2fce4ba",
+      "collectorRunRef": "fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "target": {
+        "policyRef": "issue-297:technical-grain-conformance",
+        "capabilityRef": "capability:lighthouse-effect-boundaries",
+        "seamRefs": [],
+        "changeScenarioRefs": [
+          "scenario:incident-183-release-contract"
+        ],
+        "factRefs": [
+          "change-observation-sha256:34e20f754d24993fd00c1e795c63a27f267113064fb4aa51bcd059b5bd1f5535",
+          "change:propagation-observed"
+        ]
+      }
+    },
+    {
+      "id": "technical-grain-change-trace:pr-229-ai-trust-contract",
+      "kind": "static",
+      "role": "technical-grain-change-trace",
+      "source": "61a1110d",
+      "sourceRevision": "b9ba8c42b484e933860f591c807f7b6f56f7c543",
+      "summary": "Bounded historical trace for scenario:pr-229-ai-trust-contract.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "git diff-tree --no-commit-id --name-only -r 61a1110d^ 61a1110d",
+      "commandExitCode": 0,
+      "artifactDigest": "d5fd7a003eae6dd56097d83d246f17d49dee5af4a7333b61add10eaa230375f8",
+      "collectorRunRef": "fixture-run:issue-569-q4-definition-integrity:b9ba8c42",
+      "target": {
+        "policyRef": "issue-297:technical-grain-conformance",
+        "capabilityRef": "capability:lighthouse-effect-boundaries",
+        "seamRefs": [],
+        "changeScenarioRefs": [
+          "scenario:pr-229-ai-trust-contract"
+        ],
+        "factRefs": [
+          "change-observation-sha256:6b4d63eb3b85f4f4735412b3e6408a8b016884cea6dc93f9cfb61f2979f11e2b",
+          "change:propagation-observed"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation:issue-297-q4-technical-grain",
+      "policyRef": "issue-297:technical-grain-conformance",
+      "capabilityRef": "capability:lighthouse-effect-boundaries",
+      "completeness": "complete",
+      "coverageEvidenceRefs": [
+        "technical-grain-coverage-static:issue-297",
+        "technical-grain-coverage-negative-guard:issue-297"
+      ],
+      "seams": [
+        {
+          "id": "observed-seam:episteme-provider-gateway",
+          "seamRef": "seam:episteme-provider-gateway",
+          "chokepointRefs": [
+            "chokepoint:episteme-circuit-breaker",
+            "chokepoint:literature-provider-fetch"
+          ],
+          "responsibilityRefs": [
+            "responsibility:bounded-connect-retry",
+            "responsibility:breaker-and-admission",
+            "responsibility:failure-normalization",
+            "responsibility:request-metadata",
+            "responsibility:timeout-and-abort"
+          ],
+          "callerRefs": [
+            "caller:episteme-literature",
+            "caller:episteme-paper-neighborhood"
+          ],
+          "bypassRefs": [],
+          "invariantRefs": [
+            "invariant:bounded-provider-failure",
+            "invariant:episteme-self-protection",
+            "invariant:provider-effect-behind-gateway"
+          ],
+          "evidenceRefs": [
+            "technical-grain-seam-static:episteme-provider-gateway",
+            "technical-grain-behavior-test:episteme-provider-gateway"
+          ]
+        },
+        {
+          "id": "observed-seam:structured-ai-gateway",
+          "seamRef": "seam:structured-ai-gateway",
+          "chokepointRefs": [
+            "chokepoint:execute-judgment",
+            "chokepoint:structured-generation-gateway"
+          ],
+          "responsibilityRefs": [
+            "responsibility:deadline-and-no-retry",
+            "responsibility:judgment-parse-fallback-ledger",
+            "responsibility:provider-acquisition",
+            "responsibility:usage-normalization"
+          ],
+          "callerRefs": [
+            "caller:execute-judgment",
+            "caller:route-ai-comment-generation"
+          ],
+          "bypassRefs": [],
+          "invariantRefs": [
+            "invariant:bounded-structured-generation",
+            "invariant:judgment-policy-separated",
+            "invariant:provider-effect-behind-ai-gateway"
+          ],
+          "evidenceRefs": [
+            "technical-grain-seam-static:structured-ai-gateway",
+            "technical-grain-behavior-test:structured-ai-gateway"
+          ]
+        },
+        {
+          "id": "observed-seam:reviewed-paper-domain-repository",
+          "seamRef": "seam:reviewed-paper-domain-repository",
+          "chokepointRefs": [
+            "chokepoint:reviewed-paper-domain-access",
+            "chokepoint:reviewed-papers-repository"
+          ],
+          "responsibilityRefs": [
+            "responsibility:owner-predicate",
+            "responsibility:principal-and-product-action",
+            "responsibility:table-query-and-row-mapping"
+          ],
+          "callerRefs": [
+            "caller:graph-neighbor-hydration-domain-access",
+            "caller:reviewed-paper-domain-access",
+            "caller:search-enrichment-domain-access"
+          ],
+          "bypassRefs": [],
+          "invariantRefs": [
+            "invariant:domain-access-owns-principal",
+            "invariant:opaque-db-handle",
+            "invariant:repository-owns-storage"
+          ],
+          "evidenceRefs": [
+            "technical-grain-seam-static:reviewed-paper-domain-repository",
+            "technical-grain-behavior-test:reviewed-paper-domain-repository"
+          ]
+        },
+        {
+          "id": "observed-seam:client-background-server-effect",
+          "seamRef": "seam:client-background-server-effect",
+          "chokepointRefs": [
+            "chokepoint:purpose-api-route",
+            "chokepoint:research-background-tasks"
+          ],
+          "responsibilityRefs": [
+            "responsibility:client-cancellation",
+            "responsibility:server-auth-and-effect",
+            "responsibility:stale-completion-rejection"
+          ],
+          "callerRefs": [
+            "caller:research-route-shell"
+          ],
+          "bypassRefs": [],
+          "invariantRefs": [
+            "invariant:browser-lifetime-separated",
+            "invariant:primary-result-not-replaced",
+            "invariant:stale-work-not-applied"
+          ],
+          "evidenceRefs": [
+            "technical-grain-seam-static:client-background-server-effect",
+            "technical-grain-behavior-test:client-background-server-effect"
+          ]
+        }
+      ],
+      "changeScenarios": [
+        {
+          "id": "observed-change:incident-183-release-contract",
+          "scenarioRef": "scenario:incident-183-release-contract",
+          "changeClass": "contract",
+          "propagationRefs": [
+            "propagation:behavior-tests",
+            "propagation:operational-authority",
+            "propagation:provider-callers",
+            "propagation:provider-gateway",
+            "propagation:story-chain-contract",
+            "propagation:structural-guard"
+          ],
+          "evidenceRefs": [
+            "technical-grain-change-trace:incident-183-release-contract"
+          ]
+        },
+        {
+          "id": "observed-change:pr-229-ai-trust-contract",
+          "scenarioRef": "scenario:pr-229-ai-trust-contract",
+          "changeClass": "contract",
+          "propagationRefs": [
+            "propagation:ai-caller",
+            "propagation:ai-gateway",
+            "propagation:behavior-tests",
+            "propagation:runtime-authority",
+            "propagation:story-chain-contract"
+          ],
+          "evidenceRefs": [
+            "technical-grain-change-trace:pr-229-ai-trust-contract"
+          ]
+        }
+      ]
+    }
+  ]
+}

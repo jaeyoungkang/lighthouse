@@ -1,0 +1,163 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-observation",
+  "serviceId": "lighthouse",
+  "policySetRef": "issue-278-least-authority",
+  "policySetVersion": "2026-08-12.v42",
+  "policyDigest": "e2fc534c2c0cc08f01387583a0d1d4d844b46127db70d7cc70bb00b13425ea8e",
+  "revision": "87877a1a6448c5b355f4c3e7a07273b00c29776c",
+  "collector": {
+    "adapterRef": "scripts/architecture-fitness/collect-least-authority.mjs",
+    "id": "lighthouse-issue-278-git-collector",
+    "version": "42",
+    "scope": "exact-revision My Library reviewed-paper list/library-source/mutation access across cached and live resolver export names, opaque repository DB authority handoff, invited-access repository and admin/auth caller ownership, shared inline-analysis repository resource ownership, canonical gap-report reservation, report-scoped enrichment-retry, and per-principal Gap build admission capabilities restricted to their exact domain-access, repository, and authenticated route owners with collector-only compatibility for fixed historical reservation imports, absence of the retired global LLM usage read capability, bound production least-authority guard requiring the current Supabase owner with definition-bound full-SHA collector-only legacy resolution and duplicate-owner rejection plus declared and live session-auth bootstrap exceptions while absent future exception paths remain inapplicable to historical trees, and path tests executed with collector-authority config, setup, and dependencies across target root-config and lock drift",
+    "definitionDigest": "3894a22f3e70030f424d19514b47bc179e71abfa42bf00fdee18f48a12ac0d05",
+    "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+    "runRef": "fixture-run:issue-449-least-authority:87877a1a",
+    "command": "node scripts/architecture-fitness/collect-least-authority.mjs --policy docs/architecture-fitness/pilots/issue-278.policy.json --revision 87877a1a6448c5b355f4c3e7a07273b00c29776c --run-ref fixture-run:issue-449-least-authority:87877a1a",
+    "attestation": {
+      "algorithm": "hmac-sha256",
+      "keyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1",
+      "payloadDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "evidence": [
+    {
+      "id": "coverage-static:87877a1a6448c5b355f4c3e7a07273b00c29776c",
+      "kind": "static",
+      "role": "coverage-static-graph",
+      "source": "collector-graph:87877a1a6448c5b355f4c3e7a07273b00c29776c",
+      "sourceRevision": "87877a1a6448c5b355f4c3e7a07273b00c29776c",
+      "summary": "The exact-revision least-authority guard scanned 347 production modules and returned a normalized result.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-least-authority.mjs --policy docs/architecture-fitness/pilots/issue-278.policy.json --revision 87877a1a6448c5b355f4c3e7a07273b00c29776c --run-ref fixture-run:issue-449-least-authority:87877a1a",
+      "commandExitCode": 0,
+      "artifactDigest": "b688a1b7b110e426c38e6f6d202c3596d8dd524554fb83d6bd2c4033d37e0124",
+      "collectorRunRef": "fixture-run:issue-449-least-authority:87877a1a",
+      "target": {
+        "policyRef": "issue-278:reviewed-paper-owner-read",
+        "capabilityRef": "capability:reviewed-paper-library-owner-access",
+        "pathRefs": [
+          "policy-path:current-owner-reviewed-papers"
+        ],
+        "factRefs": [
+          "coverage:all-acquisition-paths"
+        ]
+      }
+    },
+    {
+      "id": "coverage-negative-guard:87877a1a6448c5b355f4c3e7a07273b00c29776c",
+      "kind": "test",
+      "role": "coverage-negative-guard",
+      "source": "collector:reviewed-paper-negative-mutation-suite",
+      "sourceRevision": "87877a1a6448c5b355f4c3e7a07273b00c29776c",
+      "summary": "The collector injected a raw authority export, a parallel arbitrary-owner repository caller, static element-access table selection, an extracted table-method alias, and computed import/require acquisition of the repository DB module into the exact-revision tree, then required the bound AST guard to reject every bypass class.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-least-authority.mjs --policy docs/architecture-fitness/pilots/issue-278.policy.json --revision 87877a1a6448c5b355f4c3e7a07273b00c29776c --run-ref fixture-run:issue-449-least-authority:87877a1a",
+      "commandExitCode": 0,
+      "artifactDigest": "1d4beda509e37d22c9ad94d79e894d204678dddd7f425cc7d61793802f8a13b9",
+      "collectorRunRef": "fixture-run:issue-449-least-authority:87877a1a",
+      "target": {
+        "policyRef": "issue-278:reviewed-paper-owner-read",
+        "capabilityRef": "capability:reviewed-paper-library-owner-access",
+        "pathRefs": [
+          "policy-path:current-owner-reviewed-papers"
+        ],
+        "factRefs": [
+          "coverage:undeclared-acquisition-rejected"
+        ]
+      }
+    },
+    {
+      "id": "path-static:current-owner:87877a1a6448c5b355f4c3e7a07273b00c29776c",
+      "kind": "static",
+      "role": "path-static",
+      "source": "app/server/domain-access/reviewed-paper-access.ts",
+      "sourceRevision": "87877a1a6448c5b355f4c3e7a07273b00c29776c",
+      "summary": "The exact-revision AST inspection observed owner-principal authentication, repository calls using the derived principal id, and whether auth exposes only a registered opaque repository DB handle.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-least-authority.mjs --policy docs/architecture-fitness/pilots/issue-278.policy.json --revision 87877a1a6448c5b355f4c3e7a07273b00c29776c --run-ref fixture-run:issue-449-least-authority:87877a1a",
+      "commandExitCode": 0,
+      "artifactDigest": "8269cd70ddace6ff8a744b145faf04929f8aea22e402e6de35bc7b58ded0b6ca",
+      "collectorRunRef": "fixture-run:issue-449-least-authority:87877a1a",
+      "target": {
+        "policyRef": "issue-278:reviewed-paper-owner-read",
+        "capabilityRef": "capability:reviewed-paper-library-owner-access",
+        "pathRefs": [
+          "policy-path:current-owner-reviewed-papers"
+        ],
+        "factRefs": [
+          "caller:reviewed-paper-current-principal-boundary",
+          "principal:authenticated-owner",
+          "enforcement:repository-owner-predicate",
+          "enforcement:forbidden-caller-guard",
+          "enforcement:opaque-repository-db-handle"
+        ]
+      }
+    },
+    {
+      "id": "path-test:current-owner:87877a1a6448c5b355f4c3e7a07273b00c29776c",
+      "kind": "test",
+      "role": "path-test",
+      "source": "app/server/domain-access/__tests__/reviewed-paper-access.auth-boundary.test.ts",
+      "sourceRevision": "87877a1a6448c5b355f4c3e7a07273b00c29776c",
+      "summary": "Vitest executed the exact-revision auth-boundary suite with the collector-authority config, setup, and dependency installation.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run app/server/domain-access/__tests__/reviewed-paper-access.auth-boundary.test.ts --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "a3a1b45db5259f0ac8f95ee736a97bde2be9bd9eb7ed1ecc8a2939417e3e298d",
+      "collectorRunRef": "fixture-run:issue-449-least-authority:87877a1a",
+      "target": {
+        "policyRef": "issue-278:reviewed-paper-owner-read",
+        "capabilityRef": "capability:reviewed-paper-library-owner-access",
+        "pathRefs": [
+          "policy-path:current-owner-reviewed-papers"
+        ],
+        "factRefs": [
+          "caller:reviewed-paper-current-principal-boundary",
+          "principal:authenticated-owner",
+          "enforcement:repository-owner-predicate",
+          "enforcement:forbidden-caller-guard",
+          "enforcement:opaque-repository-db-handle"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation:issue-278-reviewed-paper:87877a1a6448c5b355f4c3e7a07273b00c29776c",
+      "policyRef": "issue-278:reviewed-paper-owner-read",
+      "capabilityRef": "capability:reviewed-paper-library-owner-access",
+      "completeness": "complete",
+      "coverageEvidenceRefs": [
+        "coverage-static:87877a1a6448c5b355f4c3e7a07273b00c29776c",
+        "coverage-negative-guard:87877a1a6448c5b355f4c3e7a07273b00c29776c"
+      ],
+      "paths": [
+        {
+          "id": "observation-path:current-owner:87877a1a6448c5b355f4c3e7a07273b00c29776c",
+          "pathRef": "policy-path:current-owner-reviewed-papers",
+          "callerRef": "caller:reviewed-paper-current-principal-boundary",
+          "principalSourceRefs": [
+            "principal:authenticated-owner"
+          ],
+          "enforcementRefs": [
+            "enforcement:repository-owner-predicate",
+            "enforcement:forbidden-caller-guard",
+            "enforcement:opaque-repository-db-handle"
+          ],
+          "exposureRefs": [],
+          "evidenceRefs": [
+            "path-static:current-owner:87877a1a6448c5b355f4c3e7a07273b00c29776c",
+            "path-test:current-owner:87877a1a6448c5b355f4c3e7a07273b00c29776c"
+          ]
+        }
+      ]
+    }
+  ]
+}

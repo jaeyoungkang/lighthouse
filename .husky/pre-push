@@ -1,0 +1,3 @@
+. scripts/quality/clear-git-local-env.sh
+
+npm run quality:hook -- push

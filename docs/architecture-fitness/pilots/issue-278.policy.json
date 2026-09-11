@@ -1,0 +1,135 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-policy",
+  "service": {
+    "id": "lighthouse",
+    "repository": "https://github.com/corca-ai/lighthouse.git",
+    "adapterRef": "scripts/architecture-fitness/collect-least-authority.mjs"
+  },
+  "policySet": {
+    "id": "issue-278-least-authority",
+    "version": "2026-08-12.v42",
+    "scope": "the original issue #278 privileged-boundary case, its executable My Library reviewed-paper list/current-source/mutation subcase, the invited-access repository and admin/auth caller boundary, and declared unsupported Architecture Fitness lenses",
+    "owner": "Lighthouse server authority boundaries",
+    "source": "https://github.com/corca-ai/lighthouse/issues/278",
+    "sourceRevision": "human:2026-08-12:issue-417-per-principal-gap-admission",
+    "collectorAuthority": {
+      "adapterRef": "scripts/architecture-fitness/collect-least-authority.mjs",
+      "id": "lighthouse-issue-278-git-collector",
+      "version": "42",
+      "scope": "exact-revision My Library reviewed-paper list/library-source/mutation access across cached and live resolver export names, opaque repository DB authority handoff, invited-access repository and admin/auth caller ownership, shared inline-analysis repository resource ownership, canonical gap-report reservation, report-scoped enrichment-retry, and per-principal Gap build admission capabilities restricted to their exact domain-access, repository, and authenticated route owners with collector-only compatibility for fixed historical reservation imports, absence of the retired global LLM usage read capability, bound production least-authority guard requiring the current Supabase owner with definition-bound full-SHA collector-only legacy resolution and duplicate-owner rejection plus declared and live session-auth bootstrap exceptions while absent future exception paths remain inapplicable to historical trees, and path tests executed with collector-authority config, setup, and dependencies across target root-config and lock drift",
+      "definitionDigest": "3894a22f3e70030f424d19514b47bc179e71abfa42bf00fdee18f48a12ac0d05",
+      "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+      "attestationKeyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1"
+    }
+  },
+  "coverage": [
+    {
+      "id": "coverage:issue-278-least-authority",
+      "lens": "Q2 least-authority boundary",
+      "status": "included",
+      "owner": "Lighthouse server authority boundaries",
+      "reason": "The v0.5 executable contract supports the My Library reviewed-paper list/library-source/mutation owner-access subcase. The retired global LLM usage report no longer has a production read capability or admin exception. Reviewed-status enrichment, service-role acquisition, repository runtime, and remaining trusted helper paths stay in the stable original issue #278 case as unknown until they receive path-correlated observations.",
+      "reentryTrigger": "Re-collect when the My Library reviewed-paper capability, production guard, collector definition, policy, or an observation for the unsplit original case changes.",
+      "policyRefs": [
+        "issue-278:least-authority-boundary-conformance",
+        "issue-278:reviewed-paper-owner-read"
+      ]
+    },
+    {
+      "id": "coverage:business-alignment",
+      "lens": "Q1 business alignment",
+      "status": "unsupported",
+      "owner": "Lighthouse product and architecture owner",
+      "reason": "The active least-authority profile has no deterministic executable contract for product or decision alignment.",
+      "reentryTrigger": "Add only after the external core publishes a supported executable contract and Lighthouse approves its evidence authority.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:scalability",
+      "lens": "Q3 sustained scalability",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "No production capacity observation is normalized by this collector.",
+      "reentryTrigger": "Re-enter when an executable capacity contract binds observations to a deployment revision and run identity.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:technical-grain",
+      "lens": "Q4 technical grain and decision fitness",
+      "status": "unsupported",
+      "owner": "Lighthouse product and architecture owner",
+      "reason": "Issue #297 records Human-review candidates, but the deterministic least-authority evaluator has no executable Q4 case or approved evidence authority for technical grain or decision fitness.",
+      "reentryTrigger": "Activate machine coverage only after the external core publishes a generic supported technical-grain case and Lighthouse approves its evidence authority.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:resilience",
+      "lens": "Q5 resilience and multi-instance ownership",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "This collector has no deployment or failure-injection evidence for cache, lease, or instance movement.",
+      "reentryTrigger": "Re-enter when exact deployment and failure-run evidence can be collected reproducibly.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:process-effectiveness",
+      "lens": "Architecture Fitness process effectiveness",
+      "status": "unsupported",
+      "owner": "Lighthouse agent-process owner",
+      "reason": "Tool execution cannot replace the pending Human cost-proportionality judgment.",
+      "reentryTrigger": "Re-enter when the Human reviews authoring cost, false positives, adjacent findings, and overlap with CAIR and Story Chain.",
+      "policyRefs": []
+    }
+  ],
+  "policies": [
+    {
+      "id": "issue-278:least-authority-boundary-conformance",
+      "caseKind": "least-authority",
+      "question": "Can a normal server caller acquire a service-role client, raw reviewed-paper principal helper, repository runtime operation, or trusted background/admin capability outside its caller-specific policy boundary?",
+      "capabilityRef": "capability:issue-278-privileged-boundaries",
+      "owner": "Lighthouse server authority boundaries",
+      "desired": "Every privileged server capability has a declared caller, principal source, enforcement point, and negative acquisition guard across production entrypoints.",
+      "allowedPaths": [
+        {
+          "id": "policy-path:issue-278-declared-privileged-boundaries",
+          "required": true,
+          "callerRef": "caller:declared-privileged-capability-owner",
+          "principalSourceRefs": ["principal:capability-specific-trusted-context"],
+          "requiredEnforcementRefs": ["enforcement:capability-specific-caller-guard"],
+          "allowedExposureRefs": [],
+          "requiredEvidenceRoles": ["path-static", "path-test"]
+        }
+      ],
+      "verificationPlan": [
+        "Keep this stable original case unknown until exact-revision observations cover reviewed-paper owner access, createAdminClient acquisition, repository runtime acquisition, and trusted background/admin helpers without narrowing the case identity."
+      ]
+    },
+    {
+      "id": "issue-278:reviewed-paper-owner-read",
+      "caseKind": "least-authority",
+      "question": "Can a caller bypass current-principal My Library reviewed-paper list, library-source, or mutation access and select an arbitrary owner?",
+      "capabilityRef": "capability:reviewed-paper-library-owner-access",
+      "owner": "Lighthouse reviewed-paper domain access",
+      "desired": "My Library reviewed-paper list, library-source, and mutation operations derive the owner from authenticated context and preserve owner filtering plus repository-symbol and table-owner guards.",
+      "allowedPaths": [
+        {
+          "id": "policy-path:current-owner-reviewed-papers",
+          "required": true,
+          "callerRef": "caller:reviewed-paper-current-principal-boundary",
+          "principalSourceRefs": ["principal:authenticated-owner"],
+          "requiredEnforcementRefs": [
+            "enforcement:repository-owner-predicate",
+            "enforcement:forbidden-caller-guard",
+            "enforcement:opaque-repository-db-handle"
+          ],
+          "allowedExposureRefs": [],
+          "requiredEvidenceRoles": ["path-static", "path-test"]
+        }
+      ],
+      "verificationPlan": [
+        "Collect the exact-revision production acquisition graph and negative guard, attest the normalized observation in the trusted gate, and evaluate it with the pinned v0.5 core."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,221 @@
+{
+  "schema": "lighthouse.skill-routing-corpus.v3",
+  "auditBaseHead": "e4deb5d74005a34ed98f75f4cce376d665ab792a",
+  "inputProvenanceHead": "9d0c5b40fb9abbbd45bbe9a389bbafd8b9962c4f",
+  "evaluationProvenanceHead": "439abf760d37dd5f0601c10d8c73096f77964be4",
+  "inputsDigest": "eedd4be5700e4dd33221517c4cbfd187866aecc0829d79fd9ec3230b91d65079",
+  "evaluationSpecDigest": "384e75d7fa9a2e8748b3c03e9e1dccd9deecb93558cd5aa01101a594a5abeac3",
+  "routingSourceDigest": "dc7eda9df7761af5d76c46ee7737c0e4cfb185d89cdcb354fdb5072d3f5f86b4",
+  "frozenAt": "2026-08-02",
+  "thresholds": {
+    "firstRouteAccuracy": 0.9,
+    "requiredRouteRecall": 0.9,
+    "allowedRoutePrecision": 0.9,
+    "forbiddenSelections": 0,
+    "unknownRoutes": 0
+  },
+  "emitOrder": [
+    "about-korean-commitment",
+    "decision-recall",
+    "promise-runtime-policy",
+    "raw-product-feedback",
+    "runtime-source-and-map",
+    "approved-product-choice-proposal",
+    "korean-technical-guide",
+    "github-review-thread",
+    "runtime-mechanism-only",
+    "local-exact-head-review",
+    "derived-map-only",
+    "quality-gate-change",
+    "contract-term-change",
+    "scoped-ledger-propagation",
+    "scoped-analytics-event",
+    "typescript-symbol-change",
+    "plain-helper-default",
+    "visual-command-board",
+    "skill-routing-process",
+    "advisory-model-opinions"
+  ],
+  "cases": [
+    {
+      "id": "about-korean-commitment",
+      "prompt": "한국어 /about 약속 문구의 의미와 문장을 함께 고쳐라.",
+      "expectedFirstRoute": "about-prose",
+      "requiredAdditionalRoutes": ["korean-prose"],
+      "allowedAdditionalRoutes": ["korean-prose"],
+      "forbiddenRoutes": [],
+      "tags": ["overlap:about-korean", "boundary"]
+    },
+    {
+      "id": "korean-technical-guide",
+      "prompt": "한국어로 된 DB 접근 기술 가이드의 문장만 다듬어라. 공개 commitment 문구는 아니다.",
+      "expectedFirstRoute": "korean-prose",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": ["about-prose"],
+      "tags": ["overlap:about-korean", "negative-control"]
+    },
+    {
+      "id": "promise-runtime-policy",
+      "prompt": "사용자에게 보이는 AI 응답 실패 정책과 Promise를 바꾸고 runtime 처리 순서에도 전파하라.",
+      "expectedFirstRoute": "mission-control",
+      "requiredAdditionalRoutes": ["runtime-flow-sync"],
+      "allowedAdditionalRoutes": ["runtime-flow-sync"],
+      "forbiddenRoutes": [],
+      "tags": ["overlap:mission-runtime", "boundary"]
+    },
+    {
+      "id": "runtime-mechanism-only",
+      "prompt": "사용자-facing 의미는 그대로 두고 내부 provider fallback 실행 순서 문서만 현재 코드와 맞춰라.",
+      "expectedFirstRoute": "runtime-flow-sync",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": ["mission-control", "jaeyoung-think"],
+      "tags": ["overlap:mission-runtime", "negative-control"]
+    },
+    {
+      "id": "runtime-source-and-map",
+      "prompt": "runtime-flow 정본의 실행 순서를 바꾸고 그 결과를 derived Contract Map에 반영하라.",
+      "expectedFirstRoute": "runtime-flow-sync",
+      "requiredAdditionalRoutes": ["contract-map-steward"],
+      "allowedAdditionalRoutes": ["contract-map-steward"],
+      "forbiddenRoutes": [],
+      "tags": ["overlap:contract-map-runtime", "boundary"]
+    },
+    {
+      "id": "derived-map-only",
+      "prompt": "runtime-flow 정본은 이미 맞다. 깨진 링크와 읽기 순서만 Contract Map에서 고쳐라.",
+      "expectedFirstRoute": "contract-map-steward",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": ["runtime-flow-sync"],
+      "tags": ["overlap:contract-map-runtime", "negative-control"]
+    },
+    {
+      "id": "decision-recall",
+      "prompt": "왜 검색 first paint에서 DB를 읽지 않기로 했는지 기존 결정을 찾아 설명하라.",
+      "expectedFirstRoute": "project-knowledge",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": ["jaeyoung-think"],
+      "tags": ["decision-authority", "negative-control"]
+    },
+    {
+      "id": "raw-product-feedback",
+      "prompt": "도그푸딩 중 논문 카드가 답답하다는 관찰을 제품 피드백으로 정리하고 다음 판단 지점을 찾아라.",
+      "expectedFirstRoute": "product-discovery-steward",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": ["jaeyoung-think", "mission-control"],
+      "tags": ["product-discovery", "negative-control"]
+    },
+    {
+      "id": "approved-product-choice-proposal",
+      "prompt": "근거와 범위가 정리된 새 사용자-facing 제품 정책을 Human이 선택할 수 있는 proposal로 만들어라.",
+      "expectedFirstRoute": "jaeyoung-think",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": ["quality-gate-steward"],
+      "tags": ["product-choice", "negative-control"]
+    },
+    {
+      "id": "github-review-thread",
+      "prompt": "PR의 CodeRabbit inline comment를 확인하고 valid finding을 수정해 thread를 닫아라.",
+      "expectedFirstRoute": "branch-review-response",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": ["review-checklist-steward"],
+      "forbiddenRoutes": [],
+      "tags": ["review-boundary"]
+    },
+    {
+      "id": "local-exact-head-review",
+      "prompt": "로컬 exact content head를 독립 리뷰하고 finding과 closeout record를 남겨라.",
+      "expectedFirstRoute": "review-checklist-steward",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": ["branch-review-response"],
+      "tags": ["review-boundary", "negative-control"]
+    },
+    {
+      "id": "quality-gate-change",
+      "prompt": "quality:guards에 들어가는 검증기의 false-pass와 CI 배선을 수정하라.",
+      "expectedFirstRoute": "quality-gate-steward",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": ["jaeyoung-think"],
+      "tags": ["technical-authority", "negative-control"]
+    },
+    {
+      "id": "contract-term-change",
+      "prompt": "Promise 의미를 바꾸는 새 제품 용어를 정하고 glossary에 등록하라.",
+      "expectedFirstRoute": "mission-control",
+      "requiredAdditionalRoutes": ["glossary-steward"],
+      "allowedAdditionalRoutes": ["glossary-steward", "story-chain-contract-steward"],
+      "forbiddenRoutes": [],
+      "tags": ["contract-vocabulary"]
+    },
+    {
+      "id": "scoped-ledger-propagation",
+      "prompt": "Mission Control에서 범위를 확정했다. 이제 Promise AC와 Evidence Ledger를 같은 변경에서 갱신하라.",
+      "expectedFirstRoute": "story-chain-contract-steward",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": ["jaeyoung-think"],
+      "tags": ["post-scope-owner", "negative-control"]
+    },
+    {
+      "id": "scoped-analytics-event",
+      "prompt": "Mission Control 범위가 확정된 analytics event schema와 실제 emitter를 함께 갱신하라.",
+      "expectedFirstRoute": "analytics-event-steward",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": [],
+      "tags": ["post-scope-owner"]
+    },
+    {
+      "id": "typescript-symbol-change",
+      "prompt": "TypeScript 함수 시그니처를 바꾸며 definition과 모든 call site, diagnostics를 추적해 구현하라.",
+      "expectedFirstRoute": null,
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": [],
+      "tags": ["engineering-workflow"]
+    },
+    {
+      "id": "plain-helper-default",
+      "prompt": "제품 의미, DB·repository 경계, runtime 순서, quality gate를 바꾸지 않는 작은 TypeScript 순수 helper 리팩터를 구현하라.",
+      "expectedFirstRoute": null,
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": [],
+      "tags": ["engineering-workflow", "no-skill-default", "negative-control"]
+    },
+    {
+      "id": "visual-command-board",
+      "prompt": "workflow 의미는 바꾸지 않고 기존 화면을 명령 보드처럼 강한 우선순위 시각으로 다듬어라.",
+      "expectedFirstRoute": "vignelli-command-ui",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": ["mission-control"],
+      "tags": ["visual-style", "negative-control"]
+    },
+    {
+      "id": "skill-routing-process",
+      "prompt": "repo-local skill의 trigger와 First-Route Rules, references 감사 절차를 바꿔라.",
+      "expectedFirstRoute": "skill-governance-steward",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": ["mission-control"],
+      "tags": ["process-governance", "negative-control"]
+    },
+    {
+      "id": "advisory-model-opinions",
+      "prompt": "현재 아이디어나 diff를 고치거나 closeout하지 말고 두 독립 모델에게 의견을 받아 차이만 정리하라.",
+      "expectedFirstRoute": "review-checklist-steward",
+      "requiredAdditionalRoutes": [],
+      "allowedAdditionalRoutes": [],
+      "forbiddenRoutes": ["branch-review-response"],
+      "tags": ["review-boundary", "advisory-consultation"]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1",
+  "id": "search-quality-deterministic-wiring",
+  "version": "2026-08-29.1",
+  "evidenceScope": "deterministic-wiring",
+  "sampleLimit": 40,
+  "judgmentRubric": "topic-relevance-0-3-v1",
+  "queries": [
+    {
+      "id": "synthetic-doi",
+      "kind": "doi",
+      "query": "10.5555/lighthouse.fixture.1",
+      "provenance": {
+        "source": "synthetic",
+        "reference": "https://github.com/jaeyoungkang/lighthouse/issues/722",
+        "privacy": "public-or-synthetic-only"
+      },
+      "evaluation": {
+        "type": "known-item",
+        "expectedPaperIds": ["50098900"]
+      }
+    },
+    {
+      "id": "synthetic-title",
+      "kind": "title",
+      "query": "Bounded Search Quality Evidence",
+      "provenance": {
+        "source": "synthetic",
+        "reference": "https://github.com/jaeyoungkang/lighthouse/issues/722",
+        "privacy": "public-or-synthetic-only"
+      },
+      "evaluation": {
+        "type": "known-item",
+        "expectedPaperIds": ["20822800"]
+      }
+    },
+    {
+      "id": "synthetic-topic",
+      "kind": "topic",
+      "query": "graph retrieval evidence",
+      "provenance": {
+        "source": "synthetic",
+        "reference": "https://github.com/jaeyoungkang/lighthouse/issues/722",
+        "privacy": "public-or-synthetic-only"
+      },
+      "evaluation": {
+        "type": "topic",
+        "judgments": [
+          { "paperId": "81326400", "grade": 3 },
+          { "paperId": "81326401", "grade": 2 },
+          { "paperId": "81326402", "grade": 1 }
+        ]
+      }
+    }
+  ]
+}

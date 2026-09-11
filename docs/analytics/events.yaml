@@ -1,0 +1,2099 @@
+events:
+  - name: search_submitted
+    version: 3
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:search-query-route-transition
+      promiseRef: promise:search-query-route-transition
+      relatedPromiseRefs:
+        - promise:research-route-cap-feedback
+        - promise:search-results-fast-window
+      aspectRefs: []
+      acceptanceCheckRefs: []
+      scenarioRefs:
+        - scenario:search-initial-visible-window
+    observability:
+      realitySignal: true
+      signalMeaning: a search transition was accepted with a new search context
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: requested
+      timing: the client accepts a search transition and creates its search context
+    measurement:
+      purpose: Measure accepted search starts without collecting query content.
+      decisionUse: Join accepted searches to later result views and paper actions in the same journey.
+      propertyPurposes:
+        journey_context_id: Join the event to its opaque search journey root without collecting query content.
+        search_context_id: Join the event to one query, filter, sort, and library snapshot.
+        entry_source: Distinguish the product command that initiated the accepted search.
+        query_length: Compare short and complex search starts without storing query content.
+        sort: Separate accepted and visible searches by normalized ranking mode.
+        parent_search_context_id: Link a requery to the immediately preceding search context in the same journey.
+        year_filter: Separate time-bounded searches from searches without a publication-year constraint.
+        seed_paper_id: Distinguish seed-paper follow-up searches from free-form searches.
+    subject:
+      allowed:
+        - search_context_id
+    properties:
+      required:
+        - journey_context_id
+        - search_context_id
+        - entry_source
+        - query_length
+        - sort
+      optional:
+        - parent_search_context_id
+        - year_filter
+        - seed_paper_id
+      forbidden:
+        - token
+        - query
+        - raw_query
+        - query_hash
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: once_per_identity
+      identityKeys:
+        - properties.search_context_id
+      emitter: trackSearchSubmitted
+    sinks:
+      amplitude: search_submitted
+  - name: search_results_viewed
+    version: 2
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:search-results-first-review
+      promiseRef: promise:search-reaction-summarizes-terrain
+      aspectRefs: []
+      acceptanceCheckRefs: []
+      scenarioRefs:
+        - scenario:search-view-reaction-respond-format
+    observability:
+      realitySignal: true
+      signalMeaning: the first usable result window became visible
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: the destination view renders its first usable result window
+    measurement:
+      purpose: Measure whether an accepted search reaches usable results.
+      decisionUse: Join result delivery to the accepted search and subsequent paper actions.
+      propertyPurposes:
+        journey_context_id: Join the event to its opaque search journey root without collecting query content.
+        search_context_id: Join the event to one query, filter, sort, and library snapshot.
+        sort: Separate accepted and visible searches by normalized ranking mode.
+        result_count: Separate empty, sparse, and dense committed result sets.
+        visible_result_count: Record the usable result window exposed at the viewed boundary.
+        library_grounding_applied: Distinguish visible result windows that actually incorporated library-proximity evidence.
+        library_anchor_paper_count: Measure how many reviewed-paper anchors informed the visible result set.
+        source_surface: Separate actions originating in search results from relationship-derived surfaces.
+        year_filter: Separate time-bounded searches from searches without a publication-year constraint.
+    subject:
+      allowed:
+        - search_context_id
+    properties:
+      required:
+        - journey_context_id
+        - search_context_id
+        - sort
+        - result_count
+        - visible_result_count
+        - library_grounding_applied
+        - library_anchor_paper_count
+        - source_surface
+      optional:
+        - year_filter
+      forbidden:
+        - token
+        - query
+        - raw_query
+        - query_hash
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: viewed_boundary
+      cardinality: once_per_identity
+      identityKeys:
+        - properties.search_context_id
+      emitter: trackSearchResultsViewed
+    sinks:
+      amplitude: search_results_viewed
+  - name: paper_saved
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:search-results-first-review
+      promiseRef: promise:search-result-library-add
+      aspectRefs: []
+      acceptanceCheckRefs:
+        - acceptance-check:search-result-library-add-card-action
+        - acceptance-check:search-result-library-add-analytics
+      scenarioRefs:
+        - scenario:search-result-library-add
+    observability:
+      realitySignal: true
+      signalMeaning: a paper was successfully added to the library
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: the reviewed-paper mutation succeeds and local library state commits
+    measurement:
+      purpose: Measure successful paper saves.
+      decisionUse: Treat a save as a product outcome proxy, not proof of user value.
+      propertyPurposes:
+        journey_context_id: Join the event to its opaque search journey root without collecting query content.
+        search_context_id: Join the event to one query, filter, sort, and library snapshot.
+        paper_id: Join paper actions to one stable published-paper identity without collecting its title.
+        result_rank: Compare paper actions by the paper's one-based visible result position.
+        source_surface: Separate actions originating in search results from relationship-derived surfaces.
+        has_pdf: Compare paper actions by whether a direct PDF handoff was available.
+        evidence_availability: Separate actions by full, partial, unavailable, or unknown citation evidence.
+    subject:
+      allowed:
+        - search_context_id
+        - paper_id
+    properties:
+      required:
+        - journey_context_id
+        - search_context_id
+        - paper_id
+        - result_rank
+        - source_surface
+        - has_pdf
+        - evidence_availability
+      optional: []
+      forbidden:
+        - token
+        - query
+        - raw_query
+        - query_hash
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: state_transition
+      cardinality: every_action
+      identityKeys:
+        - properties.search_context_id
+        - subject.paper_id
+      emitter: trackPaperSaved
+    sinks:
+      amplitude: paper_saved
+  - name: paper_unsaved
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:search-results-first-review
+      promiseRef: promise:search-result-library-add
+      aspectRefs: []
+      acceptanceCheckRefs:
+        - acceptance-check:search-result-library-add-card-action
+        - acceptance-check:search-result-library-add-analytics
+      scenarioRefs:
+        - scenario:search-result-library-add
+    observability:
+      realitySignal: true
+      signalMeaning: a paper was successfully removed from the library
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: the reviewed-paper delete succeeds and local library state commits
+    measurement:
+      purpose: Measure successful paper removals.
+      decisionUse: Interpret removals separately from saves.
+      propertyPurposes:
+        journey_context_id: Join the event to its opaque search journey root without collecting query content.
+        search_context_id: Join the event to one query, filter, sort, and library snapshot.
+        paper_id: Join paper actions to one stable published-paper identity without collecting its title.
+        result_rank: Compare paper actions by the paper's one-based visible result position.
+        source_surface: Separate actions originating in search results from relationship-derived surfaces.
+        has_pdf: Compare paper actions by whether a direct PDF handoff was available.
+        evidence_availability: Separate actions by full, partial, unavailable, or unknown citation evidence.
+    subject:
+      allowed:
+        - search_context_id
+        - paper_id
+    properties:
+      required:
+        - journey_context_id
+        - search_context_id
+        - paper_id
+        - result_rank
+        - source_surface
+        - has_pdf
+        - evidence_availability
+      optional: []
+      forbidden:
+        - token
+        - query
+        - raw_query
+        - query_hash
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: state_transition
+      cardinality: every_action
+      identityKeys:
+        - properties.search_context_id
+        - subject.paper_id
+      emitter: trackPaperUnsaved
+    sinks:
+      amplitude: paper_unsaved
+  - name: search_result_inspected
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:search-results-first-review
+      promiseRef: promise:inline-analysis-auto-run
+      aspectRefs:
+        - aspect:progressive-content-spatial-stability
+      acceptanceCheckRefs: []
+      scenarioRefs:
+        - scenario:search-inline-analysis-visible-first
+    observability:
+      realitySignal: true
+      signalMeaning: a paper card changed from collapsed to inspected
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: the result card changes from collapsed to expanded
+    measurement:
+      purpose: Measure explicit paper inspection.
+      decisionUse: Compare inspection with later direct actions without treating it as an outcome.
+      propertyPurposes:
+        journey_context_id: Join the event to its opaque search journey root without collecting query content.
+        search_context_id: Join the event to one query, filter, sort, and library snapshot.
+        paper_id: Join paper actions to one stable published-paper identity without collecting its title.
+        result_rank: Compare paper actions by the paper's one-based visible result position.
+        source_surface: Separate actions originating in search results from relationship-derived surfaces.
+        has_pdf: Compare paper actions by whether a direct PDF handoff was available.
+        evidence_availability: Separate actions by full, partial, unavailable, or unknown citation evidence.
+    subject:
+      allowed:
+        - search_context_id
+        - paper_id
+    properties:
+      required:
+        - journey_context_id
+        - search_context_id
+        - paper_id
+        - result_rank
+        - source_surface
+        - has_pdf
+        - evidence_availability
+      optional: []
+      forbidden:
+        - token
+        - query
+        - raw_query
+        - query_hash
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: state_transition
+      cardinality: once_per_identity
+      identityKeys:
+        - subject.search_context_id
+        - subject.paper_id
+        - properties.result_rank
+      emitter: trackSearchResultInspected
+    sinks:
+      amplitude: search_result_inspected
+  - name: product.search_language_aware_library_supplement.viewed
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:search-results-first-review
+      promiseRef: promise:search-nonascii-library-relevance
+      aspectRefs:
+        - aspect:library-grounded-research
+      acceptanceCheckRefs:
+        - acceptance-check:search-nonascii-library-relevance-korean-overlap
+      scenarioRefs:
+        - scenario:search-nonascii-library-relevance
+    observability:
+      realitySignal: true
+      signalMeaning: a language-aware library-near supplement was admitted into a visible search result set
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: committed
+      timing: an interest-sort committed search result set includes at least one language-aware library-near supplement admitted under the current query
+    measurement:
+      purpose: Measure whether non-ASCII searches receive genuinely related library-near supplements without storing raw query text.
+      decisionUse: Compare non-ASCII personalized searches with visible supplement admission to evaluate Korean library value without weakening over-display guards.
+      propertyPurposes:
+        ownerPrincipalId: Scope the visible supplement admission to one route-owned research route payload.
+        documentId: Identify the route-owned search view whose visible result set admitted the supplement.
+        queryHash: Compatibility-only unkeyed FNV-1a grouping key for repeated non-ASCII searches; it is collision- and
+          dictionary-prone, not anonymity, user identity, or a cross-event join key.
+        queryLength: Distinguish short and complex non-ASCII searches without storing query text.
+        sort: Confirm the admission happened under the displayed ranking mode.
+        resultCount: Separate sparse and dense visible result sets.
+        admittedSupplementCount: Count how many language-aware library-near supplements were admitted in the visible result set.
+    subject:
+      allowed:
+        - ownerPrincipalId
+        - documentId
+    properties:
+      required:
+        - ownerPrincipalId
+        - documentId
+        - queryHash
+        - queryLength
+        - sort
+        - resultCount
+        - admittedSupplementCount
+      optional: []
+      forbidden:
+        - token
+        - query
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: state_transition
+      cardinality: once_per_identity
+      identityKeys:
+        - subject.ownerPrincipalId
+        - subject.documentId
+        - properties.queryHash
+        - properties.sort
+      emitter: trackSearchLanguageAwareLibrarySupplementViewedOnce
+    sinks:
+      amplitude: search_language_aware_library_supplement_viewed
+  - name: product.search_term_candidate.clicked
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:search-results-first-review
+      promiseRef: promise:search-results-suggest-english-terms
+      aspectRefs:
+        - aspect:visible-explanation-sufficiency
+        - aspect:ai-comment-research-term-suggestions
+      acceptanceCheckRefs:
+        - acceptance-check:search-results-suggest-english-terms-prefilled-search
+      scenarioRefs:
+        - scenario:search-english-term-discovery
+    observability:
+      realitySignal: true
+      signalMeaning: user clicked a search-term follow-up text link in an AI comment and started a follow-up search
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: Research term text link is clicked from a search, citation-lineage, or graph-neighbor AI comment
+    measurement:
+      purpose: Measure whether AI-comment research terms help researchers continue a search from Korean, uncertain wording, or
+        a paper-led relationship document while keeping this event owned by the search-term follow-up promise.
+      decisionUse: Compare candidate clicks with follow-up result views by sourceResearchRouteKind to tune term ranking and
+        no-answer thresholds.
+      propertyPurposes:
+        ownerPrincipalId: Scope the follow-up term action to one route-owned research route payload.
+        documentId: Identify the source route-owned view without storing result text.
+        queryHash: Compatibility-only unkeyed FNV-1a grouping key for source search intents; it is collision- and
+          dictionary-prone, not anonymity, user identity, or a cross-event join key.
+        termHash: Compatibility-only unkeyed FNV-1a grouping key for clicked research terms; it is collision- and
+          dictionary-prone, not anonymity, user identity, or a cross-event join key.
+        candidateType: Compare direct, broader, narrower, and variant candidates.
+        supportCount: Separate weak clues from well-supported candidates.
+        candidateSource: Record that the clicked search-term candidate came from the LLM method/contribution extraction path
+          when available.
+        sourceResearchRouteKind: Separate search, citation-lineage, and graph-neighbor AI comment term-click behavior.
+    subject:
+      allowed:
+        - ownerPrincipalId
+        - documentId
+    properties:
+      required:
+        - ownerPrincipalId
+        - documentId
+        - queryHash
+        - termHash
+        - candidateType
+        - supportCount
+        - sourceResearchRouteKind
+      optional:
+        - candidateSource
+      forbidden:
+        - token
+        - query
+        - term
+        - rawQuery
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - subject.ownerPrincipalId
+        - subject.documentId
+        - properties.termHash
+      emitter: trackSearchTermCandidateClicked
+    sinks:
+      amplitude: search_term_candidate_clicked
+  - name: product.research_terms.viewed
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:search-results-first-review
+      promiseRef: promise:search-results-suggest-english-terms
+      aspectRefs:
+        - aspect:visible-explanation-sufficiency
+      acceptanceCheckRefs:
+        - acceptance-check:search-results-suggest-english-terms-background-llm-primary
+      scenarioRefs:
+        - scenario:search-english-term-discovery
+    observability:
+      realitySignal: true
+      signalMeaning: a matching route view displayed the closed background research-term extraction result and recorded how
+        many LLM method/contribution candidates were accepted
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: the term-discovery background task patches the matching current route view with the closed extraction result
+    measurement:
+      purpose: Measure how often the compact LLM research-term extraction reaches the visible route view with candidates
+        versus an honest zero-candidate no-answer.
+      decisionUse: Watch accepted-candidate rates after reducing prompt input; a rising zero-candidate share reopens
+        term-quality or prompt-budget work before tuning ranking details.
+      propertyPurposes:
+        ownerPrincipalId: Scope the served research-term list to the route owner.
+        documentId: Identify the route-owned search view that displayed the served list.
+        phase: Record the extraction lifecycle phase. Current production emits initial only.
+        source: Record the extraction source. Current production emits llm only; zero candidates mean no-answer, not fallback.
+        candidateCount: Record how many accepted terms were served, including an honest zero.
+    subject:
+      allowed:
+        - ownerPrincipalId
+        - documentId
+    properties:
+      required:
+        - ownerPrincipalId
+        - documentId
+        - phase
+        - source
+        - candidateCount
+      optional: []
+      forbidden:
+        - token
+        - query
+        - term
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: state_transition
+      cardinality: once_per_identity
+      identityKeys:
+        - subject.ownerPrincipalId
+        - subject.documentId
+        - properties.phase
+      emitter: trackResearchTermsViewedOnce
+    sinks:
+      amplitude: research_terms_served
+  - name: product.different_position_search.clicked
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:search-results-first-review
+      promiseRef: promise:inline-analysis-auto-run
+      aspectRefs: []
+      acceptanceCheckRefs:
+        - acceptance-check:inline-analysis-auto-run-different-position-search
+      scenarioRefs:
+        - scenario:search-inline-analysis-visible-first
+    observability:
+      realitySignal: true
+      signalMeaning: user clicked a paper-card follow-up search candidate for a different position
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: Different-position search button is clicked from one paper card's inline analysis panel
+    measurement:
+      purpose: Measure whether paper-specific stance search candidates help researchers balance a claim with alternate views.
+      decisionUse: Compare paper-card different-position clicks with follow-up result views to tune stance query extraction.
+      propertyPurposes:
+        ownerPrincipalId: Scope the follow-up action to one route-owned research route payload.
+        documentId: Identify the source route-owned search view without storing result text.
+        paperId: Identify the source paper card that produced the candidate.
+        queryHash: Compatibility-only unkeyed FNV-1a grouping key for follow-up search candidates; it is collision- and
+          dictionary-prone, not anonymity, user identity, or a cross-event join key.
+        queryLength: Track candidate query specificity without storing raw query text.
+    subject:
+      allowed:
+        - ownerPrincipalId
+        - documentId
+        - paperId
+    properties:
+      required:
+        - ownerPrincipalId
+        - documentId
+        - paperId
+        - queryHash
+        - queryLength
+      optional: []
+      forbidden:
+        - token
+        - query
+        - term
+        - rawQuery
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - subject.ownerPrincipalId
+        - subject.documentId
+        - subject.paperId
+        - properties.queryHash
+      emitter: trackDifferentPositionSearchClicked
+    sinks:
+      amplitude: different_position_search_clicked
+  - name: citation_lineage_opened
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:paper-led-followup-discovery
+      promiseRef: promise:citation-lineage
+      aspectRefs: []
+      acceptanceCheckRefs: []
+      scenarioRefs:
+        - scenario:citation-03-03-01
+    observability:
+      realitySignal: true
+      signalMeaning: the citation-lineage branch opened from one paper
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: a valid citation-lineage destination is resolved and navigation is activated
+    measurement:
+      purpose: Measure citation-lineage exploration.
+      decisionUse: Compare citation exploration with other follow-ups in the same journey.
+      propertyPurposes:
+        journey_context_id: Join the event to its opaque search journey root without collecting query content.
+        search_context_id: Join the event to one query, filter, sort, and library snapshot.
+        paper_id: Join paper actions to one stable published-paper identity without collecting its title.
+        result_rank: Compare paper actions by the paper's one-based visible result position.
+        source_surface: Separate actions originating in search results from relationship-derived surfaces.
+        has_pdf: Compare paper actions by whether a direct PDF handoff was available.
+        evidence_availability: Separate actions by full, partial, unavailable, or unknown citation evidence.
+        reference_count: Describe the seed's available reference evidence at lineage activation.
+        citation_count: Describe the seed's available citation evidence at lineage activation.
+    subject:
+      allowed:
+        - search_context_id
+        - paper_id
+    properties:
+      required:
+        - journey_context_id
+        - search_context_id
+        - paper_id
+        - result_rank
+        - source_surface
+        - has_pdf
+        - evidence_availability
+        - reference_count
+        - citation_count
+      optional: []
+      forbidden:
+        - token
+        - query
+        - raw_query
+        - query_hash
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - properties.search_context_id
+        - subject.paper_id
+      emitter: trackCitationLineageOpened
+    sinks:
+      amplitude: citation_lineage_opened
+  - name: product.citation_lineage.failed
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:paper-led-followup-discovery
+      promiseRef: promise:citation-lineage
+      aspectRefs:
+        - aspect:provider-failure-degraded-mode
+      acceptanceCheckRefs:
+        - acceptance-check:citation-lineage-batch-failure-error-reaction
+      scenarioRefs: []
+    observability:
+      realitySignal: true
+      signalMeaning: a citation lineage route-owned view could not be prepared because the citation page / metadata request failed after the user passed click prechecks
+      severity: warning
+      requiredForPromiseCoverage: false
+    trigger:
+      source: server
+      phase: failed
+      timing: the citation seed route renders a failed citation_lineage research route payload after relationship execution fails
+    measurement:
+      purpose: Distinguish citation lineage provider/creation failure from genuine non-use, so a zero opened count can be read correctly. This is a server/user failure signal like product.graph_neighbors.failed. Emission stays on the server failure boundary for every action.
+      decisionUse: Use this signal to review whether the related Promise needs UX, runtime, or contract follow-up; it does not change verdicts automatically.
+      propertyPurposes:
+        ownerPrincipalId: Support product.citation_lineage.failed measurement by recording owner principal id as behavior metadata.
+        paperId: Support product.citation_lineage.failed measurement by recording seed paper id as behavior metadata.
+        reason: Support product.citation_lineage.failed measurement by recording a coarse error code (no raw provider detail) as behavior metadata.
+    subject:
+      allowed:
+        - ownerPrincipalId
+        - paperId
+    properties:
+      required:
+        - ownerPrincipalId
+        - paperId
+        - reason
+      optional: []
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: failure_boundary
+      cardinality: every_action
+      identityKeys:
+        - subject.ownerPrincipalId
+        - subject.paperId
+      emitter: trackCitationLineageFailed
+    sinks:
+      amplitude: citation_lineage_failed
+  - name: product.graph_neighbors.viewed
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:paper-led-followup-discovery
+      promiseRef: promise:graph-neighbor-papers
+      aspectRefs:
+        - aspect:visible-explanation-sufficiency
+      acceptanceCheckRefs: []
+      scenarioRefs:
+        - scenario:graph-neighbor-axes-shown
+    observability:
+      realitySignal: true
+      signalMeaning: the graph-neighbors route resolved co-cited / coupled axes for a seed paper; co-cited / coupled counts
+        may be zero when the graph returned no neighbors
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: server
+      phase: completed
+      timing: a graph-neighbors route execution resolves graph axes for the seed paper
+    measurement:
+      purpose: Answer whether the observed product behavior for promise:graph-neighbor-papers occurs in real research-route use.
+      decisionUse: Use this signal to review whether the related Promise needs UX, runtime, or contract follow-up; it does not
+        change verdicts automatically.
+      propertyPurposes:
+        ownerPrincipalId: Support product.graph_neighbors.viewed measurement by recording owner principal id as behavior metadata.
+        documentId: Support product.graph_neighbors.viewed measurement by recording the route-owned view id as behavior metadata.
+        paperId: Support product.graph_neighbors.viewed measurement by recording paper id as behavior metadata.
+        coCitedCount: Support product.graph_neighbors.viewed measurement by recording co-cited neighbor count as behavior metadata.
+        coupledCount: Support product.graph_neighbors.viewed measurement by recording coupled neighbor count as behavior metadata.
+    subject:
+      allowed:
+        - ownerPrincipalId
+        - documentId
+        - paperId
+    properties:
+      required:
+        - ownerPrincipalId
+        - documentId
+        - paperId
+        - coCitedCount
+        - coupledCount
+      optional: []
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: state_transition
+      cardinality: once_per_identity
+      identityKeys:
+        - subject.ownerPrincipalId
+        - subject.documentId
+        - subject.paperId
+      emitter: trackGraphNeighborsViewed
+    sinks:
+      amplitude: graph_neighbors_viewed
+  - name: product.graph_neighbors.failed
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:paper-led-followup-discovery
+      promiseRef: promise:graph-neighbor-papers
+      aspectRefs:
+        - aspect:provider-failure-degraded-mode
+      acceptanceCheckRefs:
+        - acceptance-check:graph-neighbor-papers-graph-failure-degraded
+      scenarioRefs: []
+    observability:
+      realitySignal: true
+      signalMeaning: graph neighbor axes could not be resolved for the graph-neighbors route
+      severity: warning
+      requiredForPromiseCoverage: false
+    trigger:
+      source: server
+      phase: failed
+      timing: the similar seed route renders a failed graph_neighbors research route payload
+    measurement:
+      purpose: Distinguish graph neighbor lookup failure from genuine empty results and not-attempted legacy seeds on the
+        graph_neighbors route.
+      decisionUse: Use this signal to review whether the related Promise needs UX, runtime, or contract follow-up; it does not
+        change verdicts automatically.
+      propertyPurposes:
+        ownerPrincipalId: Support product.graph_neighbors.failed measurement by recording owner principal id as behavior metadata.
+        paperId: Support product.graph_neighbors.failed measurement by recording seed paper id as behavior metadata.
+    subject:
+      allowed:
+        - ownerPrincipalId
+        - paperId
+    properties:
+      required:
+        - ownerPrincipalId
+        - paperId
+      optional: []
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: failure_boundary
+      cardinality: every_action
+      identityKeys:
+        - subject.ownerPrincipalId
+        - subject.paperId
+      emitter: trackGraphNeighborsFailed
+    sinks:
+      amplitude: graph_neighbors_failed
+  - name: product.gap_report.clicked
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:gap-analysis-from-results
+      promiseRef: promise:gap-network-detection-from-search
+      aspectRefs: []
+      acceptanceCheckRefs: []
+      scenarioRefs:
+        - scenario:search-gap-analysis-entry
+    observability:
+      realitySignal: true
+      signalMeaning: user clicked the research-gap action from a source route-owned view
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: research-gap action is clicked from a search or citation-lineage source
+    measurement:
+      purpose: Answer whether the observed product behavior for promise:gap-network-detection-from-search occurs in real
+        research-route use.
+      decisionUse: Use this signal to review whether the related Promise needs UX, runtime, or contract follow-up; it does not
+        change verdicts automatically.
+      propertyPurposes:
+        ownerPrincipalId: Support product.gap_report.clicked measurement by recording owner principal id as behavior metadata.
+        documentId: Support product.gap_report.clicked measurement by recording the source route-owned view id as behavior
+          metadata.
+        lens: Support product.gap_report.clicked measurement by recording lens as behavior metadata.
+        sourceType: Support product.gap_report.clicked measurement by recording source type as behavior metadata.
+    subject:
+      allowed:
+        - ownerPrincipalId
+        - documentId
+    properties:
+      required:
+        - ownerPrincipalId
+        - documentId
+      optional:
+        - lens
+        - sourceType
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - subject.ownerPrincipalId
+        - subject.documentId
+      emitter: trackGapReportClicked
+    sinks:
+      amplitude: gap_report_requested
+  - name: gap_analysis_retry_clicked
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:gap-analysis-from-results
+      promiseRef: promise:gap-report-prepared-reaction
+      aspectRefs:
+        - aspect:provider-failure-degraded-mode
+      acceptanceCheckRefs:
+        - acceptance-check:gap-report-prepared-reaction-explicit-enrichment-retry
+      scenarioRefs:
+        - scenario:search-gap-analysis-entry
+    observability:
+      realitySignal: true
+      signalMeaning: a user explicitly requested another narrative analysis for a degraded gap report
+      severity: info
+      requiredForPromiseCoverage: true
+    trigger:
+      source: client
+      phase: requested
+      timing: the user activates 분석 다시 시도 before the authenticated retry command is sent
+    measurement:
+      purpose: Measure explicit attempts to recover the narrative portion of a persisted gap report without collecting report content.
+      decisionUse: Compare retry demand with server-owned accepted, rejected, result, duration, and LLM usage evidence when reviewing recovery quality.
+      propertyPurposes:
+        gap_report_id: Join the action to the persisted gap report without collecting query, prompt, or generated prose.
+        retry_count: Distinguish the first explicit retry from later user-triggered retries for the same report.
+    subject:
+      allowed:
+        - gap_report_id
+    properties:
+      required:
+        - gap_report_id
+        - retry_count
+      optional: []
+      forbidden:
+        - token
+        - query
+        - prompt
+        - output
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - subject.gap_report_id
+        - properties.retry_count
+      emitter: trackGapAnalysisRetryClicked
+    sinks:
+      amplitude: gap_analysis_retry_clicked
+  - name: product.gap_report.viewed
+    version: 2
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:shared-gap-report-access
+      promiseRef: promise:shared-gap-report-member-access
+      aspectRefs:
+        - aspect:search-first-url-model
+      acceptanceCheckRefs:
+        - acceptance-check:shared-gap-report-member-access-authenticated-sharing
+      scenarioRefs:
+        - scenario:search-gap-network-generated
+    observability:
+      realitySignal: true
+      signalMeaning: user viewed a completed gap report
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: completed gap report becomes visible in the authenticated viewer's gap route
+    measurement:
+      purpose: Answer whether authenticated members open shared gap reports under promise:shared-gap-report-member-access.
+      decisionUse: Use this signal to review whether the related Promise needs UX, runtime, or contract follow-up; it does not
+        change verdicts automatically.
+      propertyPurposes:
+        viewerPrincipalId: Support product.gap_report.viewed measurement by recording the current viewer principal id as
+          behavior metadata.
+        documentId: Support product.gap_report.viewed measurement by recording the gap report id as behavior metadata.
+    subject:
+      allowed:
+        - viewerPrincipalId
+        - documentId
+    properties:
+      required:
+        - viewerPrincipalId
+        - documentId
+      optional: []
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: state_transition
+      cardinality: once_per_identity
+      identityKeys:
+        - subject.viewerPrincipalId
+        - subject.documentId
+      emitter: trackGapReportViewedOnce
+    sinks:
+      amplitude: gap_report_committed
+  - name: pdf_opened
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:moonlight-reading-handoff
+      promiseRef: promise:delegate-deep-read-to-moonlight
+      aspectRefs: []
+      acceptanceCheckRefs: []
+      scenarioRefs: []
+    observability:
+      realitySignal: true
+      signalMeaning: a valid PDF handoff opened from one paper
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: a paper card activates a valid external reading target
+    measurement:
+      purpose: Measure PDF reading handoffs.
+      decisionUse: Compare handoffs with other direct actions without inferring reading success.
+      propertyPurposes:
+        journey_context_id: Join the event to its opaque search journey root without collecting query content.
+        search_context_id: Join the event to one query, filter, sort, and library snapshot.
+        paper_id: Join paper actions to one stable published-paper identity without collecting its title.
+        result_rank: Compare paper actions by the paper's one-based visible result position.
+        source_surface: Separate actions originating in search results from relationship-derived surfaces.
+        has_pdf: Compare paper actions by whether a direct PDF handoff was available.
+        evidence_availability: Separate actions by full, partial, unavailable, or unknown citation evidence.
+        open_target: Distinguish the approved external handoff destination.
+        open_element: Identify the UI control that initiated the PDF handoff.
+    subject:
+      allowed:
+        - search_context_id
+        - paper_id
+    properties:
+      required:
+        - journey_context_id
+        - search_context_id
+        - paper_id
+        - result_rank
+        - source_surface
+        - has_pdf
+        - evidence_availability
+        - open_target
+        - open_element
+      optional: []
+      forbidden:
+        - token
+        - query
+        - raw_query
+        - query_hash
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - properties.search_context_id
+        - subject.paper_id
+        - properties.open_element
+      emitter: trackPaperPdfOpened
+    sinks:
+      amplitude: pdf_opened
+  - name: product.ai_comment_card.viewed
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:research-view-first-orientation
+      promiseRef: promise:route-view-ai-comment-inline-surface
+      aspectRefs: []
+      acceptanceCheckRefs: []
+      scenarioRefs: []
+    observability:
+      realitySignal: true
+      signalMeaning: user viewed an inline AI reaction in the owning research-route content rail
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: Research-view AI reaction becomes visible inside the owning content rail.
+    measurement:
+      purpose: Answer whether the observed product behavior for promise:route-view-ai-comment-inline-surface occurs in real
+        research-route use.
+      decisionUse: Use this signal to review whether the related Promise needs UX, runtime, or contract follow-up; it does not
+        change verdicts automatically.
+      propertyPurposes:
+        ownerPrincipalId: Support product.ai_comment_card.viewed measurement by recording owner principal id as behavior metadata.
+        documentId: Support product.ai_comment_card.viewed measurement by recording route-owned view id as behavior metadata.
+        reactionKey: Support product.ai_comment_card.viewed measurement by recording reaction key as behavior metadata.
+    subject:
+      allowed:
+        - ownerPrincipalId
+        - documentId
+    properties:
+      required:
+        - ownerPrincipalId
+        - documentId
+        - reactionKey
+      optional: []
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: viewed_boundary
+      cardinality: once_per_identity
+      identityKeys:
+        - subject.ownerPrincipalId
+        - subject.documentId
+        - properties.reactionKey
+      emitter: trackAiCommentCardViewedOnce
+    sinks:
+      amplitude: ai_comment_card_viewed
+  - name: product.ai_comment_card_expand.clicked
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:research-view-first-orientation
+      promiseRef: promise:route-view-ai-comment-inline-surface
+      aspectRefs:
+        - aspect:progressive-content-spatial-stability
+      acceptanceCheckRefs: []
+      scenarioRefs: []
+    observability:
+      realitySignal: true
+      signalMeaning: user asked an inline AI comment card to reveal its full generated body
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: requested
+      timing: immediately when the user clicks 펼치기 on a line-clamped inline AI comment body
+    measurement:
+      purpose: Measure whether researchers choose to reveal AI comment prose beyond the spatially stable preview without
+        collecting that prose.
+      decisionUse: Review whether the collapsed preview gives enough context and whether expansion remains discoverable; this
+        event does not change Promise verdicts automatically.
+      propertyPurposes:
+        ownerPrincipalId: Scope the expansion to the owning research-route principal.
+        documentId: Identify the route-owned view whose AI comment was expanded.
+        reactionKey: Distinguish generated comment versions without collecting title or body text.
+    subject:
+      allowed:
+        - ownerPrincipalId
+        - documentId
+    properties:
+      required:
+        - ownerPrincipalId
+        - documentId
+        - reactionKey
+      optional: []
+      forbidden:
+        - token
+        - title
+        - body
+        - aiOutput
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - subject.ownerPrincipalId
+        - subject.documentId
+        - properties.reactionKey
+      emitter: trackAiCommentCardExpandClicked
+    sinks:
+      amplitude: ai_comment_card_expand_clicked
+  - name: product.ai_comment_regenerate.clicked
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:research-view-first-orientation
+      promiseRef: promise:route-view-ai-comment-inline-surface
+      aspectRefs: []
+      acceptanceCheckRefs: []
+      scenarioRefs: []
+    observability:
+      realitySignal: true
+      signalMeaning: user requested regeneration of an inline AI comment from its owning research route payload
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: User clicks the 다시 생성 action on a settled (success or failure) research-route AI comment.
+    measurement:
+      purpose: Answer whether the observed product behavior for promise:route-view-ai-comment-inline-surface occurs in real
+        research-route use.
+      decisionUse: Use this signal to review whether the related Promise needs UX, runtime, or contract follow-up; it does not
+        change verdicts automatically.
+      propertyPurposes:
+        ownerPrincipalId: Support product.ai_comment_regenerate.clicked measurement by recording owner principal id as behavior metadata.
+        documentId: Support product.ai_comment_regenerate.clicked measurement by recording route-owned view id as behavior
+          metadata.
+        documentType: Support product.ai_comment_regenerate.clicked measurement by recording route view type as behavior metadata.
+    subject:
+      allowed:
+        - ownerPrincipalId
+        - documentId
+    properties:
+      required:
+        - ownerPrincipalId
+        - documentId
+        - documentType
+      optional: []
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - subject.ownerPrincipalId
+        - subject.documentId
+      emitter: trackAiCommentRegenerateClicked
+    sinks:
+      amplitude: ai_comment_regenerate_clicked
+  - name: product.spelling_correction.clicked
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:search-results-first-review
+      promiseRef: promise:search-spelling-correction
+      aspectRefs: []
+      acceptanceCheckRefs: []
+      scenarioRefs: []
+    observability:
+      realitySignal: true
+      signalMeaning: user clicked or accepted a spelling correction suggestion
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: spelling correction suggestion is clicked or accepted for a follow-up search.
+    measurement:
+      purpose: Answer whether the observed product behavior for promise:search-spelling-correction occurs in real
+        research-route use.
+      decisionUse: Use this signal to review whether the related Promise needs UX, runtime, or contract follow-up; it does not
+        change verdicts automatically.
+      propertyPurposes:
+        ownerPrincipalId: Support product.spelling_correction.clicked measurement by recording owner principal id as behavior metadata.
+        documentId: Support product.spelling_correction.clicked measurement by recording route-owned search view id as behavior
+          metadata.
+        queryHash: Compatibility-only unkeyed FNV-1a grouping key for source spelling text; it is collision- and
+          dictionary-prone, not anonymity, user identity, or a cross-event join key.
+        correctedQueryHash: Compatibility-only unkeyed FNV-1a grouping key for accepted correction text; it is collision-
+          and dictionary-prone, not anonymity, user identity, or a cross-event join key.
+    subject:
+      allowed:
+        - ownerPrincipalId
+        - documentId
+    properties:
+      required:
+        - ownerPrincipalId
+        - documentId
+        - queryHash
+        - correctedQueryHash
+      optional: []
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - subject.ownerPrincipalId
+        - subject.documentId
+        - properties.correctedQueryHash
+      emitter: trackSpellingCorrectionClicked
+    sinks:
+      amplitude: spelling_correction_clicked
+  - name: product.researcher_prose_promises_page.clicked
+    version: 1
+    owner: product
+    actor: user
+    surface: public_site
+    storyRefs:
+      experienceRef: experience:product-commitment-surface
+      momentRef: moment:researcher-commitment-page
+      promiseRef: promise:researcher-prose-promises-page
+      aspectRefs: []
+      acceptanceCheckRefs: []
+      scenarioRefs: []
+    observability:
+      realitySignal: true
+      signalMeaning: user clicked the public researcher promises page link
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: Researcher promises card link is clicked from the public about page.
+    measurement:
+      purpose: Answer whether the observed product behavior for promise:researcher-prose-promises-page occurs in real
+        research-route use.
+      decisionUse: Use this signal to review whether the related Promise needs UX, runtime, or contract follow-up; it does not
+        change verdicts automatically.
+      propertyPurposes:
+        target: Support product.researcher_prose_promises_page.clicked measurement by recording target as behavior metadata.
+    subject:
+      allowed: []
+    properties:
+      required: []
+      optional:
+        - target
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - properties.target
+      emitter: trackAboutCommitmentLinkClicked
+    sinks:
+      amplitude: researcher_prose_promises_page_clicked
+  - name: product.gap_view_margin.viewed
+    version: 2
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:gap-analysis-from-results
+      promiseRef: promise:gap-report-margin
+      aspectRefs: []
+      acceptanceCheckRefs: []
+      scenarioRefs: []
+    observability:
+      realitySignal: true
+      signalMeaning: user viewed a prepared gap view with the readable margin and report frame
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: non-pending gap view renders its report shell and content margin in the route-owned research route payload.
+    measurement:
+      purpose: Answer whether the observed product behavior for promise:gap-report-margin occurs in real research-route use.
+      decisionUse: Use this signal to review whether the related Promise needs UX, runtime, or contract follow-up; it does not
+        change verdicts automatically.
+      propertyPurposes:
+        viewerPrincipalId: Support product.gap_view_margin.viewed measurement by recording the authenticated viewer principal id
+          as behavior metadata.
+        researchRoutePayloadId: Support product.gap_view_margin.viewed measurement by recording route payload id as behavior metadata.
+        hasEdgeEvidence: Support product.gap_view_margin.viewed measurement by recording has edge evidence as behavior metadata.
+    subject:
+      allowed:
+        - viewerPrincipalId
+        - researchRoutePayloadId
+    properties:
+      required:
+        - viewerPrincipalId
+        - researchRoutePayloadId
+      optional:
+        - hasEdgeEvidence
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: viewed_boundary
+      cardinality: once_per_identity
+      identityKeys:
+        - subject.viewerPrincipalId
+        - subject.researchRoutePayloadId
+      emitter: trackGapViewMarginViewedOnce
+    sinks:
+      amplitude: gap_view_margin_viewed
+  - name: product.gap_view_prepared_reaction.viewed
+    version: 2
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:gap-analysis-from-results
+      promiseRef: promise:gap-report-prepared-reaction
+      aspectRefs: []
+      acceptanceCheckRefs: []
+      scenarioRefs: []
+    observability:
+      realitySignal: true
+      signalMeaning: user viewed a prepared gap view whose reaction templates are available
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: non-pending gap view renders after reaction preparation metadata is available.
+    measurement:
+      purpose: Answer whether the observed product behavior for promise:gap-report-prepared-reaction occurs in real
+        research-route use.
+      decisionUse: Use this signal to review whether the related Promise needs UX, runtime, or contract follow-up; it does not
+        change verdicts automatically.
+      propertyPurposes:
+        viewerPrincipalId: Support product.gap_view_prepared_reaction.viewed measurement by recording the authenticated viewer
+          principal id as behavior metadata.
+        researchRoutePayloadId: Support product.gap_view_prepared_reaction.viewed measurement by recording route payload id as
+          behavior metadata.
+        preparedReactionCount: Support product.gap_view_prepared_reaction.viewed measurement by recording prepared reaction
+          count as behavior metadata.
+    subject:
+      allowed:
+        - viewerPrincipalId
+        - researchRoutePayloadId
+    properties:
+      required:
+        - viewerPrincipalId
+        - researchRoutePayloadId
+      optional:
+        - preparedReactionCount
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: viewed_boundary
+      cardinality: once_per_identity
+      identityKeys:
+        - subject.viewerPrincipalId
+        - subject.researchRoutePayloadId
+      emitter: trackGapViewPreparedReactionViewedOnce
+    sinks:
+      amplitude: gap_view_prepared_reaction_viewed
+  - name: similar_papers_opened
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:paper-led-followup-discovery
+      promiseRef: promise:similar-papers-discovery
+      aspectRefs: []
+      acceptanceCheckRefs: []
+      scenarioRefs: []
+    observability:
+      realitySignal: true
+      signalMeaning: the similar-paper branch opened from one paper
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: a valid similar-paper destination is resolved and navigation is activated
+    measurement:
+      purpose: Measure similar-paper exploration.
+      decisionUse: Compare similar exploration with other follow-ups in the same journey.
+      propertyPurposes:
+        journey_context_id: Join the event to its opaque search journey root without collecting query content.
+        search_context_id: Join the event to one query, filter, sort, and library snapshot.
+        paper_id: Join paper actions to one stable published-paper identity without collecting its title.
+        result_rank: Compare paper actions by the paper's one-based visible result position.
+        source_surface: Separate actions originating in search results from relationship-derived surfaces.
+        has_pdf: Compare paper actions by whether a direct PDF handoff was available.
+        evidence_availability: Separate actions by full, partial, unavailable, or unknown citation evidence.
+    subject:
+      allowed:
+        - search_context_id
+        - paper_id
+    properties:
+      required:
+        - journey_context_id
+        - search_context_id
+        - paper_id
+        - result_rank
+        - source_surface
+        - has_pdf
+        - evidence_availability
+      optional: []
+      forbidden:
+        - token
+        - query
+        - raw_query
+        - query_hash
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - properties.search_context_id
+        - subject.paper_id
+      emitter: trackSimilarPapersOpened
+    sinks:
+      amplitude: similar_papers_opened
+  - name: product.gap_overlay_decision_evidence.clicked
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:gap-analysis-from-results
+      promiseRef: promise:gap-overlay-decision-evidence
+      aspectRefs: []
+      acceptanceCheckRefs: []
+      scenarioRefs: []
+    observability:
+      realitySignal: true
+      signalMeaning: 공백 후보의 근거 기반 가설 자료 유지
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: product.gap_overlay_decision_evidence.clicked is emitted from the concrete client interaction wired in
+        app/lib/track.ts.
+    measurement:
+      purpose: Answer whether the observed product behavior for promise:gap-overlay-decision-evidence occurs in real
+        research-route use.
+      decisionUse: Use this signal to review whether the related Promise needs UX, runtime, or contract follow-up; it does not
+        change verdicts automatically.
+      propertyPurposes:
+        documentId: Support product.gap_overlay_decision_evidence.clicked measurement by recording gap report view id as
+          behavior metadata.
+        selectionKind: Support product.gap_overlay_decision_evidence.clicked measurement by recording selection kind as behavior
+          metadata.
+    subject:
+      allowed:
+        - documentId
+    properties:
+      required: []
+      optional:
+        - documentId
+        - selectionKind
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - subject.documentId
+        - properties.selectionKind
+      emitter: trackGapOverlayDecisionEvidenceClicked
+    sinks:
+      amplitude: gap_overlay_decision_evidence_clicked
+  - name: product.ai_content_feedback.submitted
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:gap-analysis-from-results
+      aspectRefs:
+        - aspect:ai-generated-content-feedback
+      acceptanceCheckRefs: []
+      scenarioRefs: []
+    observability:
+      realitySignal: false
+      signalMeaning: user submitted helpful/not-helpful feedback for visible AI-generated content
+      severity: info
+      requiredForPromiseCoverage: false
+    trigger:
+      source: client
+      phase: completed
+      timing: the shared AI content feedback affordance records a changed helpful/not-helpful selection after updating the
+        local submitted state
+    measurement:
+      purpose: Measure which visible AI-generated content surfaces receive helpful/not-helpful feedback without storing raw AI
+        output text.
+      decisionUse: Review feedback by Promise family, surface, and output fingerprint to prioritize future quality
+        investigation; this event does not train models or change ranking automatically.
+      propertyPurposes:
+        documentId: Connect feedback to the source ResearchRoutePayload or persisted gap report artifact when one exists.
+        documentType: Distinguish search, citation-lineage, graph-neighbor, and gap ResearchRoutePayload feedback contexts.
+        surfaceId: Identify the concrete visible AI output surface that received feedback.
+        surfaceKind: Group feedback by shared UI surface family.
+        promiseRef: Connect the feedback to the Promise family under evaluation.
+        value: Record the user's helpful/not-helpful selection.
+        previousValue: Distinguish first submissions from changed feedback selections within the same browser session.
+        outputTitleHash: Preserve title provenance without storing raw title text.
+        outputTitleLength: Preserve title shape without storing raw title text.
+        outputBodyHash: Preserve output body provenance without storing raw body text.
+        outputBodyLength: Preserve output body shape without storing raw body text.
+        outputTimestamp: Connect feedback to the generated output version when the surface exposes a timestamp.
+        metadataPaperId: Connect inline analysis feedback to the paper when that metadata exists.
+        metadataSource: Distinguish abstract/full-text/provider source metadata for inline analysis feedback.
+        metadataSelectionKind: Distinguish focused gap overlay feedback for gap, cluster, or concept selections.
+    subject:
+      allowed:
+        - documentId
+        - surfaceId
+        - promiseRef
+    properties:
+      required:
+        - surfaceId
+        - surfaceKind
+        - promiseRef
+        - value
+        - outputBodyHash
+        - outputBodyLength
+      optional:
+        - documentId
+        - documentType
+        - previousValue
+        - outputTitleHash
+        - outputTitleLength
+        - outputTimestamp
+        - metadataPaperId
+        - metadataSource
+        - metadataSelectionKind
+      forbidden:
+        - token
+        - outputSnapshot
+        - outputBody
+        - outputTitle
+        - body
+        - title
+        - metadata
+    privacy:
+      level: user_private
+      allowExternalSinks: false
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - subject.surfaceId
+        - subject.promiseRef
+        - properties.value
+      emitter: trackAiContentFeedbackSubmitted
+    sinks: {}
+  - name: product.gap_led_next_search.clicked
+    version: 2
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:gap-led-followup-discovery
+      promiseRef: promise:gap-led-next-search
+      aspectRefs: []
+      acceptanceCheckRefs:
+        - acceptance-check:gap-led-next-search-seed-launches-search
+      scenarioRefs:
+        - scenario:search-gap-analysis-entry
+    observability:
+      realitySignal: true
+      signalMeaning: user clicked the seed-as-search action on a focused cluster or gap card to start a follow-up search from
+        a gap report seed
+      severity: info
+      requiredForPromiseCoverage: true
+    trigger:
+      source: client
+      phase: completed
+      timing: focused cluster/gap card seed-as-search button is clicked; the search-term handler navigates to a route-owned
+        `/search?q=` execution
+    measurement:
+      purpose: Answer whether users actually carry gap report seeds into follow-up searches in real research-route use.
+      decisionUse: Use this signal to review whether the seed-as-search affordance needs UX or contract follow-up; it does not
+        change verdicts automatically.
+      propertyPurposes:
+        viewerPrincipalId: Support product.gap_led_next_search.clicked measurement by recording the authenticated viewer
+          principal id as behavior metadata.
+        documentId: Support product.gap_led_next_search.clicked measurement by recording the originating gap report view id as
+          behavior metadata.
+        seedKind: Support product.gap_led_next_search.clicked measurement by distinguishing cluster vs gap seed.
+    subject:
+      allowed:
+        - viewerPrincipalId
+        - documentId
+    properties:
+      required:
+        - viewerPrincipalId
+      optional:
+        - documentId
+        - seedKind
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - subject.viewerPrincipalId
+        - subject.documentId
+      emitter: trackGapLedNextSearchClicked
+    sinks:
+      amplitude: gap_led_next_search_clicked
+  - name: product.research_auth_challenge.viewed
+    version: 1
+    owner: product
+    actor: user
+    surface: research-route
+    storyRefs:
+      experienceRef: experience:research-and-discovery
+      momentRef: moment:search-results-first-review
+      promiseRef: promise:search-results-fast-window
+      aspectRefs: []
+      acceptanceCheckRefs:
+        - acceptance-check:search-results-fast-window-bootstrap-auth-challenge
+      scenarioRefs:
+        - scenario:research-auth-bootstrap-required
+    observability:
+      realitySignal: true
+      signalMeaning: an expired or missing research session replaced the research shell with the authentication surface
+      severity: warning
+      requiredForPromiseCoverage: true
+    trigger:
+      source: client
+      phase: completed
+      timing: the shared research shell commits the authentication-required surface after bootstrap returns 401 or reports a
+        stale Scholar session; SDK identity initialization is attempted before delivery
+    measurement:
+      purpose: Detect how often stale or missing sessions interrupt research routes and expose the authentication recovery
+        surface.
+      decisionUse: Compare challenge views with route errors and repeated challenges to detect broken session cleanup or
+        recovery regressions.
+      propertyPurposes:
+        source: Identify the bounded runtime signal that caused the authentication challenge without collecting route content.
+    subject:
+      allowed: []
+    properties:
+      required:
+        - source
+      optional: []
+      forbidden:
+        - token
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: viewed_boundary
+      cardinality: state_transition
+      identityKeys:
+        - properties.source
+      emitter: trackResearchAuthChallengeViewed
+    sinks:
+      amplitude: research_auth_challenge_viewed
+  - name: governance.invited_access_membership.synced
+    version: 1
+    owner: governance
+    actor: operator
+    surface: admin
+    storyRefs:
+      experienceRef: experience:operator-access-governance
+      momentRef: moment:invited-user-access-management
+      promiseRef: promise:invited-user-access-management
+      aspectRefs:
+        - aspect:admin-access-control
+      acceptanceCheckRefs:
+        - acceptance-check:invited-user-access-management-admin-surface
+      scenarioRefs: []
+    observability:
+      realitySignal: true
+      signalMeaning: an internal operator committed an invited-access membership add or remove
+      severity: info
+      requiredForPromiseCoverage: true
+    trigger:
+      source: server
+      phase: committed
+      timing: the invited-access Server Action emits after the database membership mutation succeeds
+    measurement:
+      purpose: Observe committed invited-access membership operations without collecting the invited email.
+      decisionUse: Compare add and remove operation volume when reviewing access-governance use.
+      propertyPurposes:
+        operation: Distinguish add and remove commits without collecting the invited email.
+    subject:
+      allowed: []
+    properties:
+      required:
+        - operation
+      optional: []
+      forbidden:
+        - token
+        - email
+        - invitedEmail
+    privacy:
+      level: behavior_metadata
+      allowExternalSinks: true
+    emission:
+      boundary: command_handler
+      cardinality: every_action
+      identityKeys:
+        - actor.id
+        - properties.operation
+      emitter: trackAdminInvitedAccessMembershipSynced
+    sinks:
+      amplitude: invited_access_membership_synced
+propertySchemas:
+  gap_report_id:
+    description: Opaque persisted gap report identity used to correlate one explicit recovery action.
+    type: string
+    examples:
+      - 11111111-1111-4111-8111-111111111111
+    sensitivity: behavior_metadata
+    contextGroup: action
+    lifetime: route_view
+    sourceOwner: persisted gap report route
+  retry_count:
+    description: One-based ordinal of an accepted-or-requested explicit enrichment retry for the report.
+    type: integer
+    examples:
+      - 1
+    sensitivity: behavior_metadata
+    contextGroup: action
+    lifetime: event
+    sourceOwner: gap enrichment retry command
+    range:
+      min: 1
+      max: 1000
+  journey_context_id:
+    description: Opaque identity for the search journey that owns the current action.
+    type: string
+    examples:
+      - search-view-a1
+    sensitivity: behavior_metadata
+    contextGroup: journey
+    lifetime: journey
+    sourceOwner: shared search transition owner
+  search_context_id:
+    description: Opaque identity for one canonical query, filter, sort, and library snapshot.
+    type: string
+    examples:
+      - search-view-a1
+    sensitivity: behavior_metadata
+    contextGroup: search
+    lifetime: search_context
+    sourceOwner: shared search transition owner or direct route fallback
+  parent_search_context_id:
+    description: Opaque identity of the search context from which a new query was submitted.
+    type: string
+    examples:
+      - search-view-parent
+    sensitivity: behavior_metadata
+    contextGroup: search
+    lifetime: search_context
+    sourceOwner: shared search transition owner
+  entry_source:
+    description: Product surface or follow-up command that initiated the search.
+    type: string
+    examples:
+      - route_bar
+      - requery
+    sensitivity: behavior_metadata
+    contextGroup: action
+    lifetime: event
+    sourceOwner: search command handler
+    enum:
+      - route_bar
+      - empty_entry
+      - requery
+      - term
+      - position
+      - similar
+  query_length:
+    description: Character count of the submitted query without query content.
+    type: integer
+    examples:
+      - 24
+    sensitivity: behavior_metadata
+    contextGroup: search
+    lifetime: search_context
+    sourceOwner: canonical search input
+    range:
+      min: 1
+      max: 1000
+  sort:
+    description: Ranking mode applied to the search context.
+    type: string
+    examples:
+      - interest
+      - relevance
+    sensitivity: behavior_metadata
+    contextGroup: search
+    lifetime: search_context
+    sourceOwner: canonical search input
+    enum:
+      - interest
+      - relevance
+      - citation_count
+      - year
+      - year_asc
+      - unknown
+  year_filter:
+    description: Normalized publication-year range without query content.
+    type: string
+    examples:
+      - 2020-2026
+    sensitivity: behavior_metadata
+    contextGroup: search
+    lifetime: search_context
+    sourceOwner: canonical search input
+  personalization_enabled:
+    description: Historical compatibility property for whether the retired selectable personalization mode was active.
+    type: boolean
+    examples:
+      - true
+    sensitivity: behavior_metadata
+    contextGroup: search
+    lifetime: search_context
+    sourceOwner: canonical search input
+  library_grounding_applied:
+    description: Whether the visible result window actually incorporated library-proximity evidence.
+    type: boolean
+    examples:
+      - true
+      - false
+    sensitivity: behavior_metadata
+    contextGroup: search
+    lifetime: search_context
+    sourceOwner: committed search result metadata
+  library_anchor_paper_count:
+    description: Count of library anchor papers used by the search context.
+    type: integer
+    examples:
+      - 0
+      - 12
+    sensitivity: behavior_metadata
+    contextGroup: search
+    lifetime: search_context
+    sourceOwner: search result metadata
+    range:
+      min: 0
+      max: 10000
+  result_count:
+    description: Total result count reported for the search context.
+    type: integer
+    examples:
+      - 20
+    sensitivity: behavior_metadata
+    contextGroup: result
+    lifetime: route_view
+    sourceOwner: search result metadata
+    range:
+      min: 0
+      max: 100000
+  visible_result_count:
+    description: Count of usable results visible at the first viewed boundary.
+    type: integer
+    examples:
+      - 10
+    sensitivity: behavior_metadata
+    contextGroup: result
+    lifetime: route_view
+    sourceOwner: search result renderer
+    range:
+      min: 0
+      max: 10000
+  paper_id:
+    description: Stable scholarly-provider identity for the paper acted on.
+    type: string
+    examples:
+      - paper-1
+    sensitivity: behavior_metadata
+    contextGroup: paper
+    lifetime: event
+    sourceOwner: paper metadata
+  seed_paper_id:
+    description: Stable identity for the paper that seeded a follow-up search.
+    type: string
+    examples:
+      - paper-seed
+    sensitivity: behavior_metadata
+    contextGroup: paper
+    lifetime: search_context
+    sourceOwner: follow-up command
+  result_rank:
+    description: One-based position of the paper in the visible ordering.
+    type: integer
+    examples:
+      - 1
+    sensitivity: behavior_metadata
+    contextGroup: result
+    lifetime: route_view
+    sourceOwner: paper card renderer
+    range:
+      min: 1
+      max: 100000
+  source_surface:
+    description: Research surface that exposed the action.
+    type: string
+    examples:
+      - search_results
+    sensitivity: behavior_metadata
+    contextGroup: action
+    lifetime: event
+    sourceOwner: research route renderer
+    enum:
+      - search_results
+      - citation_lineage
+      - graph_neighbors
+  has_pdf:
+    description: Whether a usable PDF handoff was available.
+    type: boolean
+    examples:
+      - true
+    sensitivity: behavior_metadata
+    contextGroup: paper
+    lifetime: event
+    sourceOwner: paper metadata
+  evidence_availability:
+    description: Whether citation or reference evidence was available.
+    type: string
+    examples:
+      - available
+    sensitivity: behavior_metadata
+    contextGroup: paper
+    lifetime: event
+    sourceOwner: paper metadata
+    enum:
+      - available
+      - partial
+      - unavailable
+      - unknown
+  open_target:
+    description: Destination class without collecting its URL.
+    type: string
+    examples:
+      - moonlight_external
+    sensitivity: behavior_metadata
+    contextGroup: action
+    lifetime: event
+    sourceOwner: PDF handoff command
+    enum:
+      - moonlight_external
+  open_element:
+    description: Rendered element that initiated the handoff.
+    type: string
+    examples:
+      - pdf_button
+    sensitivity: behavior_metadata
+    contextGroup: action
+    lifetime: event
+    sourceOwner: paper card renderer
+    enum:
+      - pdf_button
+  reference_count:
+    description: Known reference-side evidence count.
+    type: integer
+    examples:
+      - 0
+    sensitivity: behavior_metadata
+    contextGroup: paper
+    lifetime: event
+    sourceOwner: paper metadata
+    range:
+      min: 0
+      max: 1000000
+  citation_count:
+    description: Known citation-side evidence count.
+    type: integer
+    examples:
+      - 0
+    sensitivity: behavior_metadata
+    contextGroup: paper
+    lifetime: event
+    sourceOwner: paper metadata
+    range:
+      min: 0
+      max: 1000000

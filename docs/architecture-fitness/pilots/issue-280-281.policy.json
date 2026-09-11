@@ -1,0 +1,146 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-policy",
+  "service": {
+    "id": "lighthouse",
+    "repository": "https://github.com/corca-ai/lighthouse.git",
+    "adapterRef": "scripts/architecture-fitness/collect-q2-macro.mjs"
+  },
+  "policySet": {
+    "id": "issue-280-281-q2-macro",
+    "version": "2026-09-03.v23",
+    "scope": "Episteme breaker process self-protection and the first-ready search payload await/failure graph",
+    "owner": "Lighthouse operational readiness and search runtime",
+    "source": "docs/architecture-fitness/issue-280-281-286-q2-q3-evidence.md",
+    "sourceRevision": "issue-275-human-approval-comment-5174919497",
+    "collectorAuthority": {
+      "adapterRef": "scripts/architecture-fitness/collect-q2-macro.mjs",
+      "id": "lighthouse-issue-280-281-q2-macro-collector",
+      "version": "23",
+      "scope": "materialized exact-revision process topology, path-stable two-process breaker isolation, deterministic first-ready search await graph whose keyword-search role is discovered from lexical search-service import ownership and either a direct awaited result or a Promise.all joined result shape, and selected cross-epoch failure-isolation behavior executed with that revision's discovered export across target lock drift, including explicit bounded reviewed-library source failure, graph-preflight failure, keyword failure, and the concurrency regression that starts the E3 keyword provider beside the owner-scoped live library source and starts E3 discovery only after that source resolves; the trusted search execution harness accepts native E3 string paper references without changing the Q2 await or failure policy",
+      "definitionDigest": "4e9b9a038b0a59449e035ca1c3794f4489328b5dc446e0236f340855b0da14a6",
+      "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+      "attestationKeyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1"
+    }
+  },
+  "coverage": [
+    {
+      "id": "coverage:issue-280-breaker-process-topology",
+      "lens": "Q2 deployment topology and state scope",
+      "status": "included",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "The process-local breaker is intentionally scoped to one runtime's self-protection and has exact-revision static plus two-process behavior evidence.",
+      "reentryTrigger": "Re-collect when breaker state ownership, runtime isolation, or the process self-protection policy changes.",
+      "policyRefs": [
+        "issue-280:episteme-breaker-process-scope"
+      ]
+    },
+    {
+      "id": "coverage:issue-281-first-ready-search-critical-path",
+      "lens": "Q2 critical path and runtime flow",
+      "status": "included",
+      "owner": "Lighthouse search runtime",
+      "reason": "The first-ready search milestone has an approved await graph and exact-revision static plus failure-injection evidence. The keyword-search role is identified by its lexical search-service import owner and awaited result shape rather than a provider-specific export name.",
+      "reentryTrigger": "Re-collect when search prerequisite, provider fan-out, first payload join, or failure fallback changes.",
+      "policyRefs": [
+        "issue-281:first-ready-search-payload"
+      ]
+    },
+    {
+      "id": "coverage:issue-280-provider-account-hard-cap",
+      "lens": "Q2 provider-account and fleet concurrency scope",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "Process-local admission is not a global hard cap, and this collector has no exact-deployment overlap or provider-contract observation.",
+      "reentryTrigger": "Re-enter when production evidence shows overlapping active provider work by exact deployment or a provider-side allowance contract becomes available.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-281-production-latency",
+      "lens": "Q2 critical-path production latency",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "Static await and failure graphs do not prove production p95/p99 or cohort readiness.",
+      "reentryTrigger": "Use the Operational Readiness production trial and load-smoke evidence for latency and go/no-go.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-529-decision-history-prototype",
+      "lens": "Issue #529 decision-history prototype and Q4 repair",
+      "status": "excluded",
+      "owner": "Issue #529 Human-approved conditional reshape session",
+      "reason": "The #401 owner-local rebind is limited to current #280/#281 Q2 evidence; the #529 prototype is explicitly deferred and Q4 repair remains separately owned.",
+      "reentryTrigger": "Enter only through a separate #529 Human-authorized implementation session; never infer entry from this Q2 evidence rebind.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:q2-process-effectiveness",
+      "lens": "Architecture Fitness process effectiveness",
+      "status": "unsupported",
+      "owner": "Lighthouse agent-process owner",
+      "reason": "A machine verdict cannot decide whether the Q1/Q2 machinery costs more than the failures it prevents.",
+      "reentryTrigger": "Audit unique findings, false positives, runtime, and maintenance volume at Q2 closeout; consolidate or delete low-value machinery.",
+      "policyRefs": []
+    }
+  ],
+  "policies": [
+    {
+      "id": "issue-280:episteme-breaker-process-scope",
+      "caseKind": "topology-scope",
+      "question": "Does the Episteme circuit breaker keep self-protection state and coordination inside one application process?",
+      "capabilityRef": "capability:episteme-process-self-protection",
+      "owner": "Lighthouse operational-readiness owner",
+      "desired": "The circuit breaker protects one process and makes no fleet or provider-account hard-cap claim.",
+      "scopeRules": [
+        {
+          "id": "scope:episteme-circuit-breaker",
+          "required": true,
+          "allowedStateScopes": [
+            "process"
+          ],
+          "allowedCoordinationScopes": [
+            "process"
+          ],
+          "requiredEvidenceRoles": [
+            "topology-static",
+            "topology-behavior-test"
+          ]
+        }
+      ],
+      "verificationPlan": [
+        "Inspect exact-revision module state, run the topology negative guard, and trip one process while observing an independent process."
+      ]
+    },
+    {
+      "id": "issue-281:first-ready-search-payload",
+      "caseKind": "critical-path",
+      "question": "Does the first ready search payload await the declared inputs while isolating optional library-input failures?",
+      "capabilityRef": "capability:lighthouse-search",
+      "owner": "Lighthouse search runtime",
+      "desired": "The payload awaits reviewed-library authority input, keyword search, and library preflight; library-input failures degrade while keyword failure blocks a ready result.",
+      "milestones": [
+        {
+          "id": "milestone:first-ready-search-payload",
+          "required": true,
+          "requiredPhases": [
+            "phase:reviewed-library-source",
+            "phase:keyword-search",
+            "phase:library-preflight"
+          ],
+          "nonBlockingPhases": [],
+          "failureIsolatedPhases": [
+            "phase:reviewed-library-source",
+            "phase:library-preflight"
+          ],
+          "requiredEvidenceRoles": [
+            "critical-path-static",
+            "critical-path-behavior-test"
+          ]
+        }
+      ],
+      "verificationPlan": [
+        "Inspect the exact-revision await/failure graph, identify exactly one keyword-search role lexically bound to a search-service named import with the awaited result shape, reject local shadowing, run negative mutations, and execute the trusted search failure-isolation suite with the discovered revision export."
+      ]
+    }
+  ]
+}

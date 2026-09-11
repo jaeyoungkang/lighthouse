@@ -1,0 +1,178 @@
+schemaVersion: 2
+slug: inline-analysis
+review: reviews/inline-analysis.reviews.md
+sourcePromises:
+  - promise:inline-analysis-auto-run
+appliedAspects:
+  - aspect:route-view-ai-reaction-rules
+  - aspect:visible-explanation-sufficiency
+  - aspect:ai-generated-content-feedback
+  - aspect:provider-failure-degraded-mode
+  - aspect:paper-card-presentation-consistency
+  - aspect:immediate-navigation
+  - aspect:progressive-content-spatial-stability
+  - aspect:research-route-visual-hierarchy
+intent:
+  mode: explicit
+  checks:
+    - key: promise:inline-analysis-auto-run#intent-check:semantic-profile-is-phrase-not-keyword
+      evidence: live judge @ `app/server/services/__tests__/inline-analysis-intent-qualitative.live.test.tsx` validates phrase-level semantic profile content.
+  delegations: []
+acceptanceChecks:
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-exposed-card-start
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx` ("queues search inline analysis only after rendered cards enter the viewport") + `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` ("queues inline analysis for graph-neighbor document cards inside the first visible budget") + `app/components/research-route-renderers/__tests__/GraphNeighborsView.inline-analysis-terms.test.tsx` ("queues inline analysis for visible graph-neighbor axes"; "runs and applies inline analysis only to rendered graph-neighbor cards") + `app/components/research-route-renderers/__tests__/CitationLineageView.inline-analysis-budget.test.tsx` ("queues inline analysis for citation-lineage cards inside the first visible budget"; "queues inline analysis for visible reference and citation sections"; "runs and applies inline analysis only to rendered citation-lineage cards") + `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-order.test.tsx` ("starts route AI comment generation before inline analysis batches") + `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-window.test.tsx` ("runs inline analysis only for task visible paper ids"; "keeps expanded relationship visible ids queued after the first running batch completes"). 검색 결과 카드는 IntersectionObserver가 실제 viewport 진입을 보고한 뒤에만 인라인 분석 task를 큐잉한다. 인용 관계·비슷한 논문 ResearchRoutePayload의 반복 논문 카드는 참고문헌/후속인용 섹션 또는 co-cited/coupled 축에서 실제 렌더된 id를 합쳐 task를 만들고, background runner가 관계 route의 current-cycle을 인정해 provider 결과를 같은 카드 위치에 반영한다. 숨은 11·12번째 카드는 provider 요청과 progress map 양쪽에서 제외한다 (aspect:paper-card-presentation-consistency).
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:search-inline-analysis-visible-first
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-visible-first-priority
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx` ("queues search inline analysis only after rendered cards enter the viewport"; "does not carry exposed paper ids into a new inline-analysis cycle"; "keeps card exposure when hydration adds analysis input to the same paper id") + `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` ("queues inline analysis for graph-neighbor document cards inside the first visible budget") + `app/components/research-route-renderers/__tests__/GraphNeighborsView.inline-analysis-terms.test.tsx` ("queues inline analysis for visible graph-neighbor axes") + `app/components/research-route-renderers/__tests__/CitationLineageView.inline-analysis-budget.test.tsx` ("queues inline analysis for citation-lineage cards inside the first visible budget"; "queues inline analysis for visible reference and citation sections") + `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-order.test.tsx` ("starts route AI comment generation before inline analysis batches") + `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-window.test.tsx` ("runs inline analysis only for task visible paper ids"; "runs inline analysis for rendered expanded-window cards without queueing hidden cards"; "keeps expanded relationship visible ids queued after the first running batch completes") + `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-continuation.test.tsx` ("continues queued relationship visible ids through the mounted runner after controller cleanup"; "hands corrected paper input to the next batch without inheriting stale recovery"; "starts the replacement cycle after the previous controller settles") + `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-canonical.test.tsx` ("requeues an inline-analysis batch when an abort-ignoring request times out"; "requeues a current inline batch when a same-execution unmount aborts transport") + `app/lib/__tests__/fetch-with-silence-timeout.test.ts` ("settles at the deadline even when the transport ignores abort"; "settles a body read when the upstream reader ignores abort"; "discards a non-success response body when the caller will only inspect status") + `app/stores/__tests__/background-task-store.inline-analysis.test.ts` ("guards inline-analysis task state updates by cycle key") + `app/server/domain-access/__tests__/inline-analysis-access.test.ts` ("completes one slow provider wave without starting papers six through ten"). 현재 노출된 논문 카드 window부터 우선 분석하고, 검색 결과·인용 관계·비슷한 논문 모두 현재 visible result window 밖의 후보를 자동 큐잉하지 않는다. 새 result-set cycle은 이전 cycle에서 노출된 paper id를 이어받지 않는다. 관계형 ResearchRoutePayload는 섹션/축별 10개가 합산되어 처음부터 20개가 보일 수 있지만, provider batch는 5개씩 한 wave만 실행하고 첫 batch가 끝난 뒤 나머지 visible id가 task에 남아 다음 batch로 이어진다. 사용자가 `더보기`로 window를 확장해 새 카드가 보이면 그 보이는 카드 id도 분석 대상이 된다. 같은 paper id에 hydration이 초록을 채워도 기존 viewport exposure를 보존한다. Active controller의 이전 입력이 실패해도 stale recovery clock을 새 입력에 넘기지 않고 corrected batch를 이어 실행하며, enrichment가 result-set cycle을 교체한 경우에도 controller 정리 뒤 최신 queued cycle을 깨운다. 공통 65초 silence rail은 abort 무시 transport를 끝낸다. 첫 timeout은 같은 execution·cycle의 running batch를 queued로 돌리고 retry count를 올리며, 반복 missing·timeout은 기존 bounded retry 상한에서 error로 닫는다. 소비하지 않는 non-2xx body는 즉시 cancel한다. 같은 execution의 renderer unmount abort는 current cycle의 running batch만 queued로 되돌린다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+    scenarios:
+      - scenario:search-inline-analysis-visible-first
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-db-cache-shown-immediately
+    assertion: vitest @ `app/server/domain-access/__tests__/inline-analysis-access.test.ts` ("hydrates search metadata with current shared cached analyses by paperId"; "reuses shared cached results and only claims and analyzes missing papers") + `app/components/research-route-renderers/__tests__/search-view.helpers.test.ts` ("builds inline analysis and reviewed lookup structures"; "ignores stale inline analysis cache versions"). 검색 결과·인용 관계·비슷한 논문 카드에서 현재 버전 DB 캐시가 있으면 card metadata에 즉시 재사용하고, stale cache는 표시하지 않는다.
+    executionRefs:
+      - execution:run-003
+    scenarios:
+      - scenario:search-inline-analysis-cache-retry
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-shared-cache-reuse
+    assertion: vitest @ `app/server/domain-access/__tests__/inline-analysis-access.test.ts` ("hydrates search metadata with current shared cached analyses by paperId"; "reuses shared cached results and only claims and analyzes missing papers"; "waits for another worker's shared result instead of generating a duplicate"; "keeps a coalesced generation alive when one authenticated subscriber aborts"; "waits in parallel after one shared claim attempt"; "preserves a completed row and terminal-fences an omitted claimed result"; "generates each globally shared paper from only its own canonical prompt input"; "keeps one request to a single five-paper provider wave"; "completes one slow provider wave without starting papers six through ten"; "uses different shared identities when the same paper id carries different content"; "includes year in the shared identity but normalizes prompt whitespace") + `app/server/domain-access/__tests__/inline-analysis-hydration.test.ts` ("replaces a same-version embedded analysis when its paper input fingerprint changed"; "removes a mismatched embedded analysis when the exact shared cache is missing") + `app/server/domain-access/__tests__/inline-analysis-access-cleanup.test.ts` ("releases an owned lease with an independent signal after the last subscriber aborts"; "aborts a hanging independent cleanup after 1.5 seconds"; "terminal-fences an omitted claimed identity instead of releasing it"; "terminal-fences every omitted identity without partial release"; "handles an earlier peer rejection while owner generation is still settling") + `app/server/domain-access/__tests__/inline-analysis-access-timing.test.ts` ("does not coalesce structurally different identities containing delimiters"; "rejects after the peer observation budget when the waiter fails"; "aborts and settles the peer waiter when owned completion fails"; "waits for a peer cache result within the thirty-second lease"; "uses elapsed wall time instead of sleep totals to bound slow cache polling"; "waits through the peer lease instead of returning a partial successful response"; "fails instead of returning partial when a delayed claim pushes peer observation past the route deadline"; "fences the owner deadline instead of releasing it for automatic retry") + `app/server/repository/__tests__/paper-inline-analysis-cache.test.ts` ("reads ready rows by paper input identity without a principal predicate"; "does not reuse a ready row when the paper content fingerprint differs"; "keeps exact requested identities when an RPC response contains cross-product rows"; "claims and completes a paper-input lease without accepting a principal key"; "releases only the token-matched pending identities through the shared RPC"; "does not confirm release for a mismatched returned identity"; "pins shared identity and token-matched claim, complete, and release transitions") + `app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx` ("keeps card exposure when hydration adds analysis input to the same paper id") + `app/components/research-route-renderers/__tests__/search-view.inline-analysis-cycle.test.ts` ("keeps cycle identity fields structurally separated") + `app/components/research-route-renderers/__tests__/search-view.helpers.test.ts` ("does not merge late inline analysis after hydration changes its prompt input") + `app/components/research-route-renderers/__tests__/search-view.inline-analysis-identity.test.ts` ("ignores same-version inline analysis snapshots without their input fingerprint") + `app/components/research/__tests__/ResearchBackgroundTasks.hydration.test.tsx` ("replaces current inline analysis when hydration changes only its title input"; "replaces current inline analysis when hydration changes only its abstract input"; "replaces current inline analysis when hydration changes only its year input"; "uses the incoming exact cache when the same paper input has a different fingerprint") + `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-merge.test.ts` ("keeps the current exact cache when stale hydration has no fingerprint"; "keeps an authoritative exact-cache miss from restoring the base stale analysis") + `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-continuation.test.tsx` ("hands corrected paper input to the next batch without inheriting stale recovery"; "starts the replacement cycle after the previous controller settles") + `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-canonical.test.tsx` ("ignores an in-flight result when the same paper id receives new prompt input"; "resets settled-error retry state when paper input changes") + `app/server/services/__tests__/inline-analysis-service.test.ts` ("propagates the owner deadline signal into structured generation") + `app/api/papers/analyze-inline/__tests__/route.test.ts` (authentication-first request, shared 5-paper cap, field cap, body cap) + `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-owner-recovery.test.tsx` ("sends a second request only after the explicit retry command"; explicit cooldown settlement and user-command retry) + `scripts/architecture-fitness/__tests__/least-authority-boundaries.test.ts` (exact repository value-export surface, computed RPC resource ownership, unrelated RPC allowance, and direct shared-table access rejection). 공동 cache 조회·process in-flight·DB claim identity에서 principal을 제거하고 `(paper_id, version, canonical normalized title/abstract/year fingerprint)`을 사용한다. 각 shared artifact는 해당 논문 한 편만 담은 canonical prompt에서 생성하며 한 요청은 provider 동시 실행 5개의 한 wave만 처리한다. exact-tuple 조회와 mutation RPC 응답이 요청 identity의 교차곱 또는 다른 fingerprint row를 수용하지 않고, shared table은 security-definer RPC 밖의 직접 DML 권한을 주지 않는다. Fingerprint는 API 결과와 카드 cache까지 유지한다. 서버 hydration은 현재 paper 입력으로 이를 재계산하고, client merge·late persist·in-flight response와 retry-state input comparison은 title·abstract·year가 바뀌면 이전 분석과 실패 횟수를 버리며 fingerprint 없는 legacy card cache도 current로 표시하지 않는다. 같은 입력을 보존하는 hydration에서도 incoming fingerprint가 다르면 서버가 보낸 exact cache를 우선한다. Viewport exposure cycle은 구조화한 document·query/seed·paper id 결과 집합에만 귀속되어 delimiter가 포함돼도 서로 다른 구성요소가 충돌하지 않고, same-id hydration에서도 노출을 보존한다. Prompt-input 변화는 해당 paper의 progress/retry만 초기화하며, 이전 controller의 stale 5xx는 corrected input에 recovery clock을 넘기지 않는다. Result-set cycle이 바뀐 경우에도 controller 정리 뒤 최신 queued cycle을 깨운다. 30초 automatic claim은 새 row만 획득하고, 만료된 pending row는 explicit retry command로만 회수하며 active lease를 갱신하지 않는다. 24초 owner-work signal과 token-matched complete/release가 cross-process 중복 생성 및 route 초과를 막는다. 타 worker waiter는 생성과 병렬로 시작해 claim 응답부터 30초 동안 peer 결과를 관찰한다. waiter read 실패나 미확인 peer ready row는 성공 partial로 낮추지 않고, delayed claim 때문에 route-entry 30초 안에서 관찰을 끝낼 수 없는 경우와 함께 5xx로 닫는다. owner 실패는 waiter를 취소·정착시킨다. 같은 process의 caller는 subscriber별로 취소되어 한 caller의 abort가 남은 공유 생성을 끊지 않고, 마지막 caller abort 뒤 release는 독립된 최대 1.5초 cleanup signal을 쓴다. 완료되지 않은 claim만 release하고 RPC가 모든 요청 identity의 exact token release를 확인해야 성공으로 인정한다. 오류·0건·부분 확인은 즉시 5xx로 닫으므로 ready 결과를 덮지 않는다. Provider omission과 owner deadline은 durable failure fence로 전환하고 explicit user retry 전에는 provider를 다시 호출하지 않는다. API는 인증 뒤 최대 5편과 bounded body/field만 받으며, repository export는 단일 domain-access owner만 획득하고, 네 shared RPC resource는 computed member access와 destructuring lexical shadow까지 cache repository owner로 제한하되 정적으로 이름 붙은 무관 RPC는 막지 않는다. 실제 생성 usage는 최초 lease owner principal에게만 기록하고 cache hit·waiter에는 기록하지 않으며 failure placeholder는 ready cache가 되지 않는다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-006
+    scenarios:
+      - scenario:search-inline-analysis-cache-retry
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-provider-failover-bounded
+    assertion: vitest @ `app/server/ai-generation/__tests__/gateway.test.ts` ("fails over once from a transient Gemini failure to the pinned OpenAI model"; "returns one exhausted error after both transient attempts without a third provider call"; "bypasses Gemini only after the process-local circuit opens") + `app/server/services/__tests__/inline-analysis-service.test.ts` ("does not fan a failed batch out into same-provider per-paper calls"). Primary 10초·pinned secondary 1회·no-third-call과 process-local circuit을 검증한다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-003
+      - execution:run-004
+      - execution:run-007
+    scenarios:
+      - scenario:search-provider-failure-degraded
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-explicit-failure-retry
+    assertion: vitest @ `app/server/domain-access/__tests__/inline-analysis-access-cleanup.test.ts` ("terminal-fences an omitted claimed identity instead of releasing it"; "terminal-fences every omitted identity without partial release") + `app/server/domain-access/__tests__/inline-analysis-access-timing.test.ts` ("fences the owner deadline instead of releasing it for automatic retry") + `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-owner-recovery.test.tsx` ("settles provider failure without an automatic retry"; "sends a second request only after the explicit retry command") + `app/components/research-route-renderers/__tests__/search-result-item-spatial-stability.test.tsx` ("replaces analysis progress inside one stable region and expands through the wide card surface"). 실패는 해당 논문의 생성 콘텐츠 영역에서 명시적으로 보이고, 성공한 카드와 검색 결과 목록을 대체하지 않는다. Durable failure fence와 explicit retry만 새 실행을 여는 경계를 검증한다.
+    executionRefs:
+      - execution:run-002
+      - execution:run-003
+      - execution:run-005
+    scenarios:
+      - scenario:search-provider-failure-degraded
+      - scenario:search-inline-analysis-partial-failure
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-prompt-bounds-topics-and-claim
+    assertion: 초록 기반 인라인 분석 프롬프트는 novelty 홍보 표현을 분야 핵심 토픽으로 승격하지 않고, 초록 기반 저자 주장과 연구 축을 구분하라고 지시한다
+    executionRefs:
+      - execution:run-001
+      - execution:run-003
+      - execution:run-004
+    scenarios: []
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-expanded-triage-fields
+    assertion: vitest @ `app/server/services/__tests__/inline-analysis-service.test.ts` ("extracts result while suppressing abstract conclusions without quoted basis") + `app/components/research-route-renderers/__tests__/search-result-item.test.tsx` ("renders method and result fields without duplicating the summary as contribution"; "shows result but does not present abstract-based conclusion as card detail") + `app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx` ("tracks detail and PDF clicks with card rank metadata"; "tracks metadata-only card inspection with explicit evidence availability"). Asserts whole-card non-interactive-region inspection expands source links plus topic/method/result detail sections and emits `search_result_inspected` with inherited journey/search context, paper identity/title/rank/surface/PDF/evidence metadata, and no raw query. Nested actions remain independent and do not duplicate the inspection event.
+    executionRefs:
+      - execution:run-001
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+    scenarios:
+      - scenario:search-inline-analysis-visible-first
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-different-position-search
+    assertion: vitest @ `app/lib/__tests__/schemas.different-position.test.ts` ("keeps an English provider query while allowing a Korean rationale"; "drops candidates whose provider query contains non-English explanatory prose"; "applies the same query boundary when parsing cached analysis payloads"; "defaults limitations to null for cached payloads without the field") + `app/server/services/__tests__/inline-analysis-service.test.ts` ("extracts paper-specific different-position search candidates without claiming they exist") + `app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx` ("opens paper-specific different-position search candidates from inline analysis"; "omits the limitations line when the analysis has none") + `app/components/research-route-renderers/__tests__/paper-card-derived-followup-parity.test.tsx` ("routes different-position searches from citation_lineage paper cards in the current window"; "routes different-position searches from graph_neighbors paper cards in the current window"; "opens modified different-position searches from citation_lineage paper cards in a new window"; "opens modified different-position searches from graph_neighbors paper cards in a new window") + `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx` ("opens a different-position query without source provenance"; "carries known library availability without a result-basis preference"; "drops retired basis state on keyword routes") + `app/server/services/__tests__/search-execution-legacy-position.test.ts` ("ignores legacy different-position provenance when building search identity") + `app/lib/__tests__/track.different-position.test.ts` ("bridges different-position search clicks without raw query text"). Asserts that provider-ready English queries and localized rationale stay in separate fields, candidates with Hangul/Han/Kana/Cyrillic explanatory prose in `query` are removed before cache/render/navigation while Greek scientific tokens remain valid, expanded paper inspection shows the paper-specific limitations summary (omitted when null, never a generic disclaimer) and at most three query actions each with its one-line rationale, without a nested disclosure or candidate cards, search/citation/graph-neighbor surface parity holds, plain clicks route in the current window, detached clicks open the same query-only route without mutating the current route, legacy selected library ids, retired personalize state, and source paper/position/axis provenance stay out of the destination URL, metadata, and canonical search identity, and analytics omits raw query text.
+    executionRefs:
+      - execution:run-004
+    scenarios:
+      - scenario:search-inline-analysis-visible-first
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-search-click-feedback
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx` ("opens paper-specific different-position search candidates from inline analysis") + `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx` ("opens a different-position query without source provenance"; "opens modified research term searches in a new window while preserving the seed carry"; "clears the keyword activation when the route push throws") + `app/components/research/__tests__/search-followup-activation.test.tsx` (exact same-route no-op, consecutive identity, shell-owner unmount cleanup) + `app/components/research/__tests__/research-route-shell.test.tsx` (sticky persistent status, matching-destination cleanup, and older-arrival identity safety). `다른 입장` 링크의 plain click은 shell-scoped activation identity를 먼저 기록해 현재 scroll viewport에서 선택 query를 보이고 origin card/results를 유지한다. destination 도착·동기 navigation invocation 실패·bounded cleanup은 같은 identity만 지우며 detached click은 현재 창 상태를 바꾸지 않는다. 저자·주제 keyword feedback은 similar-papers ledger가 소유한다.
+    executionRefs:
+      - execution:run-004
+    scenarios:
+      - scenario:search-inline-analysis-visible-first
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/lib/__tests__/schemas.different-position.test.ts
+      - app/server/services/__tests__/inline-analysis-intent-qualitative.live.test.tsx
+      - app/server/services/__tests__/inline-analysis-service.test.ts
+      - app/server/services/__tests__/search-term-discovery.test.ts
+      - app/server/services/__tests__/knowledge-map-base-builder.test.ts
+      - app/server/domain-access/__tests__/inline-analysis-hydration.test.ts
+      - app/components/research-route-renderers/__tests__/search-view.helpers.test.ts
+      - app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx
+      - app/components/research-route-renderers/__tests__/SearchView.similar-paper.test.tsx
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx
+      - app/components/research-route-renderers/__tests__/GraphNeighborsView.inline-analysis-terms.test.tsx
+      - app/components/research-route-renderers/__tests__/CitationLineageView.inline-analysis-budget.test.tsx
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-canonical.test.tsx
+      - app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-owner-recovery.test.tsx
+      - app/lib/__tests__/fetch-with-silence-timeout.test.ts
+      - app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx
+      - app/components/research/__tests__/ResearchBackgroundTasks.test.tsx
+      - app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-order.test.tsx
+      - app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-window.test.tsx
+      - app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-continuation.test.tsx
+      - app/stores/__tests__/background-task-store.inline-analysis.test.ts
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/server/domain-access/__tests__/inline-analysis-access.test.ts
+      - app/server/domain-access/__tests__/inline-analysis-hydration.test.ts
+      - app/server/domain-access/__tests__/inline-analysis-access-cleanup.test.ts
+      - app/server/domain-access/__tests__/inline-analysis-access-timing.test.ts
+      - app/server/repository/__tests__/paper-inline-analysis-cache.test.ts
+      - app/components/research-route-renderers/__tests__/search-view.helpers.test.ts
+      - app/components/research-route-renderers/__tests__/search-view.inline-analysis-identity.test.ts
+      - app/components/research/__tests__/ResearchBackgroundTasks.hydration.test.tsx
+      - app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-merge.test.ts
+      - app/server/services/__tests__/inline-analysis-service.test.ts
+      - app/api/papers/analyze-inline/__tests__/route.test.ts
+      - scripts/architecture-fitness/__tests__/least-authority-boundaries.test.ts
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/lib/__tests__/schemas.different-position.test.ts
+      - app/server/services/__tests__/inline-analysis-service.test.ts
+      - app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx
+      - app/components/research-route-renderers/__tests__/paper-card-derived-followup-parity.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx
+      - app/components/research/__tests__/search-followup-activation.test.tsx
+      - app/components/research/__tests__/research-route-shell.test.tsx
+      - app/server/services/__tests__/search-execution-legacy-position.test.ts
+      - app/lib/__tests__/track.different-position.test.ts
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item-spatial-stability.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx
+  - id: execution:run-006
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-view.inline-analysis-cycle.test.ts
+  - id: execution:run-007
+    kind: vitest
+    files:
+      - app/server/ai-generation/__tests__/gateway.test.ts
+implementationContracts:
+  - The listed Promise(s) are verified by the Acceptance Check entries and structured executions on this ledger.
+  - Exact cache identity continues through the API and card cache; server hydration, background merge, and late persistence reject a same-version analysis when its canonical paper input changed or its legacy fingerprint is absent.
+  - 카드 표시뿐 아니라 비슷한 논문 query, 검색어 추출 prompt와 method support, 관계 route 연구 용어, knowledge-map external signal도 같은 current-version·fingerprint-present·usable-abstract predicate를 사용한다. 초록이 없거나 공백뿐인 snapshot에 남은 embedded analysis는 hydration 경계에서 제거해 파생 소비자가 오래된 의미를 다시 읽지 못하게 한다.
+  - The shared-cache migration permits one 30-second automatic claim only for a new identity. An expired pending identity requires the explicit retry command, and an active lease cannot be mutated; completion, failure, and release remain token-matched transitions.
+  - The timing suite proves waiter read failure and missing peer rows reject after the observation budget, a delayed claim cannot return an unsafe successful partial response, and a route-entry absolute deadline aborts a stalled cache RPC. Cleanup and repository tests prove that zero-row, one-of-two partial, or mismatched-tuple release confirmation is non-success and runtime signals reach cache RPC transports.
+  - The process coalescing suite proves one subscriber can abort without cancelling another, while the last subscriber abort still releases an owned lease through an independent cleanup signal whose 1.5-second abort is tested.
+  - The canonical client timeout case settles the paper/task as `error`/`settled` without an automatic second request.
+  - The explicit-recovery suite proves provider failure settles without an automatic retry and sends a new request only after the user invokes the explicit retry command.
+  - The collapsed repeated-card frame keeps `요약`, analysis state, missing-abstract limitation, pending, and error signals visible. It defers only the exact abstract-source badge and source/input-scope links to the opened inspection, where the full triage detail appears in place.
+verdict: met

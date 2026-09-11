@@ -1,0 +1,305 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-observation",
+  "serviceId": "lighthouse",
+  "policySetRef": "issue-276-search-state-boundary",
+  "policySetVersion": "2026-07-14.v14",
+  "policyDigest": "5ff67accf12d0b90a7a32d773723fb7b51aab2e8e4d76d3fd78c34187fe0accc",
+  "revision": "3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+  "collector": {
+    "adapterRef": "scripts/architecture-fitness/collect-search-state-boundary.mjs",
+    "id": "lighthouse-issue-276-search-state-collector",
+    "version": "13",
+    "scope": "materialized exact-revision keyword-search URL authority with standard Array/Set dependency binding, locale-independent facet normalization and exact query carrier, server input projection, fail-closed TypeScript/JavaScript-symbol production authority/carrier/identity owner inventory with production-to-test, non-static module acquisition, and CommonJS loader capability-escape rejection across every inventory-owned fact, route-owned current result snapshot with store-capability, dynamic reflection, and symbol-resolved reflection/Object.assign escape rejection, literal-prefix node:crypto SHA-256 canonical ephemeral view identity, collector-owned hostile-environment identity fixture plus production execution evidence, and parallel-path/direct-write negative mutations",
+    "definitionDigest": "4642a56c4e3b9ac22c664f7d2d4f8e355240a4b8cc744b6fd49a6d080d6c7e69",
+    "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+    "runRef": "fixture-run:issue-276-v13-baseline:3a99a404",
+    "command": "node scripts/architecture-fitness/collect-search-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-276.policy.json --revision 3a99a40407a6653a1b2e9e94fd817a1aa1516ac8 --run-ref fixture-run:issue-276-v13-baseline:3a99a404",
+    "attestation": {
+      "algorithm": "hmac-sha256",
+      "keyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1",
+      "payloadDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "evidence": [
+    {
+      "id": "state-coverage-static:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "kind": "static",
+      "role": "state-coverage-static",
+      "source": "collector:issue-276-state-inventory:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "sourceRevision": "3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "summary": "The exact-revision collector inspected URL condition precedence, server input projection, ephemeral view identity, route-owned snapshot hydration/cleanup, and the first-paint repository graph.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-search-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-276.policy.json --revision 3a99a40407a6653a1b2e9e94fd817a1aa1516ac8 --run-ref fixture-run:issue-276-v13-baseline:3a99a404",
+      "commandExitCode": 1,
+      "artifactDigest": "4c70052ffd09e38de4625853c741974fee0ff3d9734ea7a183f67ec79d037b31",
+      "collectorRunRef": "fixture-run:issue-276-v13-baseline:3a99a404",
+      "target": {
+        "policyRef": "issue-276:keyword-search-state-boundary",
+        "capabilityRef": "capability:keyword-search-route-state",
+        "stateRefs": [
+          "state:search-execution-condition",
+          "state:current-result-snapshot"
+        ],
+        "identityRefs": [
+          "identity:ephemeral-search-view"
+        ],
+        "factRefs": [
+          "coverage:some-other-fact"
+        ]
+      }
+    },
+    {
+      "id": "state-coverage-negative-guard:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "kind": "test",
+      "role": "state-coverage-negative-guard",
+      "source": "collector:issue-276-state-negative-mutations",
+      "sourceRevision": "3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "summary": "The collector added competing store authority, rewrote the final URL-derived execution input, added a result-derived parallel identity, and added a parallel snapshot writer while preserving the required paths, then required the bound guard to reject every mutation.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-search-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-276.policy.json --revision 3a99a40407a6653a1b2e9e94fd817a1aa1516ac8 --run-ref fixture-run:issue-276-v13-baseline:3a99a404",
+      "commandExitCode": 1,
+      "artifactDigest": "6ac908be57f1e67d621533c586eaae2bfc90c6bcab72944349955e98b69c2b6a",
+      "collectorRunRef": "fixture-run:issue-276-v13-baseline:3a99a404",
+      "target": {
+        "policyRef": "issue-276:keyword-search-state-boundary",
+        "capabilityRef": "capability:keyword-search-route-state",
+        "stateRefs": [
+          "state:search-execution-condition",
+          "state:current-result-snapshot"
+        ],
+        "identityRefs": [
+          "identity:ephemeral-search-view"
+        ],
+        "factRefs": [
+          "coverage:undeclared-state-and-identity-rejected"
+        ]
+      }
+    },
+    {
+      "id": "state-static:condition:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "kind": "static",
+      "role": "state-static",
+      "source": "app/components/research/ResearchRouteSearchBar.tsx",
+      "sourceRevision": "3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "summary": "The search route gives URL query state precedence over the current-view store and projects submitted conditions through the canonical route builder into server execution input.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-search-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-276.policy.json --revision 3a99a40407a6653a1b2e9e94fd817a1aa1516ac8 --run-ref fixture-run:issue-276-v13-baseline:3a99a404",
+      "commandExitCode": 1,
+      "artifactDigest": "4c70052ffd09e38de4625853c741974fee0ff3d9734ea7a183f67ec79d037b31",
+      "collectorRunRef": "fixture-run:issue-276-v13-baseline:3a99a404",
+      "target": {
+        "policyRef": "issue-276:keyword-search-state-boundary",
+        "capabilityRef": "capability:keyword-search-route-state",
+        "stateRefs": [
+          "state:search-execution-condition"
+        ],
+        "identityRefs": [],
+        "factRefs": [
+          "authority:condition-url",
+          "carrier:condition-url"
+        ]
+      }
+    },
+    {
+      "id": "state-test:condition:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "kind": "test",
+      "role": "state-test",
+      "source": "app/(research)/__tests__/research-routes.test.tsx,app/components/research/__tests__/ResearchRouteSearchBar.test.tsx,app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx,app/server/services/__tests__/search-execution.test.ts,app/server/services/__tests__/ephemeral-view-id.test.ts,scripts/architecture-fitness/__tests__/trusted-search-view-identity.test.ts,scripts/quality/__tests__/check-search-first-paint-no-db.test.ts",
+      "sourceRevision": "3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "summary": "Exact-revision route and service tests vary a foreign current-view store while holding the URL query fixed, re-execute the same URL, and exercise normalized URL execution input.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run app/(research)/__tests__/research-routes.test.tsx app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx app/server/services/__tests__/search-execution.test.ts app/server/services/__tests__/ephemeral-view-id.test.ts scripts/architecture-fitness/__tests__/trusted-search-view-identity.test.ts scripts/quality/__tests__/check-search-first-paint-no-db.test.ts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "0ea478aaed0cf17982224aa4b77bdc58a66eed758e16eae3d9640b520d2e94c0",
+      "collectorRunRef": "fixture-run:issue-276-v13-baseline:3a99a404",
+      "target": {
+        "policyRef": "issue-276:keyword-search-state-boundary",
+        "capabilityRef": "capability:keyword-search-route-state",
+        "stateRefs": [
+          "state:search-execution-condition"
+        ],
+        "identityRefs": [],
+        "factRefs": [
+          "authority:condition-url",
+          "carrier:condition-url"
+        ]
+      }
+    },
+    {
+      "id": "state-static:snapshot:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "kind": "static",
+      "role": "state-static",
+      "source": "app/components/research/ResearchRouteRuntime.tsx",
+      "sourceRevision": "3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "summary": "The route runtime hydrates the server-projected view into the client store for the active execution and clears that execution-owned snapshot on unmount.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-search-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-276.policy.json --revision 3a99a40407a6653a1b2e9e94fd817a1aa1516ac8 --run-ref fixture-run:issue-276-v13-baseline:3a99a404",
+      "commandExitCode": 1,
+      "artifactDigest": "4c70052ffd09e38de4625853c741974fee0ff3d9734ea7a183f67ec79d037b31",
+      "collectorRunRef": "fixture-run:issue-276-v13-baseline:3a99a404",
+      "target": {
+        "policyRef": "issue-276:keyword-search-state-boundary",
+        "capabilityRef": "capability:keyword-search-route-state",
+        "stateRefs": [
+          "state:current-result-snapshot"
+        ],
+        "identityRefs": [],
+        "factRefs": [
+          "authority:route-search-execution",
+          "carrier:route-payload",
+          "carrier:client-current-view-store"
+        ]
+      }
+    },
+    {
+      "id": "state-test:snapshot:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "kind": "test",
+      "role": "state-test",
+      "source": "app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx",
+      "sourceRevision": "3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "summary": "The exact-revision route-runtime test proves that a foreign store view does not render and the active route view is removed on unmount.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run app/(research)/__tests__/research-routes.test.tsx app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx app/server/services/__tests__/search-execution.test.ts app/server/services/__tests__/ephemeral-view-id.test.ts scripts/architecture-fitness/__tests__/trusted-search-view-identity.test.ts scripts/quality/__tests__/check-search-first-paint-no-db.test.ts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "ce0905441eeabbae4d99628401058c16b4061b1aa1899465ea96567e5cb0d444",
+      "collectorRunRef": "fixture-run:issue-276-v13-baseline:3a99a404",
+      "target": {
+        "policyRef": "issue-276:keyword-search-state-boundary",
+        "capabilityRef": "capability:keyword-search-route-state",
+        "stateRefs": [
+          "state:current-result-snapshot"
+        ],
+        "identityRefs": [],
+        "factRefs": [
+          "authority:route-search-execution",
+          "carrier:route-payload",
+          "carrier:client-current-view-store"
+        ]
+      }
+    },
+    {
+      "id": "identity-static:view:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "kind": "static",
+      "role": "identity-static",
+      "source": "app/server/services/search-execution.ts",
+      "sourceRevision": "3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "summary": "The ephemeral search view id is built only from the normalized canonical search execution key rather than the changing result snapshot.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-search-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-276.policy.json --revision 3a99a40407a6653a1b2e9e94fd817a1aa1516ac8 --run-ref fixture-run:issue-276-v13-baseline:3a99a404",
+      "commandExitCode": 1,
+      "artifactDigest": "4c70052ffd09e38de4625853c741974fee0ff3d9734ea7a183f67ec79d037b31",
+      "collectorRunRef": "fixture-run:issue-276-v13-baseline:3a99a404",
+      "target": {
+        "policyRef": "issue-276:keyword-search-state-boundary",
+        "capabilityRef": "capability:keyword-search-route-state",
+        "stateRefs": [],
+        "identityRefs": [
+          "identity:ephemeral-search-view"
+        ],
+        "factRefs": [
+          "state:search-execution-condition",
+          "state:current-result-snapshot",
+          "normalization:result-snapshot-coupled"
+        ]
+      }
+    },
+    {
+      "id": "identity-test:view:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "kind": "test",
+      "role": "identity-test",
+      "source": "app/server/services/__tests__/search-execution.test.ts,scripts/architecture-fitness/__tests__/trusted-search-view-identity.test.ts",
+      "sourceRevision": "3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "summary": "The collector-owned exact-revision identity fixture binds SHA-256 output to the canonical execution condition, while the production execution test keeps view identity stable when only result metadata and papers change, changes identity with canonical conditions, and rejects the previous 32-bit collision pair.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run app/(research)/__tests__/research-routes.test.tsx app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx app/server/services/__tests__/search-execution.test.ts app/server/services/__tests__/ephemeral-view-id.test.ts scripts/architecture-fitness/__tests__/trusted-search-view-identity.test.ts scripts/quality/__tests__/check-search-first-paint-no-db.test.ts --reporter=json",
+      "commandExitCode": 1,
+      "artifactDigest": "b1529d50a3096ca0f3edd6eda72c742e42910f33c56d89ac210ba0a827d07706",
+      "collectorRunRef": "fixture-run:issue-276-v13-baseline:3a99a404",
+      "target": {
+        "policyRef": "issue-276:keyword-search-state-boundary",
+        "capabilityRef": "capability:keyword-search-route-state",
+        "stateRefs": [],
+        "identityRefs": [
+          "identity:ephemeral-search-view"
+        ],
+        "factRefs": [
+          "state:search-execution-condition",
+          "state:current-result-snapshot",
+          "normalization:result-snapshot-coupled"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation:issue-276-keyword-search-state:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+      "policyRef": "issue-276:keyword-search-state-boundary",
+      "capabilityRef": "capability:keyword-search-route-state",
+      "completeness": "partial",
+      "coverageEvidenceRefs": [
+        "state-coverage-static:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+        "state-coverage-negative-guard:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8"
+      ],
+      "states": [
+        {
+          "id": "observed-state:search-condition:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+          "stateRef": "state:search-execution-condition",
+          "authorityRefs": [
+            "authority:condition-url"
+          ],
+          "coordinationRefs": [],
+          "carrierRefs": [
+            "carrier:condition-url"
+          ],
+          "evidenceRefs": [
+            "state-static:condition:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+            "state-test:condition:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8"
+          ]
+        },
+        {
+          "id": "observed-state:result-snapshot:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+          "stateRef": "state:current-result-snapshot",
+          "authorityRefs": [
+            "authority:route-search-execution"
+          ],
+          "coordinationRefs": [],
+          "carrierRefs": [
+            "carrier:route-payload",
+            "carrier:client-current-view-store"
+          ],
+          "evidenceRefs": [
+            "state-static:snapshot:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+            "state-test:snapshot:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8"
+          ]
+        }
+      ],
+      "canonicalIdentities": [
+        {
+          "id": "observed-identity:ephemeral-search-view:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+          "identityRef": "identity:ephemeral-search-view",
+          "participatingStateRefs": [
+            "state:search-execution-condition",
+            "state:current-result-snapshot"
+          ],
+          "normalizationRefs": [
+            "normalization:result-snapshot-coupled"
+          ],
+          "evidenceRefs": [
+            "identity-static:view:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8",
+            "identity-test:view:3a99a40407a6653a1b2e9e94fd817a1aa1516ac8"
+          ]
+        }
+      ]
+    }
+  ]
+}

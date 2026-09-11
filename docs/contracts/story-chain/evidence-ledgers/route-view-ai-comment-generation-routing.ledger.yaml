@@ -1,0 +1,184 @@
+schemaVersion: 2
+slug: route-view-ai-comment-generation-routing
+review: reviews/route-view-ai-comment-generation-routing.reviews.md
+sourcePromises:
+  - promise:reaction-from-visible-snapshot
+  - promise:search-reaction-summarizes-terrain
+  - promise:search-query-route-transition
+  - promise:citation-lineage
+  - promise:graph-neighbor-papers
+  - promise:route-view-ai-comment-inline-surface
+appliedAspects:
+  - aspect:route-view-ai-comment-generation-routing
+intent:
+  mode: delegated
+  checks: []
+  delegations:
+    - key: promise:search-reaction-summarizes-terrain#intent-check:result-set-terrain-is-not-query-repetition
+      ledger: search-reaction
+    - key: promise:search-reaction-summarizes-terrain#intent-check:search-reaction-ux-writing-voice
+      ledger: search-reaction
+    - key: promise:citation-lineage#intent-check:body-explains-citation-flow-not-counts
+      ledger: citation-lineage
+acceptanceChecks:
+  - key: promise:search-reaction-summarizes-terrain#acceptance-check:search-reaction-summarizes-terrain-generation-boundary
+    assertion: Automatic search route AI comment generation fires from the route store-commit/bootstrap path. Query transitions re-fire only after the route-owned generation target advances. The search paper projection uses committed id/title/year/citationCount, while server hydration preserves those fields and enriches only card detail. A facet-neutral lightweight→hydrated card transition therefore keeps the settled comment, reaction generation, and single provider call. Hydration-owned facets keep pending visible and send one command only after their non-empty visible projection is ready. A successful empty 200 from either initial pending hydration or ready-snapshot repair preserves the committed lightweight cards and records `ready + repairAttempted:true` immediately; individual provider failures and aborts remain retryable without a terminal marker, and three exhausted attempts preserve the lightweight result while settling the same terminal state. A real user basis/facet delta still rebases the queued current snapshot, and an exact duplicate is dropped instead of replayed after settlement.
+    executionRefs:
+      - execution:run-003
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+    scenarios:
+      - scenario:search-query-route-transition-reaction-hygiene
+  - key: promise:search-query-route-transition#acceptance-check:search-query-route-transition-clears-stale-reaction
+    assertion: New query route transitions clear stale route-local reactions so the next route-owned generation describes the new query instead of preserving the previous route AI comment.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-010
+    scenarios:
+      - scenario:search-query-route-transition-reaction-hygiene
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-reuse-refreshes-comment
+    assertion: Reused citation ResearchRoutePayloads route through the source route and destination bootstrap queues a targeted citation_lineage_opened route AI comment generation for the owning citation ResearchRoutePayload.
+    executionRefs:
+      - execution:run-004
+    scenarios:
+      - scenario:citation-03-03-01
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-reaction-own-view
+    assertion: Graph-neighbor create/reuse handlers leave opened generation to the destination route bootstrap by navigating to the seed URL. `app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx` ("waits for graph-neighbor card hydration and generates once with relationship authors") and `app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts` ("waits for graph-neighbor card hydration before building its generation command") verify the lightweight route keeps pending visible and sends one `graph_neighbors_opened` command only after card hydration reaches a terminal ready boundary. Successfully hydrated authors remain in the relationship snapshot; a degraded hydration result uses the preserved lightweight relationship evidence without issuing an earlier request. Degraded force-refetch keeps the current degraded view in place until the route-owned replacement path supplies the replacement view id for direct targeted queueing. The scheduler coalesces duplicate opened commands by `(trigger, targetRoutePayloadId)`.
+    executionRefs:
+      - execution:run-003
+      - execution:run-011
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-active-document-content-only
+    assertion: route AI comment generation uses the caller-supplied visible `viewSnapshot`, does not reload or persist a search/citation/similar route payload row, and rejects unsupported ResearchRoutePayload types without producing invisible reactions.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-012
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-regenerate-preserves-card
+    assertion: Regenerate advances the reaction generation, preserves the settled card while a new owning-route payload AI comment generation is queued, clears pending on terminal failure, and drops queued regeneration when the routed ResearchRoutePayload changes before flush.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-013
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-transport-timeout
+    assertion: Automatic route AI comment generation transport failures, route non-OK responses, and no-output completions clear first-generation pending state without persisting fallback comments; regeneration failure preserves the existing settled card and clears only the regeneration pending state; stale terminal completions do not overwrite the current route-view reaction.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-fast-lane-budget
+    assertion: "Automatic route AI comment generation stays on the short structured fast lane: lite generation model, 10s server structured generation deadline, 768 max output token cap, and a chunk-independent 15s absolute client fetch/body deadline. Slow body chunks cannot retain scalar single-flight past that deadline, so the queued latest generation proceeds. The same boundary still returns `reaction:null` for invalid, timed-out, aborted, or empty output."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+    scenarios: []
+  - key: promise:reaction-from-visible-snapshot#acceptance-check:reaction-from-visible-snapshot-basis-match
+    assertion: "`buildViewSnapshot` creates one bounded canonical projection through a non-throwing schema boundary. The route generation command captures that `ViewSnapshot` and derives its identity by serialization. Search paper card details are outside each paper's projection, while loaded-result facet membership remains visible basis and citation-lineage/graph-neighbor snapshots retain author context. Store mutation preserves settled search comments for projection-equivalent hydration; hydration-owned facets and graph authors wait before the first command. System-event ingress, enqueue, and queued-command flush all rebuild the current ready command instead of bypassing readiness. A terminal ready facet projection with no papers closes pending without provider work. A later valid user basis change still clears the comment and advances generation. Active completion and final store commit reject an older projection, then the single-flight queue starts the current projection."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-011
+    scenarios:
+      - scenario:search-view-reaction-respond-format
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts
+      - app/server/ai-generation/__tests__/gateway.test.ts
+      - app/server/agent/__tests__/route-ai-comment-generation.test.ts
+      - app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-cleanup.test.tsx
+      - app/lib/__tests__/fetch-with-silence-timeout.test.ts
+  - id: execution:run-002
+    kind: contract-check
+    target: runtime-contract
+    subcase: route-view-ai-comment-generation-boundary
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx
+      - app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts
+      - app/components/research/__tests__/ResearchBackgroundTasks.hydration.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.execution-lifecycle.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-queue.test.tsx
+      - app/components/research/__tests__/route-ai-comment-generation-scheduler.test.ts
+      - app/lib/__tests__/view-snapshot.test.ts
+      - app/stores/__tests__/research-route-store.ai-comment-generation.test.ts
+      - app/server/services/__tests__/search-hydration.test.ts
+      - app/server/domain-access/__tests__/search-enrichment-access.test.ts
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/SearchView.citation-lineage.test.tsx
+      - app/components/research-route-renderers/__tests__/use-graph-neighbors-handler.test.tsx
+  - id: execution:run-005
+    kind: contract-check
+    target: product-boundary
+    subcase: route-view-ai-comment-surface
+  - id: execution:run-006
+    kind: contract-check
+    target: product-boundary
+    subcase: route-kind-runtime-boundaries
+  - id: execution:run-007
+    kind: contract-check
+    target: product-boundary
+    subcase: server-delegation-hubs
+  - id: execution:run-008
+    kind: contract-check
+    target: product-boundary
+    subcase: agent-panel-input
+  - id: execution:run-009
+    kind: contract-check
+    target: product-boundary
+    subcase: no-autonomous-search-rules
+  - id: execution:run-010
+    kind: vitest
+    files:
+      - app/api/search/__tests__/route.helpers.test.ts
+      - app/stores/__tests__/research-route-store.ai-comment-cards.test.ts
+  - id: execution:run-011
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/use-graph-neighbors-handler.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx
+  - id: execution:run-012
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx
+  - id: execution:run-013
+    kind: vitest
+    files:
+      - app/components/research/__tests__/AgentPanel.reaction-cards.test.tsx
+implementationContracts:
+  - Automatic route AI comments use `POST /api/route-ai-comments/generate/:viewId`. They do not send compatibility `[system]` text through the legacy interactive reaction stream and do not share that response execution path.
+  - "Eligible generation targets are only ResearchRoutePayloads with a visible reaction slot: completed search ResearchRoutePayloads with results, `citation_lineage`, and `graph_neighbors`. `pdf`, `gap_network`, and empty search ResearchRoutePayloads are unsupported for this endpoint."
+  - Client commands always carry `trigger`, `targetRoutePayloadId`, `executionId`, `reactionGeneration`, `createdAt`, and the canonical `ViewSnapshot`. The projection key is derived deterministically from that snapshot; commands do not carry an independently writable key. The scheduler coalesces duplicate opened commands per `(trigger, targetRoutePayloadId)` while preserving independent targets. Flush and completion require that the captured execution is still active, so a same-id replacement runtime does not consume the previous runtime's command. A changed projection clears the ephemeral comment, advances generation, and queues the current projection behind active single-flight work. Active completion and final store commit compare the captured projection with the current projection. UI-only metadata changes outside that projection do not re-fire an active command. Pending rerenders or active-request settlement do not shorten the 240ms coalescing window.
+  - Route bootstrap is scoped to the single route-owned ResearchRoutePayload. Route changes abort the active generation, clear the pending queue, and clear regeneration state for the departed route execution.
+  - "Route bootstrap separates visible pending ownership from provider-call timing: eligible result ResearchRoutePayloads mark pending loading at commit. Unfaceted search starts from the committed terrain immediately; hydration-owned search facets and lightweight graph-neighbor authors wait for one ready projection before the provider call."
+  - The generation endpoint consumes the caller-supplied visible `viewSnapshot`; search, citation-lineage, and graph-neighbor generation does not reload a stored route payload row and does not persist the returned reaction. Gap report successful comments remain the artifact exception and persist through `PUT /api/gap-reports/:id/reaction`.
+  - The generation endpoint exposes `Server-Timing` phases for `parse`, `route-auth`, `generate`, and `total`, so slow AI comments can be separated into route overhead and provider generation time.
+  - "Automatic route AI comment generation is a single structured generation call, not an agent/tool loop. Provider retry is disabled, `maxOutputTokens` bounds the generated JSON, and invalid, aborted, timed-out, or empty generation returns `reaction: null` rather than a fallback comment."
+  - The automatic route-owned AI comment structured call uses the lite Gemini model, a 10s server structured generation deadline, a 768 max-output-token JSON cap, and a 15s client transport timeout. This fast lane is separate from the legacy interactive stream and keeps title/body/chips payload validation as the visible output contract.
+  - The AI provider gateway only exposes structured generation for this path and applies JSON mode, request timeout, retry budget, and abort-signal cleanup in one place.
+  - "Shared in-flight generation work is not tied to the first caller's abort signal within one application process. Caller aborts are composed through a shared controller, and the provider call is aborted only after all active duplicate callers disconnect. Different application instances may execute the same provider work independently. If a provider ignores that abort and returns a late successful reaction, the route returns `reaction: null` without persisting the stale success."
+verdict: met

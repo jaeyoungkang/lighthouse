@@ -1,0 +1,16 @@
+{
+  "servers": [
+    {
+      "id": "typescript",
+      "extensions": [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"],
+      "languageIds": ["typescript", "typescriptreact", "javascript", "javascriptreact"],
+      "command": "__TYPESCRIPT_LANGUAGE_SERVER__",
+      "args": ["--stdio"],
+      "rootPatterns": ["tsconfig.json", "jsconfig.json", "package.json"]
+    }
+  ],
+  "requestTimeout": 30000,
+  "autoStart": true,
+  "logLevel": "info",
+  "idleTimeout": 1800000
+}

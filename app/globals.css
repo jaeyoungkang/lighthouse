@@ -1,0 +1,1259 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-border: var(--border-subtle);
+  --color-ring: var(--ring);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-surface-app: var(--surface-app);
+  --color-surface-research: var(--surface-research);
+  --color-surface-canvas: var(--surface-canvas);
+  --color-surface-panel: var(--surface-panel);
+  --color-surface-panel-strong: var(--surface-panel-strong);
+  --color-surface-paper: var(--surface-paper);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+  --color-text-muted: var(--text-muted);
+  --color-text-subtle: var(--text-subtle);
+  --color-text-label: var(--text-label);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-confidence-high: var(--confidence-high);
+  --color-confidence-medium: var(--confidence-medium);
+  --color-confidence-low: var(--confidence-low);
+  --color-error: var(--error);
+  --color-error-soft: var(--error-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  /* Moonlight OKLCH source token aliases; canonical palette mappings live below. */
+  --color-ml-feedback-error-bg-default: var(--ml-feedback-error-bg-default);
+  --color-ml-feedback-error-bg-bold: var(--ml-feedback-error-bg-bold);
+  --color-ml-feedback-error-border: var(--ml-feedback-error-border);
+  --color-ml-feedback-error-text: var(--ml-feedback-error-text);
+  --color-ml-feedback-error-on-bold: var(--ml-feedback-error-on-bold);
+  --color-ml-feedback-warning-bg-default: var(--ml-feedback-warning-bg-default);
+  --color-ml-feedback-warning-bg-bold: var(--ml-feedback-warning-bg-bold);
+  --color-ml-feedback-warning-border: var(--ml-feedback-warning-border);
+  --color-ml-feedback-warning-text: var(--ml-feedback-warning-text);
+  --color-ml-feedback-warning-on-bold: var(--ml-feedback-warning-on-bold);
+  --color-ml-feedback-success-bg-default: var(--ml-feedback-success-bg-default);
+  --color-ml-feedback-success-bg-bold: var(--ml-feedback-success-bg-bold);
+  --color-ml-feedback-success-border: var(--ml-feedback-success-border);
+  --color-ml-feedback-success-text: var(--ml-feedback-success-text);
+  --color-ml-feedback-success-on-bold: var(--ml-feedback-success-on-bold);
+  --color-ml-feedback-info-bg-default: var(--ml-feedback-info-bg-default);
+  --color-ml-feedback-info-bg-bold: var(--ml-feedback-info-bg-bold);
+  --color-ml-feedback-info-border: var(--ml-feedback-info-border);
+  --color-ml-feedback-info-text: var(--ml-feedback-info-text);
+  --color-ml-feedback-info-on-bold: var(--ml-feedback-info-on-bold);
+  --color-ml-badge-free-bg: var(--ml-badge-free-bg);
+  --color-ml-badge-free-on: var(--ml-badge-free-on);
+  --color-ml-badge-free-subtle: var(--ml-badge-free-subtle);
+  --color-ml-badge-free-text: var(--ml-badge-free-text);
+  --color-ml-badge-pro-bg: var(--ml-badge-pro-bg);
+  --color-ml-badge-pro-on: var(--ml-badge-pro-on);
+  --color-ml-badge-pro-subtle: var(--ml-badge-pro-subtle);
+  --color-ml-badge-pro-text: var(--ml-badge-pro-text);
+  --color-ml-badge-premium-bg: var(--ml-badge-premium-bg);
+  --color-ml-badge-premium-on: var(--ml-badge-premium-on);
+  --color-ml-badge-premium-subtle: var(--ml-badge-premium-subtle);
+  --color-ml-badge-premium-text: var(--ml-badge-premium-text);
+  --color-ml-badge-team-bg: var(--ml-badge-team-bg);
+  --color-ml-badge-team-on: var(--ml-badge-team-on);
+  --color-ml-badge-team-subtle: var(--ml-badge-team-subtle);
+  --color-ml-badge-team-text: var(--ml-badge-team-text);
+  --color-ml-surface-page-bg-default: var(--ml-surface-page-bg-default);
+  --color-ml-surface-subtle-bg-default: var(--ml-surface-subtle-bg-default);
+  --color-ml-surface-card-bg-default: var(--ml-surface-card-bg-default);
+  --color-ml-surface-card-bg-hover: var(--ml-surface-card-bg-hover);
+  --color-ml-surface-overlay-bg-default: var(--ml-surface-overlay-bg-default);
+  --color-ml-surface-inverse-bg-default: var(--ml-surface-inverse-bg-default);
+  --color-ml-surface-skeleton-bg-default: var(--ml-surface-skeleton-bg-default);
+  --color-ml-surface-backdrop-bg-default: var(--ml-surface-backdrop-bg-default);
+  --color-ml-border-subtle-border-default: var(--ml-border-subtle-border-default);
+  --color-ml-border-default-border-default: var(--ml-border-default-border-default);
+  --color-ml-border-strong-border-default: var(--ml-border-strong-border-default);
+  --color-ml-border-focus-border-default: var(--ml-border-focus-border-default);
+  --color-ml-border-inverse-border-default: var(--ml-border-inverse-border-default);
+  --color-ml-text-primary-text-default: var(--ml-text-primary-text-default);
+  --color-ml-text-secondary-text-default: var(--ml-text-secondary-text-default);
+  --color-ml-text-tertiary-text-default: var(--ml-text-tertiary-text-default);
+  --color-ml-text-disabled-text-default: var(--ml-text-disabled-text-default);
+  --color-ml-text-inverse-text-default: var(--ml-text-inverse-text-default);
+  --color-ml-text-link-text-default: var(--ml-text-link-text-default);
+  --color-ml-text-link-text-hover: var(--ml-text-link-text-hover);
+  --color-ml-text-onAccent-text-default: var(--ml-text-onAccent-text-default);
+  --color-ml-action-primary-bg-default: var(--ml-action-primary-bg-default);
+  --color-ml-action-primary-bg-hover: var(--ml-action-primary-bg-hover);
+  --color-ml-action-primary-bg-pressed: var(--ml-action-primary-bg-pressed);
+  --color-ml-action-primary-bg-disabled: var(--ml-action-primary-bg-disabled);
+  --color-ml-action-primary-text-default: var(--ml-action-primary-text-default);
+  --color-ml-action-primary-text-hover: var(--ml-action-primary-text-hover);
+  --color-ml-action-primary-text-pressed: var(--ml-action-primary-text-pressed);
+  --color-ml-action-primary-text-disabled: var(--ml-action-primary-text-disabled);
+  --color-ml-action-primary-border-default: var(--ml-action-primary-border-default);
+  --color-ml-action-secondary-bg-default: var(--ml-action-secondary-bg-default);
+  --color-ml-action-secondary-bg-hover: var(--ml-action-secondary-bg-hover);
+  --color-ml-action-secondary-bg-pressed: var(--ml-action-secondary-bg-pressed);
+  --color-ml-action-secondary-bg-disabled: var(--ml-action-secondary-bg-disabled);
+  --color-ml-action-secondary-text-default: var(--ml-action-secondary-text-default);
+  --color-ml-action-secondary-text-hover: var(--ml-action-secondary-text-hover);
+  --color-ml-action-secondary-text-pressed: var(--ml-action-secondary-text-pressed);
+  --color-ml-action-secondary-text-disabled: var(--ml-action-secondary-text-disabled);
+  --color-ml-action-secondary-border-default: var(--ml-action-secondary-border-default);
+  --color-ml-action-ghost-bg-default: var(--ml-action-ghost-bg-default);
+  --color-ml-action-ghost-bg-hover: var(--ml-action-ghost-bg-hover);
+  --color-ml-action-ghost-text-default: var(--ml-action-ghost-text-default);
+  --color-ml-action-destructive-bg-default: var(--ml-action-destructive-bg-default);
+  --color-ml-action-destructive-bg-hover: var(--ml-action-destructive-bg-hover);
+  --color-ml-action-destructive-bg-pressed: var(--ml-action-destructive-bg-pressed);
+  --color-ml-action-destructive-bg-disabled: var(--ml-action-destructive-bg-disabled);
+  --color-ml-action-destructive-text-default: var(--ml-action-destructive-text-default);
+  --color-ml-action-destructive-text-hover: var(--ml-action-destructive-text-hover);
+  --color-ml-action-destructive-text-pressed: var(--ml-action-destructive-text-pressed);
+  --color-ml-action-destructive-text-disabled: var(--ml-action-destructive-text-disabled);
+  --color-ml-input-default-bg-default: var(--ml-input-default-bg-default);
+  --color-ml-input-default-bg-focus: var(--ml-input-default-bg-focus);
+  --color-ml-input-default-bg-disabled: var(--ml-input-default-bg-disabled);
+  --color-ml-input-default-border-default: var(--ml-input-default-border-default);
+  --color-ml-input-default-border-focus: var(--ml-input-default-border-focus);
+  --color-ml-input-default-border-error: var(--ml-input-default-border-error);
+  --color-ml-input-default-border-disabled: var(--ml-input-default-border-disabled);
+  --color-ml-input-default-text-default: var(--ml-input-default-text-default);
+  --color-ml-input-default-text-placeholder: var(--ml-input-default-text-placeholder);
+  --color-ml-input-default-text-disabled: var(--ml-input-default-text-disabled);
+  --color-ml-brand-accent-bg-default: var(--ml-brand-accent-bg-default);
+  --color-ml-brand-accent-bg-hover: var(--ml-brand-accent-bg-hover);
+  --color-ml-brand-solid-bg-default: var(--ml-brand-solid-bg-default);
+  --color-ml-brand-solid-bg-hover: var(--ml-brand-solid-bg-hover);
+  --color-ml-brand-solid-text-default: var(--ml-brand-solid-text-default);
+  --color-ml-brand-subtle-text-default: var(--ml-brand-subtle-text-default);
+  --color-ml-brand-muted-text-default: var(--ml-brand-muted-text-default);
+  --color-ml-nav-default-bg-default: var(--ml-nav-default-bg-default);
+  --color-ml-nav-default-border-default: var(--ml-nav-default-border-default);
+  --color-ml-nav-item-bg-default: var(--ml-nav-item-bg-default);
+  --color-ml-nav-item-bg-hover: var(--ml-nav-item-bg-hover);
+  --color-ml-nav-item-bg-active: var(--ml-nav-item-bg-active);
+  --color-ml-nav-item-text-default: var(--ml-nav-item-text-default);
+  --color-ml-nav-item-text-active: var(--ml-nav-item-text-active);
+  --color-ml-on-primary-text-default: var(--ml-on-primary-text-default);
+  --color-ml-on-secondary-text-default: var(--ml-on-secondary-text-default);
+  --color-ml-on-tertiary-text-default: var(--ml-on-tertiary-text-default);
+  --color-ml-on-surface-text-default: var(--ml-on-surface-text-default);
+  --color-ml-on-surface-text-muted: var(--ml-on-surface-text-muted);
+  --color-ml-on-inverse-text-default: var(--ml-on-inverse-text-default);
+  --color-ml-on-error-text-default: var(--ml-on-error-text-default);
+  --color-ml-on-success-text-default: var(--ml-on-success-text-default);
+  --color-ml-on-warning-text-default: var(--ml-on-warning-text-default);
+  --color-ml-on-info-text-default: var(--ml-on-info-text-default);
+  --color-ml-action-tertiary-bg-default: var(--ml-action-tertiary-bg-default);
+  --color-ml-action-tertiary-bg-hover: var(--ml-action-tertiary-bg-hover);
+  --color-ml-action-tertiary-bg-pressed: var(--ml-action-tertiary-bg-pressed);
+  --color-ml-action-tertiary-bg-disabled: var(--ml-action-tertiary-bg-disabled);
+  --color-ml-action-tertiary-text-default: var(--ml-action-tertiary-text-default);
+  --color-ml-action-tertiary-text-hover: var(--ml-action-tertiary-text-hover);
+  --color-ml-action-tertiary-text-pressed: var(--ml-action-tertiary-text-pressed);
+  --color-ml-action-tertiary-text-disabled: var(--ml-action-tertiary-text-disabled);
+  --color-ml-action-tertiary-border-default: var(--ml-action-tertiary-border-default);
+  --color-ml-surface-item-bg-default: var(--ml-surface-item-bg-default);
+  --color-ml-surface-item-bg-hover: var(--ml-surface-item-bg-hover);
+  --color-ml-surface-item-bg-pressed: var(--ml-surface-item-bg-pressed);
+  --color-ml-surface-item-bg-selected: var(--ml-surface-item-bg-selected);
+  --color-ml-surface-item-text-selected: var(--ml-surface-item-text-selected);
+  --color-ml-dataviz-series1-bg-default: var(--ml-dataviz-series1-bg-default);
+  --color-ml-dataviz-series1-text-default: var(--ml-dataviz-series1-text-default);
+  --color-ml-dataviz-series2-bg-default: var(--ml-dataviz-series2-bg-default);
+  --color-ml-dataviz-series2-text-default: var(--ml-dataviz-series2-text-default);
+  --color-ml-dataviz-series3-bg-default: var(--ml-dataviz-series3-bg-default);
+  --color-ml-dataviz-series3-text-default: var(--ml-dataviz-series3-text-default);
+  --color-ml-dataviz-series4-bg-default: var(--ml-dataviz-series4-bg-default);
+  --color-ml-dataviz-series4-text-default: var(--ml-dataviz-series4-text-default);
+  --color-ml-dataviz-series5-bg-default: var(--ml-dataviz-series5-bg-default);
+  --color-ml-dataviz-series5-text-default: var(--ml-dataviz-series5-text-default);
+  --color-ml-dataviz-series6-bg-default: var(--ml-dataviz-series6-bg-default);
+  --color-ml-dataviz-series6-text-default: var(--ml-dataviz-series6-text-default);
+  --color-ml-dataviz-series7-bg-default: var(--ml-dataviz-series7-bg-default);
+  --color-ml-dataviz-series7-text-default: var(--ml-dataviz-series7-text-default);
+  --color-ml-dataviz-series8-bg-default: var(--ml-dataviz-series8-bg-default);
+  --color-ml-dataviz-series8-text-default: var(--ml-dataviz-series8-text-default);
+  --font-sans: var(--app-font-sans);
+  --font-display: var(--app-font-display);
+  --radius-lh-sm: var(--lh-radius-sm);
+  --radius-lh-md: var(--lh-radius-md);
+  --radius-lh-lg: var(--lh-radius-lg);
+  --radius-lh-xl: var(--lh-radius-xl);
+  --radius-lh-2xl: var(--lh-radius-2xl);
+  --radius-lh-3xl: var(--lh-radius-3xl);
+  --radius-lh-full: var(--lh-radius-full);
+  --text-lh-2xs: var(--lh-text-2xs);
+  --text-lh-xs: var(--lh-text-xs);
+  --text-lh-sm: var(--lh-text-sm);
+  --text-lh-base: var(--lh-text-base);
+  --text-lh-md: var(--lh-text-md);
+  --text-lh-lg: var(--lh-text-lg);
+  --text-lh-xl: var(--lh-text-xl);
+}
+
+:root {
+  /* Lighthouse command palette baked in as the default visual identity:
+     Moonlight-derived paper surfaces, restrained framing rules, one
+     directive accent, neutral sans, tight engineered geometry. */
+
+  /* ── Moonlight OKLCH source token layer ───────────────────
+     These --ml-* tokens preserve the imported values. The active
+     Lighthouse palette below absorbs selected values into canonical names. */
+  /* feedback (moonlight 실제 색 보존, OKLCH 파생) */
+  --ml-feedback-error-bg-default: oklch(0.96 0.04 26.16);
+  --ml-feedback-error-bg-bold: oklch(0.5862 0.1835 26.16);
+  --ml-feedback-error-border: oklch(0.86 0.07 26.16);
+  --ml-feedback-error-text: oklch(0.42 0.1835 26.16);
+  --ml-feedback-error-on-bold: oklch(1 0 0);
+  --ml-feedback-warning-bg-default: oklch(0.96 0.04 47.07);
+  --ml-feedback-warning-bg-bold: oklch(0.5779 0.1597 47.07);
+  --ml-feedback-warning-border: oklch(0.86 0.07 47.07);
+  --ml-feedback-warning-text: oklch(0.42 0.1597 47.07);
+  --ml-feedback-warning-on-bold: oklch(1 0 0);
+  --ml-feedback-success-bg-default: oklch(0.96 0.04 156.56);
+  --ml-feedback-success-bg-bold: oklch(0.5484 0.1316 156.56);
+  --ml-feedback-success-border: oklch(0.86 0.07 156.56);
+  --ml-feedback-success-text: oklch(0.42 0.1316 156.56);
+  --ml-feedback-success-on-bold: oklch(1 0 0);
+  --ml-feedback-info-bg-default: oklch(0.96 0.04 249.65);
+  --ml-feedback-info-bg-bold: oklch(0.5658 0.1543 249.65);
+  --ml-feedback-info-border: oklch(0.86 0.07 249.65);
+  --ml-feedback-info-text: oklch(0.42 0.1543 249.65);
+  --ml-feedback-info-on-bold: oklch(1 0 0);
+  /* badge (구독등급, 시맨틱 분리) */
+  --ml-badge-free-bg: oklch(0.8016 0.1705 73.27);
+  --ml-badge-free-on: oklch(0.18 0 0);
+  --ml-badge-free-subtle: oklch(0.95 0.05 73.27);
+  --ml-badge-free-text: oklch(0.42 0.1705 73.27);
+  --ml-badge-pro-bg: oklch(0.7758 0.1157 220.04);
+  --ml-badge-pro-on: oklch(0.18 0 0);
+  --ml-badge-pro-subtle: oklch(0.95 0.05 220.04);
+  --ml-badge-pro-text: oklch(0.42 0.1157 220.04);
+  --ml-badge-premium-bg: oklch(0.7464 0.0369 94.65);
+  --ml-badge-premium-on: oklch(0.18 0 0);
+  --ml-badge-premium-subtle: oklch(0.95 0.0369 94.65);
+  --ml-badge-premium-text: oklch(0.42 0.0369 94.65);
+  --ml-badge-team-bg: oklch(0.5597 0.1003 217.58);
+  --ml-badge-team-on: oklch(1 0 0);
+  --ml-badge-team-subtle: oklch(0.95 0.05 217.58);
+  --ml-badge-team-text: oklch(0.42 0.1003 217.58);
+
+  /* 구조 토큰 (brand #605070 키 → OKLCH 생성, light) */
+  --ml-surface-page-bg-default: oklch(0.9911 0 0);
+  --ml-surface-subtle-bg-default: oklch(0.9612 0 0);
+  --ml-surface-card-bg-default: oklch(1 0 0);
+  --ml-surface-card-bg-hover: oklch(0.9491 0 0);
+  --ml-surface-overlay-bg-default: oklch(1 0 0);
+  --ml-surface-inverse-bg-default: oklch(0.1496 0 0);
+  --ml-surface-skeleton-bg-default: oklch(0.931 0 0);
+  --ml-surface-backdrop-bg-default: oklch(0.0969 0 0 / 0.45);
+  --ml-border-subtle-border-default: oklch(0.9097 0 0);
+  --ml-border-default-border-default: oklch(0.8393 0.0014 286.37);
+  --ml-border-strong-border-default: oklch(0.6996 0.0014 286.36);
+  --ml-border-focus-border-default: oklch(0.4598 0.0545 307.13);
+  --ml-border-inverse-border-default: oklch(0.2809 0 0);
+  --ml-text-primary-text-default: oklch(0.1793 0.0026 325.68);
+  --ml-text-secondary-text-default: oklch(0.3791 0 0);
+  --ml-text-tertiary-text-default: oklch(0.5313 0 0);
+  --ml-text-disabled-text-default: oklch(0.6301 0 0);
+  --ml-text-inverse-text-default: oklch(0.9612 0 0);
+  --ml-text-link-text-default: oklch(0.4598 0.0545 307.13);
+  --ml-text-link-text-hover: oklch(0.3788 0.0554 307.54);
+  --ml-text-onAccent-text-default: oklch(1 0 0);
+  --ml-action-primary-bg-default: oklch(0.4598 0.0545 307.13);
+  --ml-action-primary-bg-hover: oklch(0.5699 0.055 307.39);
+  --ml-action-primary-bg-pressed: oklch(0.331 0.0534 307.41);
+  --ml-action-primary-bg-disabled: oklch(0.8511 0.013 306);
+  --ml-action-primary-text-default: oklch(1 0 0);
+  --ml-action-primary-text-hover: oklch(1 0 0);
+  --ml-action-primary-text-pressed: oklch(1 0 0);
+  --ml-action-primary-text-disabled: oklch(0 0 0);
+  --ml-action-primary-border-default: oklch(0.4598 0.0545 307.13);
+  --ml-action-secondary-bg-default: oklch(0.9597 0.0021 17.2);
+  --ml-action-secondary-bg-hover: oklch(0.9101 0.0045 0.01);
+  --ml-action-secondary-bg-pressed: oklch(0.8294 0.0079 7.33);
+  --ml-action-secondary-bg-disabled: oklch(0.9006 0 0);
+  --ml-action-secondary-text-default: oklch(0.1793 0.0026 325.68);
+  --ml-action-secondary-text-hover: oklch(0.1793 0.0026 325.68);
+  --ml-action-secondary-text-pressed: oklch(0.1793 0.0026 325.68);
+  --ml-action-secondary-text-disabled: oklch(0.4796 0.002 325.61);
+  --ml-action-secondary-border-default: oklch(0.6794 0.0084 7.39);
+  --ml-action-ghost-bg-default: oklch(0.4598 0.0545 307.13 / 0);
+  --ml-action-ghost-bg-hover: oklch(0.9505 0.0029 308.43);
+  --ml-action-ghost-text-default: oklch(0.4598 0.0545 307.13);
+  --ml-action-destructive-bg-default: oklch(0.48 0.137 20.05);
+  --ml-action-destructive-bg-hover: oklch(0.5485 0.137 19.92);
+  --ml-action-destructive-bg-pressed: oklch(0.3803 0.1368 19.89);
+  --ml-action-destructive-bg-disabled: oklch(0.8006 0.0371 20.08);
+  --ml-action-destructive-text-default: oklch(1 0 0);
+  --ml-action-destructive-text-hover: oklch(1 0 0);
+  --ml-action-destructive-text-pressed: oklch(1 0 0);
+  --ml-action-destructive-text-disabled: oklch(0 0 0);
+  --ml-input-default-bg-default: oklch(1 0 0);
+  --ml-input-default-bg-focus: oklch(0.9805 0.0028 308.43);
+  --ml-input-default-bg-disabled: oklch(0.3485 0 0);
+  --ml-input-default-border-default: oklch(0.8393 0.0014 286.37);
+  --ml-input-default-border-focus: oklch(0.4598 0.0545 307.13);
+  --ml-input-default-border-error: oklch(0.4797 0.054 14.35);
+  --ml-input-default-border-disabled: oklch(0.9097 0 0);
+  --ml-input-default-text-default: oklch(0.1221 0 0);
+  --ml-input-default-text-placeholder: oklch(0.6201 0 0);
+  --ml-input-default-text-disabled: oklch(0.6201 0 0);
+  --ml-brand-accent-bg-default: oklch(0.9501 0.0155 306.41);
+  --ml-brand-accent-bg-hover: oklch(0.9089 0.0244 306.95);
+  --ml-brand-solid-bg-default: oklch(0.4598 0.0545 307.13);
+  --ml-brand-solid-bg-hover: oklch(0.5203 0.0544 306.63);
+  --ml-brand-solid-text-default: oklch(1 0 0);
+  --ml-brand-subtle-text-default: oklch(0.3194 0.0538 307.33);
+  --ml-brand-muted-text-default: oklch(0.519 0.0331 4.87);
+  --ml-nav-default-bg-default: oklch(1 0 0);
+  --ml-nav-default-border-default: oklch(0.91 0.0013 286.37);
+  --ml-nav-item-bg-default: oklch(0.4595 0.0206 307.96 / 0);
+  --ml-nav-item-bg-hover: oklch(0.9397 0.0057 308.39);
+  --ml-nav-item-bg-active: oklch(0.7881 0.0253 306.88);
+  --ml-nav-item-text-default: oklch(0.3996 0.0036 308.36);
+  --ml-nav-item-text-active: oklch(0.3354 0.0548 306.6);
+  --ml-on-primary-text-default: oklch(1 0 0);
+  --ml-on-secondary-text-default: oklch(0 0 0);
+  --ml-on-tertiary-text-default: oklch(0 0 0);
+  --ml-on-surface-text-default: oklch(0.1221 0 0);
+  --ml-on-surface-text-muted: oklch(0.3992 0.0021 325.62);
+  --ml-on-inverse-text-default: oklch(0.9612 0 0);
+  --ml-on-error-text-default: oklch(1 0 0);
+  --ml-on-success-text-default: oklch(1 0 0);
+  --ml-on-warning-text-default: oklch(1 0 0);
+  --ml-on-info-text-default: oklch(1 0 0);
+  --ml-action-tertiary-bg-default: oklch(0.9209 0.0069 67.74);
+  --ml-action-tertiary-bg-hover: oklch(0.8699 0.0106 67.69);
+  --ml-action-tertiary-bg-pressed: oklch(0.7992 0.0115 63.32);
+  --ml-action-tertiary-bg-disabled: oklch(0.2693 0.0024 67.73);
+  --ml-action-tertiary-text-default: oklch(0.1793 0.0026 325.68);
+  --ml-action-tertiary-text-hover: oklch(0.1793 0.0026 325.68);
+  --ml-action-tertiary-text-pressed: oklch(0.1793 0.0026 325.68);
+  --ml-action-tertiary-text-disabled: oklch(0.549 0.0015 286.35);
+  --ml-action-tertiary-border-default: oklch(0.6495 0.0095 67.66);
+  --ml-surface-item-bg-default: oklch(0.4595 0.0206 307.96 / 0);
+  --ml-surface-item-bg-hover: oklch(0.9612 0 0);
+  --ml-surface-item-bg-pressed: oklch(0.931 0 0);
+  --ml-surface-item-bg-selected: oklch(0.9491 0 0);
+  --ml-surface-item-text-selected: oklch(0.1496 0 0);
+  --ml-dataviz-series1-bg-default: oklch(0.5604 0.0475 250.8);
+  --ml-dataviz-series1-text-default: oklch(1 0 0);
+  --ml-dataviz-series2-bg-default: oklch(0.4393 0.0435 300.47);
+  --ml-dataviz-series2-text-default: oklch(0.981 0.0054 297.73);
+  --ml-dataviz-series3-bg-default: oklch(0.5699 0.0419 340.4);
+  --ml-dataviz-series3-text-default: oklch(1 0 0);
+  --ml-dataviz-series4-bg-default: oklch(0.4397 0.0444 25.03);
+  --ml-dataviz-series4-text-default: oklch(0.9797 0.0055 31.05);
+  --ml-dataviz-series5-bg-default: oklch(0.57 0.0404 58.7);
+  --ml-dataviz-series5-text-default: oklch(1 0 0);
+  --ml-dataviz-series6-bg-default: oklch(0.441 0.0391 96.24);
+  --ml-dataviz-series6-text-default: oklch(0.9788 0.0054 95.1);
+  --ml-dataviz-series7-bg-default: oklch(0.5597 0.0404 145.01);
+  --ml-dataviz-series7-text-default: oklch(1 0 0);
+  --ml-dataviz-series8-bg-default: oklch(0.4394 0.0434 195.69);
+  --ml-dataviz-series8-text-default: oklch(0.9803 0.0065 185.28);
+
+  /* ── Typography ───────────────────────────────────────────── */
+  --app-font-sans:
+    "Inter", "Helvetica Neue", "Arial", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --app-font-display:
+    "Inter", "Helvetica Neue", "Arial", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+
+  --background: oklch(0.9911 0 0);
+  --foreground: oklch(0.1793 0.0026 325.68);
+  --surface-app: oklch(0.9612 0 0);
+  --surface-research: oklch(0.982 0.006 85);
+  --surface-canvas: oklch(0.9911 0 0);
+  --surface-panel: oklch(1 0 0);
+  --surface-panel-strong: oklch(0.9491 0 0);
+  --surface-paper: oklch(1 0 0);
+  --sidebar-bg: oklch(0.9612 0 0);
+  --sidebar-border: oklch(0.8393 0.0014 286.37);
+  --card-bg: oklch(1 0 0);
+  --card-border: oklch(0.8393 0.0014 286.37);
+
+  /* ── Text hierarchy ──────────────────────────────────────── */
+  --muted: oklch(0.9612 0 0);
+  --muted-foreground: oklch(0.5313 0 0);
+  --text-muted: oklch(0.3791 0 0);
+  --text-subtle: oklch(0.5313 0 0);
+  --text-label: oklch(0.3992 0.0021 325.62);
+
+  /* ── Borders — restrained command framing rules ──────────── */
+  --border-subtle: oklch(0.9097 0 0);
+  --border-strong: oklch(0.6996 0.0014 286.36);
+
+  /* ── Accent — Moonlight-derived directive surface ────────── */
+  --accent: oklch(0.4598 0.0545 307.13);
+  --accent-soft: oklch(0.9501 0.0155 306.41);
+  --accent-strong: oklch(0.331 0.0534 307.41);
+  --accent-foreground: oklch(1 0 0);
+  --ring: oklch(0.5699 0.055 307.39);
+
+  /* ── State colors ────────────────────────────────────────── */
+  --confidence-high: oklch(0.5484 0.1316 156.56);
+  --confidence-medium: oklch(0.5658 0.1543 249.65);
+  --confidence-low: oklch(0.5779 0.1597 47.07);
+  --error: oklch(0.5862 0.1835 26.16);
+  --error-soft: oklch(0.96 0.04 26.16);
+  --success: oklch(0.5484 0.1316 156.56);
+  --success-soft: oklch(0.96 0.04 156.56);
+  --warning: oklch(0.5779 0.1597 47.07);
+  --warning-soft: oklch(0.96 0.04 47.07);
+
+  /* ── Graph overlay tokens ────────────────────────────────── */
+  --graph-bridge: oklch(0.4598 0.0545 307.13 / 0.68);
+  --graph-bridge-soft: oklch(0.4598 0.0545 307.13 / 0.45);
+  --graph-edge: oklch(0.1793 0.0026 325.68 / 0.16);
+  --graph-edge-active: oklch(0.4598 0.0545 307.13 / 0.85);
+  --graph-node-stroke: oklch(0.1793 0.0026 325.68);
+  --graph-node-hover: oklch(0.4598 0.0545 307.13);
+  --graph-node-text: oklch(0.1793 0.0026 325.68);
+  --graph-label: oklch(0.5313 0 0);
+  --graph-gap: oklch(0.5779 0.1597 47.07 / 0.88);
+  --gap-stroke: oklch(0.5779 0.1597 47.07);
+  --gap-stroke-idle: oklch(0.6996 0.0014 286.36);
+  --gap-label-bg: oklch(0.4598 0.0545 307.13 / 0.1);
+  --node-stroke: oklch(1 0 0 / 0.9);
+
+  /* ── Shadows — flat command board; no decoration ─────────── */
+  --shadow-soft: 0 1px 0 oklch(0.08 0.005 50 / 0.08);
+  --shadow-panel: 0 2px 0 oklch(0.08 0.005 50 / 0.12);
+  --shadow-heavy: 0 4px 8px oklch(0.08 0.005 50 / 0.14);
+
+  /* ── Radius tokens — engineered slab geometry ────────────── */
+  --lh-radius-sm: 2px;
+  --lh-radius-md: 2px;
+  --lh-radius-lg: 2px;
+  --lh-radius-xl: 3px;
+  --lh-radius-2xl: 3px;
+  --lh-radius-3xl: 4px;
+  --lh-radius-full: 2px;
+
+  /* ── Typography scale ────────────────────────────────────── */
+  --lh-text-2xs: 10px;
+  --lh-text-xs: 11px;
+  --lh-text-sm: 12px;
+  --lh-text-base: 13px;
+  --lh-text-md: 14px;
+  --lh-text-lg: 15px;
+  --lh-text-xl: 16px;
+
+  --lh-type-route-heading-size: 24px;
+  --lh-type-route-heading-line: 32px;
+  --lh-type-section-heading-size: 20px;
+  --lh-type-section-heading-line: 28px;
+  --lh-type-paper-title-size: 16px;
+  --lh-type-paper-title-line: 24px;
+  --lh-type-reading-body-size: 16px;
+  --lh-type-reading-body-line: 28px;
+  --lh-type-control-label-size: 15px; /* primary interactive copy */
+  --lh-type-control-label-line: 22px;
+  --lh-type-compact-control-size: 13px; /* repeated-card secondary actions */
+  --lh-type-compact-control-line: 20px;
+  --lh-type-metadata-size: 13px;
+  --lh-type-metadata-line: 20px;
+  --lh-type-micro-size: 12px;
+  --lh-type-micro-line: 18px;
+
+  /* ── Duration tokens ─────────────────────────────────────── */
+  --lh-duration-fast: 180ms;
+  --lh-duration-normal: 200ms;
+  --lh-duration-slow: 300ms;
+
+  /* ── Layout height offsets ───────────────────────────────── */
+  --lh-header-offset: 10.5rem;
+
+  /* ── Helper surface tokens ───────────────────────────────── */
+  --panel-bg: oklch(1 0 0);
+  --panel-muted-bg: oklch(0.9612 0 0);
+  --paper-panel-bg: oklch(1 0 0);
+  --note-card-bg: oklch(1 0 0);
+  --control-hover-bg: oklch(0.9491 0 0);
+  --input-bg: oklch(1 0 0);
+  --chat-bubble-bg: oklch(1 0 0);
+  --user-bubble-bg: oklch(0.9501 0.0155 306.41);
+  --chip-bg: oklch(0.9612 0 0);
+  --chip-accent-bg: oklch(0.9501 0.0155 306.41);
+  --chip-warm-bg: oklch(0.96 0.04 47.07);
+  --chip-warm-color: oklch(0.42 0.1597 47.07);
+  --inline-ref-bg: oklch(0.9501 0.0155 306.41);
+  --inline-ref-missing-bg: oklch(0.9612 0 0);
+
+  /* ── Route group borders (subordinate panel chrome) ──────── */
+  --group-explore-border: oklch(0.86 0.07 156.56 / 0.5);
+  --group-explore-bg: oklch(0.96 0.04 156.56);
+  --group-navigate-border: oklch(0.4598 0.0545 307.13 / 0.3);
+  --group-navigate-bg: oklch(0.9501 0.0155 306.41);
+  --group-recover-border: oklch(0.86 0.07 47.07 / 0.4);
+  --group-recover-bg: oklch(0.96 0.04 47.07);
+
+  color-scheme: light;
+}
+
+/* ─── Default surface component hooks ──────────────────────────
+   Lighthouse command palette lives in `:root` as the default token palette.
+   The shared class hooks below translate those tokens into the
+   slab-printed component language: restrained borders, directive
+   rails, engineered radii. */
+
+/* ── Geometry reset — no soft rounding ─────────────────────── */
+.lh-chip,
+.lh-chip-accent,
+.lh-chip-warm,
+.lh-inline-ref {
+  border-radius: var(--lh-radius-sm);
+}
+
+.lh-user-bubble {
+  border-radius: var(--lh-radius-md);
+}
+
+/* ── Panels as slabs ────────────────────────────────────────
+   Opaque surfaces, dense framing rule — the slab feel.
+   No left accent bar on containers; only item-level elements
+   earn the accent rule (note-card, chat-bubble). */
+.lh-panel,
+.lh-paper-panel {
+  border: 1px solid var(--border-strong);
+  background: var(--surface-panel);
+}
+
+.lh-panel-muted {
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-panel-strong);
+}
+
+/* ── Note-card — route entry with accent left rail ──────────
+   The left accent rule marks this as a route-code item in the
+   command board. Hover sharpens the framing. */
+.lh-note-card {
+  border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--accent);
+  background: var(--card-bg);
+}
+
+.lh-note-card:hover {
+  border-color: var(--foreground);
+  border-left-color: var(--accent-strong);
+}
+
+/* ── Chat bubbles — subordinate to command zone ─────────────
+   AI bubble gets a thin accent left line (system voice).
+   User bubble gets the accent-soft tint: active route. */
+.lh-chat-bubble {
+  border: 1px solid var(--border-subtle);
+  border-left: 2px solid var(--accent);
+  background: var(--panel-bg);
+}
+
+.lh-user-bubble {
+  border: 1px solid var(--border-subtle);
+  background: var(--user-bubble-bg);
+}
+
+/* ── Input — clean white field with black frame ─────────────
+   Focus draws an accent ring: "this field is live." */
+.lh-input {
+  border: 1px solid var(--border-strong);
+  background: var(--input-bg);
+  color: var(--foreground);
+}
+
+.lh-input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px oklch(from var(--accent) l c h / 0.18);
+}
+
+/* ── Standard control ───────────────────────────────────────
+   Quiet — supports the command zone without competing. */
+.lh-control {
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-panel-strong);
+  color: var(--text-muted);
+}
+
+.lh-control:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-panel);
+  color: var(--foreground);
+}
+
+/* ── Control-accent — the directive slab ────────────────────
+   This is the ONE surface that shouts. Full accent fill, white
+   text, no decoration. Wide enough to feel like a route board
+   button, not a small badge. */
+.lh-control-accent {
+  border: 2px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-foreground);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lh-control-accent:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
+
+.lh-control-accent:disabled {
+  opacity: 0.38;
+}
+
+/* ── Display chips — subordinate metadata ───────────────────
+   <span> chips stay quiet: thin rule, no fill. */
+span.lh-chip,
+span.lh-chip-accent,
+span.lh-chip-warm {
+  border: 1px solid var(--border-subtle);
+  background: var(--chip-bg);
+  color: var(--text-subtle);
+}
+
+span.lh-chip-accent {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--chip-accent-bg);
+}
+
+span.lh-chip-warm {
+  border-color: var(--warning);
+  color: var(--chip-warm-color);
+  background: var(--chip-warm-bg);
+}
+
+/* ── Action chips — routing decision buttons ────────────────
+   <button> chips read as operative route triggers: black border,
+   bold uppercase label, accent fill on hover (take this route). */
+button.lh-chip,
+button.lh-chip-accent,
+button.lh-chip-warm {
+  border: 1px solid var(--foreground);
+  border-bottom-width: 2px;
+  background: var(--surface-panel);
+  color: var(--foreground);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+button.lh-chip-accent {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+button.lh-chip:hover:not(:disabled),
+button.lh-chip-accent:hover:not(:disabled),
+button.lh-chip-warm:hover:not(:disabled) {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+button.lh-chip:active:not(:disabled),
+button.lh-chip-accent:active:not(:disabled),
+button.lh-chip-warm:active:not(:disabled) {
+  border-bottom-width: 1px;
+}
+
+button.lh-chip:disabled,
+button.lh-chip-accent:disabled,
+button.lh-chip-warm:disabled {
+  border-color: var(--border-subtle);
+  color: var(--text-subtle);
+  background: var(--chip-bg);
+}
+
+/* ── Agent action buttons — wide directive surfaces ─────────
+   Full-width accent-aware buttons: route selection, not decoration. */
+button.lh-agent-action {
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  background: var(--surface-panel-strong);
+  color: var(--foreground);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+button.lh-agent-action:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--foreground);
+}
+
+button.lh-agent-action:active:not(:disabled) {
+  border-bottom-width: 1px;
+}
+
+button.lh-agent-action:disabled {
+  border-color: var(--border-subtle);
+  color: var(--text-subtle);
+}
+
+/* ── Inline refs — active route codes ───────────────────────
+   Inline citations read as route codes: accent border and tint. */
+.lh-inline-ref {
+  border: 1px solid var(--accent);
+  background: var(--inline-ref-bg);
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: var(--lh-radius-sm);
+}
+
+.lh-inline-ref[data-missing="true"] {
+  border-color: var(--border-subtle);
+  background: var(--inline-ref-missing-bg);
+  color: var(--text-subtle);
+}
+
+/* ── Kicker — command label ─────────────────────────────────
+   Uppercase, wide tracking, accent — the system coordinate label.
+   This is the one place uppercase accent is applied to text (not
+   a filled surface), so it remains scan-able. */
+.lh-kicker {
+  color: var(--accent);
+  font-size: var(--lh-type-micro-size);
+  font-weight: 600;
+  line-height: var(--lh-type-micro-line);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* ── Graph shell — paper surface ────────────────────────────
+   Knowledge map renders on clean paper; the graph edges and
+   nodes carry the command palette. */
+.lh-graph-shell {
+  background: var(--surface-paper);
+  border: 1px solid var(--border-strong);
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--app-font-sans);
+  letter-spacing: 0.01em;
+}
+
+::selection {
+  background: oklch(from var(--accent) l c h / 0.18);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.lh-app-frame {
+  background: var(--surface-canvas);
+}
+
+.lh-landing-frame {
+  background: var(--surface-app);
+}
+
+.lh-research-route-frame {
+  background: var(--surface-canvas);
+}
+
+/* Route-first surface roles:
+   canvas = default work plane, panel = temporary support, note-card = document emphasis.
+   Accent is reserved for interaction and state, not decoration. */
+.lh-panel {
+  background: var(--panel-bg);
+  box-shadow: none;
+}
+
+.lh-panel-muted {
+  background: var(--panel-muted-bg);
+  box-shadow: none;
+}
+
+.lh-paper-panel {
+  background: var(--paper-panel-bg);
+  box-shadow: none;
+}
+
+.lh-note-card {
+  background: var(--note-card-bg);
+  box-shadow: none;
+}
+
+.lh-control {
+  background: transparent;
+  color: var(--foreground);
+  transition:
+    background-color var(--lh-duration-fast) ease,
+    color var(--lh-duration-fast) ease;
+}
+
+.lh-control:hover {
+  background: var(--control-hover-bg);
+}
+
+.lh-control:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.lh-control-accent {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  transition:
+    background-color var(--lh-duration-fast) ease,
+    opacity var(--lh-duration-fast) ease;
+}
+
+.lh-control-accent:hover {
+  background: var(--accent-strong);
+}
+
+.lh-control-accent:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.lh-input {
+  border: 1px solid var(--border-subtle);
+  background: var(--input-bg);
+  color: var(--foreground);
+  transition:
+    border-color var(--lh-duration-fast) ease,
+    box-shadow var(--lh-duration-fast) ease,
+    background-color var(--lh-duration-fast) ease;
+}
+
+.lh-input::placeholder {
+  color: var(--text-subtle);
+}
+
+.lh-input:focus-visible {
+  outline: none;
+  border-color: oklch(from var(--accent) l c h / 0.34);
+  box-shadow: 0 0 0 3px oklch(from var(--accent) l c h / 0.12);
+}
+
+.lh-chat-bubble {
+  background: var(--chat-bubble-bg);
+  border-radius: var(--lh-radius-md);
+}
+
+.lh-user-bubble {
+  background: var(--user-bubble-bg);
+  border: 1px solid oklch(from var(--accent) l c h / 0.18);
+  border-radius: var(--lh-radius-md) var(--lh-radius-md) 4px var(--lh-radius-md);
+}
+
+.lh-graph-shell {
+  background: var(--surface-paper);
+}
+
+.bg-surface-research {
+  background:
+    radial-gradient(circle at 18% 32%, oklch(0.72 0.018 85 / 0.035) 0 0.45px, transparent 0.75px) 0
+      0 / 11px 13px,
+    radial-gradient(circle at 74% 68%, oklch(1 0 0 / 0.48) 0 0.55px, transparent 0.85px) 0 0 / 17px
+      19px,
+    var(--surface-research);
+}
+
+.lh-type-route-heading {
+  font-family: var(--app-font-sans);
+  font-size: var(--lh-type-route-heading-size);
+  font-weight: 700;
+  line-height: var(--lh-type-route-heading-line);
+  letter-spacing: -0.015em;
+}
+
+.lh-type-section-heading {
+  font-family: var(--app-font-sans);
+  font-size: var(--lh-type-section-heading-size);
+  font-weight: 600;
+  line-height: var(--lh-type-section-heading-line);
+  letter-spacing: -0.01em;
+}
+
+.lh-type-paper-title {
+  font-size: var(--lh-type-paper-title-size);
+  font-weight: 600;
+  line-height: var(--lh-type-paper-title-line);
+  letter-spacing: -0.005em;
+}
+
+.lh-type-reading-body {
+  font-size: var(--lh-type-reading-body-size);
+  font-weight: 400;
+  line-height: var(--lh-type-reading-body-line);
+}
+
+.lh-type-control-label {
+  font-size: var(--lh-type-control-label-size);
+  font-weight: 600;
+  line-height: var(--lh-type-control-label-line);
+}
+
+.lh-type-compact-control {
+  font-size: var(--lh-type-compact-control-size);
+  font-weight: 600;
+  line-height: var(--lh-type-compact-control-line);
+}
+
+.lh-type-metadata {
+  font-size: var(--lh-type-metadata-size);
+  font-weight: 400;
+  line-height: var(--lh-type-metadata-line);
+}
+
+.lh-type-micro {
+  font-size: var(--lh-type-micro-size);
+  font-weight: 600;
+  line-height: var(--lh-type-micro-line);
+}
+
+.lh-tone-primary {
+  color: var(--foreground);
+}
+
+.lh-tone-secondary {
+  color: var(--text-muted);
+}
+
+.lh-tone-tertiary {
+  color: var(--text-subtle);
+}
+
+.lh-tone-control {
+  color: var(--text-label);
+}
+
+@media (max-width: 640px) {
+  .lh-input.lh-type-control-label {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .lh-research-route-search-rail.lh-research-route-search-rail {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+}
+
+/* ─── 텍스트 선택 보장 ─────────────────────────────────────── */
+
+.select-text,
+.select-text *,
+.notebook-prose,
+.notebook-prose * {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+/* ─── 노트북 타이포그래피 ──────────────────────────────────── */
+
+.notebook-prose {
+  font-size: var(--lh-text-lg);
+  line-height: 1.82;
+  color: var(--foreground);
+}
+
+.notebook-artifact {
+  max-width: 800px;
+}
+
+.notebook-status {
+  max-width: 800px;
+}
+
+.notebook-prose h1,
+.notebook-prose h2,
+.notebook-prose h3 {
+  font-family: var(--app-font-sans);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.notebook-prose p,
+.notebook-prose li {
+  color: oklch(from var(--foreground) l c h / 0.92);
+}
+
+.notebook-prose strong {
+  color: var(--foreground);
+}
+
+.lh-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--lh-radius-full);
+  background: var(--chip-bg);
+  color: var(--text-muted);
+  padding: 0.3rem 0.65rem;
+  font-size: var(--lh-type-micro-size);
+  font-weight: 600;
+  line-height: var(--lh-type-micro-line);
+}
+
+.lh-chip.lh-type-control-label {
+  font-size: var(--lh-type-control-label-size);
+  font-weight: 600;
+  line-height: var(--lh-type-control-label-line);
+}
+
+.lh-chip.lh-type-compact-control {
+  font-size: var(--lh-type-compact-control-size);
+  font-weight: 600;
+  line-height: var(--lh-type-compact-control-line);
+}
+
+.lh-chip.lh-type-micro {
+  font-size: var(--lh-type-micro-size);
+  font-weight: 600;
+  line-height: var(--lh-type-micro-line);
+}
+
+.lh-chip.lh-card-action,
+button.lh-chip.lh-card-action,
+a.lh-chip.lh-card-action {
+  border: 1px solid var(--border-subtle);
+  border-bottom-width: 1px;
+  border-radius: var(--lh-radius-sm);
+  background: transparent;
+  color: var(--text-label);
+  padding: 0.2rem 0.5rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+button.lh-chip.lh-card-action:hover:not(:disabled),
+a.lh-chip.lh-card-action:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-panel-strong);
+  color: var(--foreground);
+}
+
+.lh-chip-accent {
+  border-color: oklch(from var(--accent) l c h / 0.2);
+  background: var(--chip-accent-bg);
+  color: var(--accent);
+}
+
+.lh-chip-warm {
+  border-color: oklch(0.677 0.153 55.6 / 0.18);
+  background: var(--chip-warm-bg);
+  color: var(--chip-warm-color);
+}
+
+.lh-inline-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid oklch(from var(--accent) l c h / 0.18);
+  border-radius: var(--lh-radius-full);
+  background: var(--inline-ref-bg);
+  color: var(--accent);
+  padding: 0.16rem 0.48rem;
+  font-size: var(--lh-text-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  transition:
+    border-color var(--lh-duration-fast) ease,
+    background-color var(--lh-duration-fast) ease,
+    color var(--lh-duration-fast) ease,
+    transform var(--lh-duration-fast) ease;
+}
+
+.lh-inline-ref:hover {
+  border-color: oklch(from var(--accent) l c h / 0.28);
+  background: oklch(from var(--accent-soft) l c h / 0.96);
+}
+
+.lh-inline-ref[data-missing="true"] {
+  border-color: var(--border-subtle);
+  background: var(--inline-ref-missing-bg);
+  color: var(--text-muted);
+  transform: none;
+}
+
+/* ─── landing fade-in-up 애니메이션 ─────────────────────────── */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out both;
+}
+
+/* ─── 인트로 드라마틱 연출 ─────────────────────────────── */
+
+@keyframes intro-glow {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes intro-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes intro-line-expand {
+  from {
+    width: 0;
+  }
+  to {
+    width: 60px;
+  }
+}
+
+.animate-intro-reveal {
+  animation: intro-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-intro-reveal-delay-1 {
+  animation: intro-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+}
+
+.animate-intro-reveal-delay-2 {
+  animation: intro-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) 1.2s both;
+}
+
+.animate-intro-reveal-delay-3 {
+  animation: intro-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) 1.8s both;
+}
+
+.animate-intro-reveal-delay-4 {
+  animation: intro-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 2.8s both;
+}
+
+.animate-intro-line {
+  animation: intro-line-expand 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.8s both;
+}
+
+.animate-intro-glow {
+  animation: intro-glow 3s ease-in-out infinite;
+}
+
+/* ─── research route 진입 애니메이션 (온보딩 → 검색) ─────────── */
+
+@keyframes entrance-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes entrance-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes entrance-slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-entrance-sidebar {
+  animation: entrance-slide-in-right 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-entrance-main {
+  animation: entrance-fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+.animate-entrance-input {
+  animation: entrance-slide-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+}
+
+[data-entrance="1"] [data-reaction-content] {
+  animation: entrance-fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+[data-entrance="1"] [data-chat-input] {
+  animation: entrance-slide-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+}
+
+/* ─── shimmer 애니메이션 ───────────────────────────────────── */
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,47 @@
+schemaVersion: 2
+slug: search-gap-handoff
+review: reviews/search-gap-handoff.reviews.md
+sourcePromises:
+  - promise:gap-network-detection-from-search
+appliedAspects:
+  - aspect:visible-explanation-sufficiency
+  - aspect:knowledge-map-followup-surface
+  - aspect:immediate-navigation
+intent:
+  mode: explicit
+  checks:
+    - key: promise:gap-network-detection-from-search#intent-check:cluster-narrative-describes-research-work
+      evidence: gap report live judge coverage remains in `gap-network-e2.ledger.yaml`; this handoff ledger owns only the search navigation Acceptance Check.
+    - key: promise:gap-network-detection-from-search#intent-check:representative-papers-show-cluster-grain
+      evidence: live judge @ `app/server/services/__tests__/cluster-card-intent-qualitative.live.test.tsx` (same realistic cluster fixture; Exemplar CIQ — current `intent-check:representative-papers-show-cluster-grain`).
+    - key: promise:gap-network-detection-from-search#intent-check:adjacency-shows-network-position
+      evidence: live judge @ `app/server/services/__tests__/cluster-card-intent-qualitative.live.test.tsx` (Adjacency CIQ — current `intent-check:adjacency-shows-network-position`).
+  delegations: []
+acceptanceChecks:
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-entry-from-ai-comment
+    assertion: 검색 결과 기준 row 우측의 `상위 논문 40개의 관계를 분석하여 연구 공백 찾아보기 >` 설명형 action으로 gap 분석을 새 창에서 시작할 수 있다. Overview panel test verifies the action sits in the result-basis row, not inside the primary filter/sort controls, compact search metadata, or AI comment frame, passes a modified activation, and ignores non-middle auxiliary clicks. view-followup-window test verifies modified activations call `window.open(..., "_blank", "noopener,noreferrer")`; search ResearchRoutePayload tests verify the real search host pre-opens a detached product-owned `/gap?opening=1` target during user activation, the shared research layout does not resolve auth before rendering children, the actual layout → shell → gap opening page tree renders the opening view without auth, the POST route reserves a pending gap report id before core calculation, and the same target moves to `/gap/:id` so the user sees Light House route-owned progress instead of `about:blank`. `search-view-states.test.tsx` ("continues the detached gap handoff after the source search view unmounts") starts a deferred reservation through the real search host, unmounts that host, then verifies the late success still moves the same target to `/gap/:id` without closing it or replacing the source route. use-search-view-controller test verifies the source search surface stays in a gap-creation pending state while the detached report id request is in flight. `guard:product-owned-navigation` rejects new `window.open("about:blank")` handoffs in production app code. `gap_reports.source_input_digest` global unique key and reservation conflict recovery make identical share-safe snapshots converge on one shared artifact when separate server processes race.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:search-gap-analysis-entry
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx
+      - app/components/research-route-renderers/__tests__/view-followup-window.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-states.test.tsx
+      - app/components/research-route-renderers/__tests__/use-search-view-controller.library-availability.test.tsx
+      - app/(research)/__tests__/research-routes.test.tsx
+      - app/(research)/__tests__/layout.test.tsx
+      - scripts/quality/__tests__/check-product-owned-navigation.test.ts
+      - app/server/repository/__tests__/gap-reports.test.ts
+      - app/server/domain-access/__tests__/gap-network-view-access.test.ts
+  - id: execution:run-002
+    kind: guard
+    script: guard:product-owned-navigation
+implementationContracts:
+  - The listed Promise(s) are verified by the Acceptance Check entries and structured executions on this ledger.
+verdict: met

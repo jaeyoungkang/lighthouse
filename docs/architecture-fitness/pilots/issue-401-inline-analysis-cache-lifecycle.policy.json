@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-policy",
+  "service": {
+    "id": "lighthouse",
+    "repository": "https://github.com/corca-ai/lighthouse.git",
+    "adapterRef": "scripts/architecture-fitness/collect-inline-analysis-cache-lifecycle.mjs"
+  },
+  "policySet": {
+    "id": "issue-401-inline-analysis-cache-lifecycle",
+    "version": "2026-09-03.v3",
+    "scope": "inline-analysis deterministic shared-artifact cache lifecycle",
+    "owner": "Lighthouse inline-analysis runtime owner",
+    "source": "docs/architecture-fitness/q5-cache-policy.md and issue #435 approved failure fence",
+    "sourceRevision": "human:2026-07-19:inline-analysis-explicit-retry-fence",
+    "collectorAuthority": {
+      "adapterRef": "scripts/architecture-fitness/collect-inline-analysis-cache-lifecycle.mjs",
+      "id": "lighthouse-issue-401-inline-analysis-cache-lifecycle-collector",
+      "version": "3",
+      "scope": "exact-revision inline-analysis identity including the ordered three-column database uniqueness key, ready-hit, claim, local coalescing, and explicit-retry failure-fence probe",
+      "definitionDigest": "8440a9c15786a559bf336bb817d8788f342a837c02ad5b51b1f92996ac5cbf9d",
+      "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+      "attestationKeyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1"
+    }
+  },
+  "coverage": [
+    {
+      "id": "coverage:issue-401-inline-analysis-deterministic-lifecycle",
+      "lens": "Inline-analysis exact identity, ready-only reuse, DB claim, local subscriber isolation, and durable explicit-retry failure fence",
+      "status": "included",
+      "owner": "Lighthouse inline-analysis runtime owner",
+      "reason": "Issues #298 and #435 approve the deterministic shared-artifact identity, claim boundary, and durable failure recovery that current production seams can execute without production credentials.",
+      "reentryTrigger": "Re-collect when issue #304 version identity, issue #435 failure recovery, the shared-cache RPC transition, or the inline-analysis production resolution seam changes.",
+      "policyRefs": ["issue-401:inline-analysis-cache-lifecycle"]
+    },
+    {
+      "id": "coverage:issue-401-inline-analysis-fleet",
+      "lens": "Inline-analysis process loss, instance movement, duplicate provider generation, and fleet waiter behavior",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "A DB-backed lease declares a fleet sharing scope, but deterministic local probes do not observe actual multi-instance owner loss, waiter latency, or duplicate provider calls.",
+      "reentryTrigger": "Use issue #321 exact-deployment multi-instance failure and load evidence.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-401-inline-analysis-cleanup-effects",
+      "lens": "Inline-analysis retention cleanup storage, lock, pool, and route effects",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "The deterministic runtime case neither executes operator cleanup nor observes its production effects.",
+      "reentryTrigger": "Use issue #319 post-cutoff cleanup evidence after current and rollback versions are reconciled.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-401-inline-analysis-provider-outcome",
+      "lens": "Inline-analysis provider quality, production latency, recovery rate, and cost",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "Deterministic cache conformance does not measure provider quality, production latency, recovery rate, or cost.",
+      "reentryTrigger": "Use provider and production observation owners without promoting their evidence into this cache-lifecycle case.",
+      "policyRefs": []
+    }
+  ],
+  "policies": [
+    {
+      "id": "issue-401:inline-analysis-cache-lifecycle",
+      "caseKind": "cache-lifecycle",
+      "question": "Does inline analysis preserve its approved exact-identity shared-artifact lifecycle and deterministic fill/failure outcomes?",
+      "capabilityRef": "capability:lighthouse-inline-analysis",
+      "owner": "Lighthouse inline-analysis runtime owner",
+      "desired": "Only the current exact paper-input identity reuses a ready artifact; a miss requires a DB claim, non-owners do not call the provider, process subscribers are isolated, and durable failures require explicit retry.",
+      "cacheRules": [
+        {
+          "id": "cache:lighthouse-paper-inline-analysis-shared-artifact",
+          "required": true,
+          "sourceOwnerRef": "source:provider-paper-title-abstract-year",
+          "requiredKeyRefs": [
+            "key:paper-id",
+            "key:inline-analysis-version",
+            "key:canonical-input-fingerprint"
+          ],
+          "freshnessRef": "freshness:exact-input-fingerprint-and-analysis-version-no-time-ttl",
+          "requiredInvalidationRefs": [
+            "invalidation:canonical-input-fingerprint-change",
+            "invalidation:inline-analysis-version-change"
+          ],
+          "missRef": "miss:exact-identity-db-claim-before-provider-fill",
+          "negativeResultRef": "negative:no-ready-artifact-without-usable-abstract",
+          "failureRef": "failure:durable-explicit-retry-fence-never-ready-artifact",
+          "fillControlRef": "fill:exact-identity-db-token-lease-plus-process-subscriber-coalescing",
+          "sharingScope": "fleet",
+          "persistenceScope": "durable",
+          "requiredEvidenceRoles": [
+            "cache-lifecycle-policy-static",
+            "cache-lifecycle-behavior-test"
+          ]
+        }
+      ],
+      "lifecycleScenarios": [
+        {
+          "id": "scenario:lighthouse-inline-analysis-source-change",
+          "required": true,
+          "cacheRef": "cache:lighthouse-paper-inline-analysis-shared-artifact",
+          "scenarioKind": "source-change",
+          "requiredOutcomeRefs": [
+            "outcome:canonical-whitespace-shares-fingerprint",
+            "outcome:content-or-year-change-separates-fingerprint",
+            "outcome:analysis-version-participates-in-identity"
+          ],
+          "forbiddenOutcomeRefs": ["outcome:changed-input-reuses-identity"],
+          "requiredEvidenceRoles": ["cache-lifecycle-scenario-test"]
+        },
+        {
+          "id": "scenario:lighthouse-inline-analysis-concurrent-fill",
+          "required": true,
+          "cacheRef": "cache:lighthouse-paper-inline-analysis-shared-artifact",
+          "scenarioKind": "concurrent-fill",
+          "requiredOutcomeRefs": [
+            "outcome:ready-hit-bypasses-provider",
+            "outcome:miss-claims-before-provider",
+            "outcome:unclaimed-worker-waits-without-provider",
+            "outcome:caller-abort-isolated"
+          ],
+          "forbiddenOutcomeRefs": [
+            "outcome:unclaimed-worker-calls-provider",
+            "outcome:caller-cancels-shared-fill"
+          ],
+          "requiredEvidenceRoles": ["cache-lifecycle-scenario-test"]
+        },
+        {
+          "id": "scenario:lighthouse-inline-analysis-fill-failure",
+          "required": true,
+          "cacheRef": "cache:lighthouse-paper-inline-analysis-shared-artifact",
+          "scenarioKind": "fill-failure",
+          "requiredOutcomeRefs": [
+            "outcome:failure-state-is-not-ready-artifact",
+            "outcome:automatic-retry-is-fenced",
+            "outcome:explicit-retry-opens-new-claim"
+          ],
+          "forbiddenOutcomeRefs": [
+            "outcome:failure-placeholder-becomes-ready",
+            "outcome:cooldown-expiry-auto-retries"
+          ],
+          "requiredEvidenceRoles": ["cache-lifecycle-scenario-test"]
+        }
+      ],
+      "verificationPlan": [
+        "Collect exact-revision identity, ready-read, claim, failure-fence, and process-subscriber facts; execute focused production-seam scenarios while preserving fleet, cleanup, and provider outcome coverage as unsupported."
+      ]
+    }
+  ]
+}

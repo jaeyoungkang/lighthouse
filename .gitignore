@@ -1,0 +1,106 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+packages/*/node_modules/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+packages/*/dist/
+
+# misc
+.DS_Store
+*.pem
+
+# local playwright/verify screenshots (PR-review artifact, not reproducible
+# because the run hits real Episteme + Gemini — content drifts every run)
+/.verify-screenshots/
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+__pycache__/
+*.py[cod]
+
+# env files (can opt-in for committing if needed)
+.env*
+!.env.local.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# codex local artifacts
+.codex/
+.context/
+.local/
+.agent-tools/
+
+# Repo-local Agent Skill runtime copies. `shared-skills/` is canonical and
+# postinstall recreates these generated roots for Codex and Claude Code.
+/.agents/skills/
+/.claude/skills/
+
+# Project Knowledge local runtime artifacts
+.project-knowledge-local/
+
+# pdf storage
+storage/
+test-results/
+.claude/worktrees/
+
+# Evidence Ledger render output — generated artifact, not source of truth
+# (per docs/principles.md §0.1: *.ledger.yaml is canonical; report artifacts stay untracked)
+docs/contracts/story-chain/evidence-ledgers/report.json
+docs/contracts/story-chain/evidence-ledgers/report/
+
+# Claude Code runtime artifacts
+.claude/scheduled_tasks.lock
+
+# Stryker mutation testing — local run artifacts (CI uploads as workflow artifact)
+/.stryker-tmp/
+/reports/mutation/
+stryker.log
+
+# load-smoke harness JSON reports (local run artifacts)
+/reports/load-smoke/
+
+# Private-beta raw feedback notes — carry participant names/nicknames; anonymize
+# into a *-summary.md before committing.
+docs/archive/private-beta-feedback/*-raw.md
+
+# Private-beta operational rosters and send results — carry tester identifiers
+# (names, emails, account links). Keep out of git; reference by row number in
+# committed docs.
+docs/archive/private-beta-feedback/*.private.md
+
+# Private-beta derived working tables — local exports from the tracked dataset
+# (e.g. feedback-items-detailed.private.csv). Source of truth stays in the
+# tracked dataset CSVs; these are convenience copies, kept local.
+docs/archive/private-beta-feedback/**/*.private.csv
+
+# Library-grounded research pilot — local ops tool that reads the Moonlight
+# replica (the inbound LH↔Moonlight boundary is not a product feature yet), and
+# the generated library-context.json holds PII (tester email + library shape).
+# Keep the whole pilot/ workspace local; the runtime reads the JSON via
+# LIBRARY_CONTEXT_PILOT_PATH and never commits it.
+/pilot/

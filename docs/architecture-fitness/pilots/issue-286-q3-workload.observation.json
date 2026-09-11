@@ -1,0 +1,350 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-observation",
+  "serviceId": "lighthouse",
+  "policySetRef": "issue-286-q3-workload",
+  "policySetVersion": "2026-07-21.v37",
+  "policyDigest": "49dd8cc209fdb001ebb8b4ba6eed70ab65258e967d5a6f027c2254f3e8009ac6",
+  "revision": "ef9b2a0de67388e865ef0560ac26118a94821584",
+  "collector": {
+    "adapterRef": "scripts/architecture-fitness/collect-q3-workload.mjs",
+    "id": "lighthouse-issue-286-q3-workload-collector",
+    "version": "40",
+    "scope": "Locked exact-report transition tuples through the last retained non-publication compatibility tree, version-specific v4 count and v5 ordered-identity readiness normalization, immutable unavailable-measurement binding, guarded-tree negative guards, and controlled provider counters",
+    "definitionDigest": "01f4c2d09f80f10dea5885f939f5f361183f80eac5a19b5460d919b7ad92fa41",
+    "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+    "runRef": "fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584",
+    "command": "node scripts/architecture-fitness/collect-q3-workload.mjs --policy docs/architecture-fitness/pilots/issue-286-q3-workload.policy.json --revision ef9b2a0de67388e865ef0560ac26118a94821584 --run-ref fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584 --output docs/architecture-fitness/pilots/issue-286-q3-workload.observation.json",
+    "attestation": {
+      "algorithm": "hmac-sha256",
+      "keyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1",
+      "payloadDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "evidence": [
+    {
+      "id": "workload-coverage-static:q3",
+      "kind": "static",
+      "role": "workload-coverage-static",
+      "source": "docs/architecture-fitness/pilots/q3-workload/v6-active/cold-u20.report.json,docs/architecture-fitness/pilots/q3-workload/v6-active/sustained-open-1ps-60s.report.json,docs/architecture-fitness/pilots/q3-workload/v6-active/controlled-u2.report.json",
+      "sourceRevision": "ef9b2a0de67388e865ef0560ac26118a94821584",
+      "summary": "The inventory contains the approved u20 burst, sustained 1/s, and controlled amplification scenarios with locked report digests.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q3-workload.mjs --policy docs/architecture-fitness/pilots/issue-286-q3-workload.policy.json --revision ef9b2a0de67388e865ef0560ac26118a94821584 --run-ref fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584 --output docs/architecture-fitness/pilots/issue-286-q3-workload.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "7ac0e503444882244228b915b68cf634e12d2c6188d33338ed4008af1bcf0d38",
+      "collectorRunRef": "fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584",
+      "target": {
+        "policyRef": "issue-286:search-workload-envelope",
+        "capabilityRef": "capability:lighthouse-search-workload",
+        "scenarioRefs": [
+          "scenario:q3-cold-u20",
+          "scenario:q3-sustained-open-1ps-60s",
+          "scenario:q3-controlled-u2-amplification"
+        ],
+        "factRefs": [
+          "coverage:all-workload-scenarios"
+        ]
+      }
+    },
+    {
+      "id": "workload-coverage-negative-guard:q3",
+      "kind": "test",
+      "role": "workload-coverage-negative-guard",
+      "source": "scripts/architecture-fitness/__tests__/q3-workload-boundaries.test.ts",
+      "sourceRevision": "ef9b2a0de67388e865ef0560ac26118a94821584",
+      "summary": "The trusted base test rejects dirty, misattributed, inconsistent, and provider-counter-tampered reports.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "AF_Q3_TARGET_REVISION=ef9b2a0de67388e865ef0560ac26118a94821584 node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/q3-workload-boundaries.test.ts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "12e807d9b4351ad13f6a84c8ee327f8dbd4cb3eabe1fdee1738222769331393d",
+      "collectorRunRef": "fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584",
+      "target": {
+        "policyRef": "issue-286:search-workload-envelope",
+        "capabilityRef": "capability:lighthouse-search-workload",
+        "scenarioRefs": [
+          "scenario:q3-cold-u20",
+          "scenario:q3-sustained-open-1ps-60s",
+          "scenario:q3-controlled-u2-amplification"
+        ],
+        "factRefs": [
+          "coverage:workload-budget-negative-guard"
+        ]
+      }
+    },
+    {
+      "id": "workload-scenario-static:cold-u20",
+      "kind": "static",
+      "role": "workload-scenario-static",
+      "source": "docs/architecture-fitness/pilots/q3-workload/v6-active/cold-u20.report.json",
+      "sourceRevision": "ef9b2a0de67388e865ef0560ac26118a94821584",
+      "summary": "The locked report and relevant-source compatibility guard bind the declared arrival and profiles to this revision.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q3-workload.mjs --policy docs/architecture-fitness/pilots/issue-286-q3-workload.policy.json --revision ef9b2a0de67388e865ef0560ac26118a94821584 --run-ref fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584 --output docs/architecture-fitness/pilots/issue-286-q3-workload.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "774f68c85e3b52a089dd4520ac648dfd94c5a28786ee6f2f05eb65967dbc52dc",
+      "collectorRunRef": "fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584",
+      "target": {
+        "policyRef": "issue-286:search-workload-envelope",
+        "capabilityRef": "capability:lighthouse-search-workload",
+        "scenarioRefs": [
+          "scenario:q3-cold-u20"
+        ],
+        "factRefs": [
+          "scenario-config-sha256:a34edc26e0fea93b569c6378082d2d4736dec7432740b848f183fc47de7c271a"
+        ]
+      }
+    },
+    {
+      "id": "workload-measurement:cold-u20",
+      "kind": "test",
+      "role": "workload-measurement",
+      "source": "docs/architecture-fitness/pilots/q3-workload/v6-active/cold-u20.report.json",
+      "sourceRevision": "ef9b2a0de67388e865ef0560ac26118a94821584",
+      "summary": "The locked report supplies internally consistent completion, readiness, error, shed, and p95 facts.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q3-workload.mjs --policy docs/architecture-fitness/pilots/issue-286-q3-workload.policy.json --revision ef9b2a0de67388e865ef0560ac26118a94821584 --run-ref fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584 --output docs/architecture-fitness/pilots/issue-286-q3-workload.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "774f68c85e3b52a089dd4520ac648dfd94c5a28786ee6f2f05eb65967dbc52dc",
+      "collectorRunRef": "fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584",
+      "target": {
+        "policyRef": "issue-286:search-workload-envelope",
+        "capabilityRef": "capability:lighthouse-search-workload",
+        "scenarioRefs": [
+          "scenario:q3-cold-u20"
+        ],
+        "factRefs": [
+          "measurement:workload-observed",
+          "scenario-measurement-sha256:d0f485abf36f7ce5dae519ccbab6b4140f5c67832d5ecda251826117c99c62e8"
+        ]
+      }
+    },
+    {
+      "id": "workload-scenario-static:sustained-open-1ps-60s",
+      "kind": "static",
+      "role": "workload-scenario-static",
+      "source": "docs/architecture-fitness/pilots/q3-workload/v6-active/sustained-open-1ps-60s.report.json",
+      "sourceRevision": "ef9b2a0de67388e865ef0560ac26118a94821584",
+      "summary": "The locked report and relevant-source compatibility guard bind the declared arrival and profiles to this revision.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q3-workload.mjs --policy docs/architecture-fitness/pilots/issue-286-q3-workload.policy.json --revision ef9b2a0de67388e865ef0560ac26118a94821584 --run-ref fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584 --output docs/architecture-fitness/pilots/issue-286-q3-workload.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "75374af01f6e1357cd1856d216e73473fb12aeabc20ee5805d1430d33f3a9796",
+      "collectorRunRef": "fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584",
+      "target": {
+        "policyRef": "issue-286:search-workload-envelope",
+        "capabilityRef": "capability:lighthouse-search-workload",
+        "scenarioRefs": [
+          "scenario:q3-sustained-open-1ps-60s"
+        ],
+        "factRefs": [
+          "scenario-config-sha256:d1db7aa16d0f13cbc581927062728d36dd536171c06d6b0da1ac7d5286b04e00"
+        ]
+      }
+    },
+    {
+      "id": "workload-measurement:sustained-open-1ps-60s",
+      "kind": "test",
+      "role": "workload-measurement",
+      "source": "docs/architecture-fitness/pilots/q3-workload/v6-active/sustained-open-1ps-60s.report.json",
+      "sourceRevision": "ef9b2a0de67388e865ef0560ac26118a94821584",
+      "summary": "The locked report supplies internally consistent completion, readiness, error, shed, and p95 facts.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q3-workload.mjs --policy docs/architecture-fitness/pilots/issue-286-q3-workload.policy.json --revision ef9b2a0de67388e865ef0560ac26118a94821584 --run-ref fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584 --output docs/architecture-fitness/pilots/issue-286-q3-workload.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "75374af01f6e1357cd1856d216e73473fb12aeabc20ee5805d1430d33f3a9796",
+      "collectorRunRef": "fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584",
+      "target": {
+        "policyRef": "issue-286:search-workload-envelope",
+        "capabilityRef": "capability:lighthouse-search-workload",
+        "scenarioRefs": [
+          "scenario:q3-sustained-open-1ps-60s"
+        ],
+        "factRefs": [
+          "measurement:workload-observed",
+          "scenario-measurement-sha256:ff5c1e36a2a98710c04b1e847d9b9cbee32b07da5461cf822e792b185e45c347"
+        ]
+      }
+    },
+    {
+      "id": "workload-scenario-static:controlled-u2-amplification",
+      "kind": "static",
+      "role": "workload-scenario-static",
+      "source": "docs/architecture-fitness/pilots/q3-workload/v6-active/controlled-u2.report.json",
+      "sourceRevision": "ef9b2a0de67388e865ef0560ac26118a94821584",
+      "summary": "The locked report and relevant-source compatibility guard bind the declared arrival and profiles to this revision.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q3-workload.mjs --policy docs/architecture-fitness/pilots/issue-286-q3-workload.policy.json --revision ef9b2a0de67388e865ef0560ac26118a94821584 --run-ref fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584 --output docs/architecture-fitness/pilots/issue-286-q3-workload.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "b882734abd5683edfbc1555c5fd8c1fd3dcc6490e766a82b6e47fa2dfad9538f",
+      "collectorRunRef": "fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584",
+      "target": {
+        "policyRef": "issue-286:search-workload-envelope",
+        "capabilityRef": "capability:lighthouse-search-workload",
+        "scenarioRefs": [
+          "scenario:q3-controlled-u2-amplification"
+        ],
+        "factRefs": [
+          "scenario-config-sha256:0c4d1714d0c19719cf2b8068cd46aa68ac896b95608c793e9214b0e7404e6944"
+        ]
+      }
+    },
+    {
+      "id": "workload-measurement:controlled-u2-amplification",
+      "kind": "test",
+      "role": "workload-measurement",
+      "source": "docs/architecture-fitness/pilots/q3-workload/v6-active/controlled-u2.report.json",
+      "sourceRevision": "ef9b2a0de67388e865ef0560ac26118a94821584",
+      "summary": "The locked report supplies internally consistent completion, readiness, error, shed, and p95 facts.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q3-workload.mjs --policy docs/architecture-fitness/pilots/issue-286-q3-workload.policy.json --revision ef9b2a0de67388e865ef0560ac26118a94821584 --run-ref fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584 --output docs/architecture-fitness/pilots/issue-286-q3-workload.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "b882734abd5683edfbc1555c5fd8c1fd3dcc6490e766a82b6e47fa2dfad9538f",
+      "collectorRunRef": "fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584",
+      "target": {
+        "policyRef": "issue-286:search-workload-envelope",
+        "capabilityRef": "capability:lighthouse-search-workload",
+        "scenarioRefs": [
+          "scenario:q3-controlled-u2-amplification"
+        ],
+        "factRefs": [
+          "measurement:workload-observed",
+          "scenario-measurement-sha256:cfb4512e3dcbe7d1e84eda05963d186696e6137bd182539f4c6235b34f69c330"
+        ]
+      }
+    },
+    {
+      "id": "workload-provider-measurement:controlled-u2-amplification",
+      "kind": "test",
+      "role": "workload-provider-measurement",
+      "source": "docs/architecture-fitness/pilots/q3-workload/v6-active/controlled-u2.report.json#/providerFixtureEvidence",
+      "sourceRevision": "ef9b2a0de67388e865ef0560ac26118a94821584",
+      "summary": "The same locked report binds a fresh zero-baseline provider counter window to completed journeys.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q3-workload.mjs --policy docs/architecture-fitness/pilots/issue-286-q3-workload.policy.json --revision ef9b2a0de67388e865ef0560ac26118a94821584 --run-ref fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584 --output docs/architecture-fitness/pilots/issue-286-q3-workload.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "b882734abd5683edfbc1555c5fd8c1fd3dcc6490e766a82b6e47fa2dfad9538f",
+      "collectorRunRef": "fixture-run:issue-286-q3-workload:ef9b2a0de67388e865ef0560ac26118a94821584",
+      "target": {
+        "policyRef": "issue-286:search-workload-envelope",
+        "capabilityRef": "capability:lighthouse-search-workload",
+        "scenarioRefs": [
+          "scenario:q3-controlled-u2-amplification"
+        ],
+        "factRefs": [
+          "measurement:provider-observed",
+          "scenario-measurement-sha256:cfb4512e3dcbe7d1e84eda05963d186696e6137bd182539f4c6235b34f69c330"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation:q3-search-workload-envelope",
+      "policyRef": "issue-286:search-workload-envelope",
+      "capabilityRef": "capability:lighthouse-search-workload",
+      "completeness": "complete",
+      "coverageEvidenceRefs": [
+        "workload-coverage-static:q3",
+        "workload-coverage-negative-guard:q3"
+      ],
+      "scenarios": [
+        {
+          "id": "observed-scenario:cold-u20",
+          "scenarioRef": "scenario:q3-cold-u20",
+          "arrival": {
+            "model": "one-shot",
+            "concurrency": 20
+          },
+          "inputProfileRef": "input:typical-transformer-attention-first-session-v1",
+          "providerProfileRef": "provider:real-episteme-approved-20-window-20260717",
+          "topologyProfileRef": "topology:local-single-next-process-production-default-8x12",
+          "scheduledUnits": 20,
+          "admittedUnits": 20,
+          "completedUnits": 20,
+          "successfulUnits": 20,
+          "errorUnits": 0,
+          "shedUnits": 0,
+          "latency": {
+            "percentile": "p95",
+            "millis": 2370
+          },
+          "evidenceRefs": [
+            "workload-scenario-static:cold-u20",
+            "workload-measurement:cold-u20"
+          ]
+        },
+        {
+          "id": "observed-scenario:sustained-open-1ps-60s",
+          "scenarioRef": "scenario:q3-sustained-open-1ps-60s",
+          "arrival": {
+            "model": "sustained-open",
+            "durationMillis": 60000,
+            "warmupMillis": 0,
+            "cooldownPolicy": "drain-admitted",
+            "arrivalRateMilliPerSecond": 1000,
+            "maxInFlight": 20
+          },
+          "inputProfileRef": "input:typical-transformer-attention-first-session-v1",
+          "providerProfileRef": "provider:real-episteme-approved-20-window-20260717",
+          "topologyProfileRef": "topology:local-single-next-process-production-default-8x12",
+          "scheduledUnits": 60,
+          "admittedUnits": 60,
+          "completedUnits": 60,
+          "successfulUnits": 60,
+          "errorUnits": 0,
+          "shedUnits": 0,
+          "latency": {
+            "percentile": "p95",
+            "millis": 822
+          },
+          "evidenceRefs": [
+            "workload-scenario-static:sustained-open-1ps-60s",
+            "workload-measurement:sustained-open-1ps-60s"
+          ]
+        },
+        {
+          "id": "observed-scenario:controlled-u2-amplification",
+          "scenarioRef": "scenario:q3-controlled-u2-amplification",
+          "arrival": {
+            "model": "one-shot",
+            "concurrency": 2
+          },
+          "inputProfileRef": "input:deterministic-3-paper-v1",
+          "providerProfileRef": "provider:local-fixture-healthy-v1",
+          "topologyProfileRef": "topology:local-single-next-process",
+          "scheduledUnits": 2,
+          "admittedUnits": 2,
+          "completedUnits": 2,
+          "successfulUnits": 2,
+          "errorUnits": 0,
+          "shedUnits": 0,
+          "latency": {
+            "percentile": "p95",
+            "millis": 129
+          },
+          "provider": {
+            "requestCount": 4,
+            "successCount": 4,
+            "failureCount": 0
+          },
+          "evidenceRefs": [
+            "workload-scenario-static:controlled-u2-amplification",
+            "workload-measurement:controlled-u2-amplification",
+            "workload-provider-measurement:controlled-u2-amplification"
+          ]
+        }
+      ]
+    }
+  ]
+}

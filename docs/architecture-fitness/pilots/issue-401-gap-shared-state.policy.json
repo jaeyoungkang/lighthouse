@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-policy",
+  "service": {
+    "id": "lighthouse",
+    "repository": "https://github.com/corca-ai/lighthouse.git",
+    "adapterRef": "scripts/architecture-fitness/collect-gap-shared-state-boundary.mjs"
+  },
+  "policySet": {
+    "id": "issue-401-gap-shared-state-boundary",
+    "version": "2026-08-05.v2",
+    "scope": "the executable creator-less gap artifact body, viewer-scoped reaction preference, artifact id and source-digest identities, and destination-owned /gap/:id handoff carrier authorized by issues #277, #283, and #275",
+    "owner": "Lighthouse gap shared-artifact state boundary",
+    "source": "https://github.com/corca-ai/lighthouse/issues/277",
+    "sourceRevision": "human:2026-08-05:issues-277-283-275",
+    "collectorAuthority": {
+      "adapterRef": "scripts/architecture-fitness/collect-gap-shared-state-boundary.mjs",
+      "id": "lighthouse-issue-401-gap-shared-state-collector",
+      "version": "2",
+      "scope": "materialized exact-revision active gap schema, sole direct table repository owner, strict gap DTO, creator-less and viewer-independent artifact schema, row and insert projection, shared reads and writes, viewer preference composite key and CAS predicates, canonical content digest, id-only API response and /gap/:id destination carrier, exact-revision focused product tests, and bounded ownership, tuple, identity, and carrier negative mutations",
+      "definitionDigest": "567df2d20bba9d834a86fc1c6e503cfe0c39387baaf9492012a6080723b15487",
+      "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+      "attestationKeyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1"
+    }
+  },
+  "coverage": [
+    {
+      "id": "coverage:issue-401-gap-shared-artifact-state-boundary",
+      "lens": "Q1 gap shared-artifact and viewer-preference state boundary",
+      "status": "included",
+      "owner": "Lighthouse gap shared-artifact state boundary",
+      "reason": "Architecture Fitness v0.5 supports this bounded state-authority, carrier, coordination, and canonical-identity implementation slice.",
+      "reentryTrigger": "Re-collect when the active gap migration, direct table owner, gap DTO, source digest, reservation/read/update predicates, preference key/CAS, API handoff, destination route carrier, collector, or negative guard changes.",
+      "policyRefs": ["issue-401:gap-shared-artifact-viewer-state-boundary"]
+    },
+    {
+      "id": "coverage:issue-410-gap-database-rls",
+      "lens": "Q1 database-enforced member access and viewer isolation",
+      "status": "unsupported",
+      "owner": "Lighthouse database authorization boundary",
+      "reason": "Issue #410 remains open and this collector cannot prove database-enforced RLS policy behavior from service-role source inspection.",
+      "reentryTrigger": "Re-enter after issue #410 supplies executable database-policy evidence and a supported Architecture Fitness case.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:gap-build-lifecycle-and-recovery",
+      "lens": "Q1 gap generation lifecycle and recovery ownership",
+      "status": "excluded",
+      "owner": "Lighthouse gap runtime flow",
+      "reason": "Build scheduling, lease recovery, and provider execution are separate lifecycle and critical-path cases; this slice includes only the already-produced destination handoff carrier.",
+      "reentryTrigger": "Open a separate supported lifecycle or critical-path case when build scheduling or recovery ownership is reviewed.",
+      "policyRefs": []
+    }
+  ],
+  "policies": [
+    {
+      "id": "issue-401:gap-shared-artifact-viewer-state-boundary",
+      "caseKind": "state-boundary",
+      "question": "Does the gap path keep the durable artifact creator-less and globally content-addressed, keep reaction preference viewer-scoped by (gap_report_id, viewer_principal_id), reject retired ownerPrincipalId in the gap DTO, and hand off only the artifact id to /gap/:id?",
+      "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+      "owner": "Lighthouse gap shared-artifact state",
+      "desired": "The persisted body belongs to gap_reports and has no creator owner; viewer preference belongs to gap_report_reactions; artifact id and source digest remain viewer-independent; the preference tuple is viewer-specific; the POST response and destination URL carry the artifact id without creating another lifecycle authority.",
+      "stateRules": [
+        {
+          "id": "state:gap-shared-artifact-body",
+          "required": true,
+          "authorityRefs": ["authority:gap-reports-row"],
+          "coordinationRefs": ["coordination:gap-source-digest-unique-reservation"],
+          "requiredCarrierRefs": ["carrier:gap-reports-row", "carrier:gap-network-view", "carrier:gap-destination-route"],
+          "allowedCarrierRefs": ["carrier:gap-reports-row", "carrier:gap-network-view", "carrier:gap-destination-route"],
+          "requiredEvidenceRoles": ["state-static", "state-test"]
+        },
+        {
+          "id": "state:gap-viewer-preference",
+          "required": true,
+          "authorityRefs": ["authority:gap-viewer-preference-row"],
+          "coordinationRefs": ["coordination:artifact-and-reaction-version-cas"],
+          "requiredCarrierRefs": ["carrier:gap-report-reactions-row", "carrier:viewer-gap-projection"],
+          "allowedCarrierRefs": ["carrier:gap-report-reactions-row", "carrier:viewer-gap-projection"],
+          "requiredEvidenceRoles": ["state-static", "state-test"]
+        }
+      ],
+      "canonicalIdentities": [
+        {
+          "id": "identity:gap-artifact-id",
+          "requiredStateRefs": ["state:gap-shared-artifact-body"],
+          "forbiddenStateRefs": ["state:gap-viewer-preference"],
+          "normalizationRefs": ["normalization:gap-report-uuid-v1"],
+          "requiredEvidenceRoles": ["identity-static", "identity-test"]
+        },
+        {
+          "id": "identity:gap-source-digest",
+          "requiredStateRefs": ["state:gap-shared-artifact-body"],
+          "forbiddenStateRefs": ["state:gap-viewer-preference"],
+          "normalizationRefs": ["normalization:canonical-gap-source-sha256-v2"],
+          "requiredEvidenceRoles": ["identity-static", "identity-test"]
+        },
+        {
+          "id": "identity:gap-viewer-preference",
+          "requiredStateRefs": ["state:gap-shared-artifact-body", "state:gap-viewer-preference"],
+          "forbiddenStateRefs": [],
+          "normalizationRefs": ["normalization:gap-report-viewer-tuple-v1"],
+          "requiredEvidenceRoles": ["identity-static", "identity-test"]
+        }
+      ],
+      "verificationPlan": [
+        "Collect the exact-revision active migration, repository/DTO/digest/handoff inventory, reject bounded ownership and identity mutations, execute focused product tests, and leave local evidence unsigned for protected-host attestation."
+      ]
+    }
+  ]
+}

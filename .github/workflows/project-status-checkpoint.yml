@@ -1,0 +1,56 @@
+name: Project Status Checkpoint
+
+on:
+  workflow_dispatch:
+    inputs:
+      lane:
+        description: Tracker lane to synchronize
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - process
+          - search
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: project-status-checkpoint
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - name: Validate active tracker configuration
+        id: check
+        # Exit code 2 means the tracker period is inactive. A push run treats
+        # that as a skip; every other failure (config regression) stays red on
+        # both push and manual dispatch.
+        run: |
+          set +e
+          npm run project-status -- check
+          code=$?
+          set -e
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" = "2" ] && [ "${{ github.event_name }}" = "push" ]; then
+            echo "::notice::Project status checkpoint skipped — the active tracker period is inactive for this push (docs/project-status.md § 자동화 경계)."
+            exit 0
+          fi
+          exit "$code"
+      - name: Synchronize mechanical checkpoint blocks
+        if: steps.check.outputs.code == '0'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TRACKER_LANE: ${{ inputs.lane || 'all' }}
+        run: npm run project-status -- sync --lane "$TRACKER_LANE"

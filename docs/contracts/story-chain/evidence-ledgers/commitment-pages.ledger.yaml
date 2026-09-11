@@ -1,0 +1,85 @@
+schemaVersion: 2
+slug: commitment-pages
+review: reviews/commitment-pages.reviews.md
+sourcePromises:
+  - promise:researcher-prose-promises-page
+appliedAspects:
+  - aspect:user-facing-language-governance
+  - aspect:ux-writing-voice-and-tone
+intentJudgmentRefs:
+  - promise: promise:researcher-prose-promises-page
+    anchor: promise:researcher-prose-promises-page
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:researcher-prose-promises-page#acceptance-check:researcher-prose-promises-page-public-page-with-core-promise-paragraphs
+    assertion: "`/about/promises` renders six researcher-facing commitment paragraphs."
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:researcher-prose-promises-page#acceptance-check:researcher-prose-promises-page-hidden-footnoted-references
+    assertion: Visible prose omits contract ids while hidden references preserve each source Promise.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:researcher-prose-promises-page#acceptance-check:researcher-prose-promises-page-user-centered-identity-prose
+    assertion: The opening paragraph explains the researcher decision scene in user-centered language.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:researcher-prose-promises-page#acceptance-check:researcher-prose-promises-page-footnote-section-with-promise-keys
+    assertion: The footnote section exposes the original Promise keys.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:researcher-prose-promises-page#acceptance-check:researcher-prose-promises-page-user-text-via-i18n
+    assertion: Public commitment copy is provided through `commitment.*` message keys and guarded against hardcoded Korean.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios: []
+  - key: promise:researcher-prose-promises-page#acceptance-check:researcher-prose-promises-page-required-value-facets-covered
+    assertion: Required value facets match paragraph configuration and rendered `data-value-facets`.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:researcher-prose-promises-page#acceptance-check:researcher-prose-promises-page-search-mechanism-explainer
+    assertion: "`/about/search` explains co-equal keyword and internal reviewed-papers library-graph inputs, automatic unified ranking without a basis toggle, the single `내 연구와 가까움` marker for positive library-proximity evidence regardless of keyword membership, the absence of keyword/source taxonomy markers, equal-max query/relation scoring, and no internal provider identifiers."
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:researcher-prose-promises-page#acceptance-check:researcher-prose-promises-page-gap-network-explainer
+    assertion: "`/about/gap-network` explains gap candidates through the core relation map."
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:researcher-prose-promises-page#acceptance-check:researcher-prose-promises-page-graph-explainer
+    assertion: "`/about/graph/sample` presents a fixed scholarly relation example without claiming to reproduce search runtime."
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:researcher-prose-promises-page#acceptance-check:researcher-prose-promises-page-ai-comment-type-explainer
+    assertion: "`/about/ai-comments` explains the input scope of each public research-route comment shape."
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/about/__tests__/promises-page.test.tsx
+      - app/about/__tests__/search-mechanism-page.test.tsx
+      - app/about/__tests__/gap-network-mechanism-page.test.tsx
+      - app/about/__tests__/graph-sample-page.test.tsx
+      - app/about/__tests__/ai-comments-page.test.tsx
+      - app/server/services/__tests__/paper-neighborhood.test.ts
+  - id: execution:run-002
+    kind: guard
+    script: guard:korean
+implementationContracts:
+  - "`/about/promises` is the public researcher-facing commitment surface."
+  - "`/about/search`, `/about/gap-network`, `/about/graph/sample`, and `/about/ai-comments` own the public mechanism explanations."
+  - Public copy is i18n-managed and does not expose internal route, provider, or contract identifiers as product prose.
+verdict: met

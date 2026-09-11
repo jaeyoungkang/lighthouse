@@ -1,0 +1,133 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-policy",
+  "service": {
+    "id": "lighthouse",
+    "repository": "https://github.com/corca-ai/lighthouse.git",
+    "adapterRef": "scripts/architecture-fitness/collect-q5-cache-lifecycle.mjs"
+  },
+  "policySet": {
+    "id": "issue-298-q5-cache-lifecycle",
+    "version": "2026-07-28.v5",
+    "scope": "preset-title process-local cache lifecycle and same-id concurrent fill",
+    "owner": "Lighthouse architecture owner",
+    "source": "docs/architecture-fitness/q5-cache-policy.md",
+    "sourceRevision": "human:2026-07-28:reviewed-papers-live-source",
+    "collectorAuthority": {
+      "adapterRef": "scripts/architecture-fitness/collect-q5-cache-lifecycle.mjs",
+      "id": "lighthouse-issue-298-q5-cache-lifecycle-collector",
+      "version": "4",
+      "scope": "exact-revision preset-title source policy and collector-authority concurrent-fill probe",
+      "definitionDigest": "1acf7ab50cac6dc81f43380cce0515893437278c1f7cd77f7db815076c8571f5",
+      "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+      "attestationKeyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1"
+    }
+  },
+  "coverage": [
+    {
+      "id": "coverage:issue-298-preset-title-cache-lifecycle",
+      "lens": "Q5 preset-title process-local cache policy and concurrent fill",
+      "status": "included",
+      "owner": "Lighthouse architecture owner",
+      "reason": "The bounded preset-title cache has an exact source policy and a collector-authority probe for same-id fill and caller-abort isolation.",
+      "reentryTrigger": "Re-collect when the preset-title source, key, freshness, invalidation, failure, fill control, scope, or probe changes.",
+      "policyRefs": ["issue-298:preset-title-cache-lifecycle"]
+    },
+    {
+      "id": "coverage:issue-298-reviewed-papers-fleet",
+      "lens": "Q5 reviewed-papers live database source across deployment instances",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "The owner-scoped direct-read contract and deterministic mutation tests do not expose production database availability, read latency, pool pressure, or instance-attributed failure behavior.",
+      "reentryTrigger": "Collect the #321 exact-deployment reviewed-papers read latency, failure, and pool-pressure window when traffic and instance identity are observable.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-298-inline-analysis-fleet",
+      "lens": "Q5 inline-analysis multi-instance lease and duplicate generation",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "DB lease tests prove deterministic ownership but not production multi-instance owner failure, waiter latency, or duplicate provider generation.",
+      "reentryTrigger": "Collect #321 multi-instance failure-injection and load evidence.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-298-cache-cleanup-effects",
+      "lens": "Q5 inline-analysis retention cleanup effects",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "The 2026-07-15 baseline had no cleanup-eligible rows, so lock, size, pool, and route effects have not been observed.",
+      "reentryTrigger": "Execute #319 after 2026-07-31T00:44:32Z and record pre/post aggregate evidence.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-298-production-cache-observability",
+      "lens": "Q5 production hit, fill, failure, heap, pool, and cost behavior",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "The read-only production snapshot had no preset-title observation denominator and no historical pool series.",
+      "reentryTrigger": "Collect two complete low-traffic windows with exact deployment attribution; separate Episteme maintenance failures through early August 2026.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:q5-process-effectiveness",
+      "lens": "Architecture Fitness Q5 process effectiveness",
+      "status": "unsupported",
+      "owner": "Lighthouse agent-process owner",
+      "reason": "Machine cache conformance cannot decide whether Q5 authoring and maintenance cost is proportionate to release-decision value.",
+      "reentryTrigger": "Audit unique findings, false positives, runtime, and maintenance volume at integrated Q1-Q5 closeout.",
+      "policyRefs": []
+    }
+  ],
+  "policies": [
+    {
+      "id": "issue-298:preset-title-cache-lifecycle",
+      "caseKind": "cache-lifecycle",
+      "question": "Does the preset-title cache preserve its approved process-local lifecycle and same-id concurrent-fill outcome?",
+      "capabilityRef": "capability:lighthouse-preset-title-display",
+      "owner": "Lighthouse library anchor display service",
+      "desired": "Preset titles use a bounded process-local cache with short negative freshness, caller-isolated deadlines, and one provider fill per same-id process miss.",
+      "cacheRules": [
+        {
+          "id": "cache:lighthouse-preset-title",
+          "required": true,
+          "sourceOwnerRef": "source:episteme-paper-title",
+          "requiredKeyRefs": ["key:public-raw-paper-id"],
+          "freshnessRef": "freshness:positive-900000ms-negative-30000ms",
+          "requiredInvalidationRefs": ["invalidation:ttl-expiry", "invalidation:lru-capacity-1024"],
+          "missRef": "miss:provider-fill-deadline-800ms",
+          "negativeResultRef": "negative:cache-null-30000ms",
+          "failureRef": "failure:do-not-cache-timeout-or-provider-error",
+          "fillControlRef": "fill:process-single-flight-per-id",
+          "sharingScope": "process",
+          "persistenceScope": "ephemeral",
+          "requiredEvidenceRoles": [
+            "cache-lifecycle-policy-static",
+            "cache-lifecycle-behavior-test"
+          ]
+        }
+      ],
+      "lifecycleScenarios": [
+        {
+          "id": "scenario:lighthouse-preset-title-concurrent-fill",
+          "required": true,
+          "cacheRef": "cache:lighthouse-preset-title",
+          "scenarioKind": "concurrent-fill",
+          "requiredOutcomeRefs": [
+            "outcome:one-provider-fill",
+            "outcome:waiters-share-title",
+            "outcome:caller-abort-isolated"
+          ],
+          "forbiddenOutcomeRefs": [
+            "outcome:duplicate-provider-fill",
+            "outcome:caller-cancels-shared-fill"
+          ],
+          "requiredEvidenceRoles": ["cache-lifecycle-scenario-test"]
+        }
+      ],
+      "verificationPlan": [
+        "Collect exact-revision cache policy facts, execute the collector-authority same-id and caller-abort probe without secrets, and preserve fleet and production evidence as separate unknown coverage."
+      ]
+    }
+  ]
+}

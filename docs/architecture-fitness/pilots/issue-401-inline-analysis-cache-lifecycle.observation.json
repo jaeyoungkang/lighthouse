@@ -1,0 +1,305 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-observation",
+  "serviceId": "lighthouse",
+  "policySetRef": "issue-401-inline-analysis-cache-lifecycle",
+  "policySetVersion": "2026-09-03.v3",
+  "policyDigest": "fa865c57799d0daa95cec47353f3ae80f79a431bbf65a713d4601757a9295cbd",
+  "revision": "7e74607c40d1824e5b359daf93c386e02c1eb4e5",
+  "collector": {
+    "adapterRef": "scripts/architecture-fitness/collect-inline-analysis-cache-lifecycle.mjs",
+    "id": "lighthouse-issue-401-inline-analysis-cache-lifecycle-collector",
+    "version": "3",
+    "scope": "exact-revision inline-analysis identity including the ordered three-column database uniqueness key, ready-hit, claim, local coalescing, and explicit-retry failure-fence probe",
+    "definitionDigest": "8440a9c15786a559bf336bb817d8788f342a837c02ad5b51b1f92996ac5cbf9d",
+    "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+    "runRef": "fixture-run:issue-401-inline-analysis-cache-lifecycle-v3-definition-rebind:7e74607c",
+    "command": "node scripts/architecture-fitness/collect-inline-analysis-cache-lifecycle.mjs --policy docs/architecture-fitness/pilots/issue-401-inline-analysis-cache-lifecycle.policy.json --revision 7e74607c40d1824e5b359daf93c386e02c1eb4e5 --run-ref fixture-run:issue-401-inline-analysis-cache-lifecycle-v3-definition-rebind:7e74607c",
+    "attestation": {
+      "algorithm": "hmac-sha256",
+      "keyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1",
+      "payloadDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "evidence": [
+    {
+      "id": "cache-lifecycle-coverage-static:inline-analysis",
+      "kind": "static",
+      "role": "cache-lifecycle-coverage-static",
+      "source": "docs/runtime-flows/search-background-enrichment.md",
+      "sourceRevision": "7e74607c40d1824e5b359daf93c386e02c1eb4e5",
+      "summary": "The bounded inventory contains only deterministic inline-analysis identity, fill, subscriber, and failure-fence scenarios.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-inline-analysis-cache-lifecycle.mjs --policy docs/architecture-fitness/pilots/issue-401-inline-analysis-cache-lifecycle.policy.json --revision 7e74607c40d1824e5b359daf93c386e02c1eb4e5 --run-ref fixture-run:issue-401-inline-analysis-cache-lifecycle-v3-definition-rebind:7e74607c",
+      "commandExitCode": 0,
+      "artifactDigest": "5259f359efb9dcc5ef0e7b39cbc2686c260b16ade2872cf6d09304dec7fe2e12",
+      "collectorRunRef": "fixture-run:issue-401-inline-analysis-cache-lifecycle-v3-definition-rebind:7e74607c",
+      "target": {
+        "policyRef": "issue-401:inline-analysis-cache-lifecycle",
+        "capabilityRef": "capability:lighthouse-inline-analysis",
+        "cacheRefs": [
+          "cache:lighthouse-paper-inline-analysis-shared-artifact"
+        ],
+        "lifecycleScenarioRefs": [
+          "scenario:lighthouse-inline-analysis-source-change",
+          "scenario:lighthouse-inline-analysis-concurrent-fill",
+          "scenario:lighthouse-inline-analysis-fill-failure"
+        ],
+        "factRefs": [
+          "coverage:all-cache-lifecycle-objects"
+        ]
+      }
+    },
+    {
+      "id": "cache-lifecycle-coverage-negative-guard:inline-analysis",
+      "kind": "test",
+      "role": "cache-lifecycle-coverage-negative-guard",
+      "source": "scripts/architecture-fitness/__tests__/inline-analysis-cache-lifecycle-boundaries.test.ts",
+      "sourceRevision": "7e74607c40d1824e5b359daf93c386e02c1eb4e5",
+      "summary": "The collector-authority guard detects identity, claim, subscriber, failure-fence, and unsupported-scope mutations.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/inline-analysis-cache-lifecycle-boundaries.test.ts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "1e74acc6ab586b5479787f86a8b84f4e53f0c4093f52b1352fa4bbf272e28a0b",
+      "collectorRunRef": "fixture-run:issue-401-inline-analysis-cache-lifecycle-v3-definition-rebind:7e74607c",
+      "target": {
+        "policyRef": "issue-401:inline-analysis-cache-lifecycle",
+        "capabilityRef": "capability:lighthouse-inline-analysis",
+        "cacheRefs": [
+          "cache:lighthouse-paper-inline-analysis-shared-artifact"
+        ],
+        "lifecycleScenarioRefs": [
+          "scenario:lighthouse-inline-analysis-source-change",
+          "scenario:lighthouse-inline-analysis-concurrent-fill",
+          "scenario:lighthouse-inline-analysis-fill-failure"
+        ],
+        "factRefs": [
+          "coverage:cache-lifecycle-negative-guard"
+        ]
+      }
+    },
+    {
+      "id": "cache-lifecycle-policy-static:inline-analysis",
+      "kind": "static",
+      "role": "cache-lifecycle-policy-static",
+      "source": "app/server/domain-access/inline-analysis-identity.ts",
+      "sourceRevision": "7e74607c40d1824e5b359daf93c386e02c1eb4e5",
+      "summary": "The collector normalizes exact source identity, version freshness, ready-only reuse, DB claim, failure, fill control, and storage scope facts.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-inline-analysis-cache-lifecycle.mjs --policy docs/architecture-fitness/pilots/issue-401-inline-analysis-cache-lifecycle.policy.json --revision 7e74607c40d1824e5b359daf93c386e02c1eb4e5 --run-ref fixture-run:issue-401-inline-analysis-cache-lifecycle-v3-definition-rebind:7e74607c",
+      "commandExitCode": 0,
+      "artifactDigest": "5259f359efb9dcc5ef0e7b39cbc2686c260b16ade2872cf6d09304dec7fe2e12",
+      "collectorRunRef": "fixture-run:issue-401-inline-analysis-cache-lifecycle-v3-definition-rebind:7e74607c",
+      "target": {
+        "policyRef": "issue-401:inline-analysis-cache-lifecycle",
+        "capabilityRef": "capability:lighthouse-inline-analysis",
+        "cacheRefs": [
+          "cache:lighthouse-paper-inline-analysis-shared-artifact"
+        ],
+        "lifecycleScenarioRefs": [],
+        "factRefs": [
+          "cache-observation-sha256:db6b15add940e7ce3ac7d04b98fbdca2e21dbfe25de44f950929bbc55bc86666",
+          "structure:cache-policy-observed"
+        ]
+      }
+    },
+    {
+      "id": "cache-lifecycle-behavior-test:inline-analysis",
+      "kind": "test",
+      "role": "cache-lifecycle-behavior-test",
+      "source": "scripts/architecture-fitness/__tests__/inline-analysis-cache-lifecycle-probe.test.ts",
+      "sourceRevision": "7e74607c40d1824e5b359daf93c386e02c1eb4e5",
+      "summary": "The trusted harness executes the exact-revision inline-analysis production resolution seam with controlled repository and provider effects.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "AF_Q5_TARGET_ROOT=<revision:7e74607c40d1824e5b359daf93c386e02c1eb4e5> node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/inline-analysis-cache-lifecycle-probe.test.ts --config scripts/architecture-fitness/q5-vitest.config.mts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "dd18c4deb7fdd18b5819b8540734b9dc9ab5549ca3f12427f0f32e1349b8bffd",
+      "collectorRunRef": "fixture-run:issue-401-inline-analysis-cache-lifecycle-v3-definition-rebind:7e74607c",
+      "target": {
+        "policyRef": "issue-401:inline-analysis-cache-lifecycle",
+        "capabilityRef": "capability:lighthouse-inline-analysis",
+        "cacheRefs": [
+          "cache:lighthouse-paper-inline-analysis-shared-artifact"
+        ],
+        "lifecycleScenarioRefs": [],
+        "factRefs": [
+          "cache-observation-sha256:db6b15add940e7ce3ac7d04b98fbdca2e21dbfe25de44f950929bbc55bc86666",
+          "behavior:cache-lifecycle-observed"
+        ]
+      }
+    },
+    {
+      "id": "cache-lifecycle-scenario-test:inline-analysis:source-change",
+      "kind": "test",
+      "role": "cache-lifecycle-scenario-test",
+      "source": "scripts/architecture-fitness/__tests__/inline-analysis-cache-lifecycle-probe.test.ts",
+      "sourceRevision": "7e74607c40d1824e5b359daf93c386e02c1eb4e5",
+      "summary": "The probe records the deterministic source-change outcomes without declaring a verdict.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "AF_Q5_TARGET_ROOT=<revision:7e74607c40d1824e5b359daf93c386e02c1eb4e5> node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/inline-analysis-cache-lifecycle-probe.test.ts --config scripts/architecture-fitness/q5-vitest.config.mts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "dd18c4deb7fdd18b5819b8540734b9dc9ab5549ca3f12427f0f32e1349b8bffd",
+      "collectorRunRef": "fixture-run:issue-401-inline-analysis-cache-lifecycle-v3-definition-rebind:7e74607c",
+      "target": {
+        "policyRef": "issue-401:inline-analysis-cache-lifecycle",
+        "capabilityRef": "capability:lighthouse-inline-analysis",
+        "cacheRefs": [
+          "cache:lighthouse-paper-inline-analysis-shared-artifact"
+        ],
+        "lifecycleScenarioRefs": [
+          "scenario:lighthouse-inline-analysis-source-change"
+        ],
+        "factRefs": [
+          "cache-scenario-observation-sha256:80677317b72b10a49e4cd7e2c956412cf4b451718e5ef5127684ef719d2b163e",
+          "behavior:cache-scenario-observed"
+        ]
+      }
+    },
+    {
+      "id": "cache-lifecycle-scenario-test:inline-analysis:concurrent-fill",
+      "kind": "test",
+      "role": "cache-lifecycle-scenario-test",
+      "source": "scripts/architecture-fitness/__tests__/inline-analysis-cache-lifecycle-probe.test.ts",
+      "sourceRevision": "7e74607c40d1824e5b359daf93c386e02c1eb4e5",
+      "summary": "The probe records the deterministic concurrent-fill outcomes without declaring a verdict.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "AF_Q5_TARGET_ROOT=<revision:7e74607c40d1824e5b359daf93c386e02c1eb4e5> node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/inline-analysis-cache-lifecycle-probe.test.ts --config scripts/architecture-fitness/q5-vitest.config.mts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "dd18c4deb7fdd18b5819b8540734b9dc9ab5549ca3f12427f0f32e1349b8bffd",
+      "collectorRunRef": "fixture-run:issue-401-inline-analysis-cache-lifecycle-v3-definition-rebind:7e74607c",
+      "target": {
+        "policyRef": "issue-401:inline-analysis-cache-lifecycle",
+        "capabilityRef": "capability:lighthouse-inline-analysis",
+        "cacheRefs": [
+          "cache:lighthouse-paper-inline-analysis-shared-artifact"
+        ],
+        "lifecycleScenarioRefs": [
+          "scenario:lighthouse-inline-analysis-concurrent-fill"
+        ],
+        "factRefs": [
+          "cache-scenario-observation-sha256:f9674dd0baa820956a0b009c04f34592d47ef9b7581f1e3bd1dde1f4e7d15a85",
+          "behavior:cache-scenario-observed"
+        ]
+      }
+    },
+    {
+      "id": "cache-lifecycle-scenario-test:inline-analysis:fill-failure",
+      "kind": "test",
+      "role": "cache-lifecycle-scenario-test",
+      "source": "scripts/architecture-fitness/__tests__/inline-analysis-cache-lifecycle-probe.test.ts",
+      "sourceRevision": "7e74607c40d1824e5b359daf93c386e02c1eb4e5",
+      "summary": "The probe records the deterministic fill-failure outcomes without declaring a verdict.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "AF_Q5_TARGET_ROOT=<revision:7e74607c40d1824e5b359daf93c386e02c1eb4e5> node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/inline-analysis-cache-lifecycle-probe.test.ts --config scripts/architecture-fitness/q5-vitest.config.mts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "dd18c4deb7fdd18b5819b8540734b9dc9ab5549ca3f12427f0f32e1349b8bffd",
+      "collectorRunRef": "fixture-run:issue-401-inline-analysis-cache-lifecycle-v3-definition-rebind:7e74607c",
+      "target": {
+        "policyRef": "issue-401:inline-analysis-cache-lifecycle",
+        "capabilityRef": "capability:lighthouse-inline-analysis",
+        "cacheRefs": [
+          "cache:lighthouse-paper-inline-analysis-shared-artifact"
+        ],
+        "lifecycleScenarioRefs": [
+          "scenario:lighthouse-inline-analysis-fill-failure"
+        ],
+        "factRefs": [
+          "cache-scenario-observation-sha256:d0ca2fb213c296768d6b9b4c86e55198fe7ba8b1534b4c8ea22ece232193e5cb",
+          "behavior:cache-scenario-observed"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation:issue-401-inline-analysis-cache-lifecycle",
+      "policyRef": "issue-401:inline-analysis-cache-lifecycle",
+      "capabilityRef": "capability:lighthouse-inline-analysis",
+      "completeness": "complete",
+      "coverageEvidenceRefs": [
+        "cache-lifecycle-coverage-static:inline-analysis",
+        "cache-lifecycle-coverage-negative-guard:inline-analysis"
+      ],
+      "caches": [
+        {
+          "id": "observed-lighthouse-paper-inline-analysis-shared-artifact",
+          "cacheRef": "cache:lighthouse-paper-inline-analysis-shared-artifact",
+          "sourceOwnerRef": "source:provider-paper-title-abstract-year",
+          "keyRefs": [
+            "key:paper-id",
+            "key:inline-analysis-version",
+            "key:canonical-input-fingerprint"
+          ],
+          "freshnessRef": "freshness:exact-input-fingerprint-and-analysis-version-no-time-ttl",
+          "invalidationRefs": [
+            "invalidation:canonical-input-fingerprint-change",
+            "invalidation:inline-analysis-version-change"
+          ],
+          "missRef": "miss:exact-identity-db-claim-before-provider-fill",
+          "negativeResultRef": "negative:no-ready-artifact-without-usable-abstract",
+          "failureRef": "failure:durable-explicit-retry-fence-never-ready-artifact",
+          "fillControlRef": "fill:exact-identity-db-token-lease-plus-process-subscriber-coalescing",
+          "sharingScope": "fleet",
+          "persistenceScope": "durable",
+          "evidenceRefs": [
+            "cache-lifecycle-policy-static:inline-analysis",
+            "cache-lifecycle-behavior-test:inline-analysis"
+          ]
+        }
+      ],
+      "lifecycleScenarios": [
+        {
+          "id": "observed-lighthouse-inline-analysis-source-change",
+          "scenarioRef": "scenario:lighthouse-inline-analysis-source-change",
+          "cacheRef": "cache:lighthouse-paper-inline-analysis-shared-artifact",
+          "scenarioKind": "source-change",
+          "outcomeRefs": [
+            "outcome:canonical-whitespace-shares-fingerprint",
+            "outcome:content-or-year-change-separates-fingerprint",
+            "outcome:analysis-version-participates-in-identity"
+          ],
+          "evidenceRefs": [
+            "cache-lifecycle-scenario-test:inline-analysis:source-change"
+          ]
+        },
+        {
+          "id": "observed-lighthouse-inline-analysis-concurrent-fill",
+          "scenarioRef": "scenario:lighthouse-inline-analysis-concurrent-fill",
+          "cacheRef": "cache:lighthouse-paper-inline-analysis-shared-artifact",
+          "scenarioKind": "concurrent-fill",
+          "outcomeRefs": [
+            "outcome:ready-hit-bypasses-provider",
+            "outcome:miss-claims-before-provider",
+            "outcome:unclaimed-worker-waits-without-provider",
+            "outcome:caller-abort-isolated"
+          ],
+          "evidenceRefs": [
+            "cache-lifecycle-scenario-test:inline-analysis:concurrent-fill"
+          ]
+        },
+        {
+          "id": "observed-lighthouse-inline-analysis-fill-failure",
+          "scenarioRef": "scenario:lighthouse-inline-analysis-fill-failure",
+          "cacheRef": "cache:lighthouse-paper-inline-analysis-shared-artifact",
+          "scenarioKind": "fill-failure",
+          "outcomeRefs": [
+            "outcome:failure-state-is-not-ready-artifact",
+            "outcome:automatic-retry-is-fenced",
+            "outcome:explicit-retry-opens-new-claim"
+          ],
+          "evidenceRefs": [
+            "cache-lifecycle-scenario-test:inline-analysis:fill-failure"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+schemaVersion: 2
+slug: llm-usage-observability
+review: reviews/llm-usage-observability.reviews.md
+sourcePromises:
+  - promise:llm-usage-observability
+appliedAspects: []
+intentJudgmentRefs:
+  - promise: promise:llm-usage-observability
+    anchor: promise:llm-usage-observability
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:llm-usage-observability#acceptance-check:llm-usage-observability-execute-judgment-ledger
+    assertion: "`executeJudgment` records provider-returned success/empty/aborted usage through an optional trusted ledger; route/domain-access owners inject DB and principal context, while the recorder allowlists metadata and keeps prompt/output bodies out."
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/server/ai-generation/__tests__/judgment.test.ts
+      - app/server/domain-access/__tests__/llm-usage-access.test.ts
+      - app/server/repository/__tests__/llm-usage-events.test.ts
+      - app/server/services/__tests__/inline-analysis-service.test.ts
+      - app/server/domain-access/__tests__/inline-analysis-access.test.ts
+      - app/api/search/term-discovery/__tests__/route.test.ts
+      - app/server/domain-access/__tests__/gap-network-view-access.runner.test.ts
+implementationContracts:
+  - Usage recording remains optional for `executeJudgment`; callers without a trusted DB/principal context retain structured diagnostics only.
+  - The usage insert is best-effort and cannot change the generation result, fallback, cache write, route response, or gap-network transition.
+  - "`llm_usage_events.metadata` allowlists operational values. Raw prompts, abstracts, and generated output bodies are never stored in the usage row."
+  - This contract does not expose or require an admin report read path.
+verdict: met

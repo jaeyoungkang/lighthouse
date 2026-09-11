@@ -1,0 +1,199 @@
+schemaVersion: 2
+slug: graph-neighbor-papers
+review: reviews/graph-neighbor-papers.reviews.md
+sourcePromises:
+  - promise:graph-neighbor-papers
+appliedAspects:
+  - aspect:first-paint-persistence-independence
+  - aspect:search-first-url-model
+  - aspect:immediate-navigation
+  - aspect:visible-explanation-sufficiency
+  - aspect:provider-failure-degraded-mode
+  - aspect:paper-card-list-windowing
+  - aspect:paper-card-presentation-consistency
+  - aspect:paper-card-action-loading-feedback
+  - aspect:knowledge-map-followup-surface
+  - aspect:route-view-ai-reaction-rules
+  - aspect:route-view-ai-comment-generation-routing
+  - aspect:document-content-width-governance
+  - aspect:ai-comment-research-term-suggestions
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-two-axes-separated
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` ("renders co-cited and coupled graph-neighbor sections with adjacency-count signals"; "places the AI comment below the graph-neighbor title context") + `app/components/research-route-renderers/__tests__/graph-neighbors-view.test.tsx` ("renders the two graph axes when neighbors are present"). 비슷한 논문 전용 ResearchRoutePayload가 `함께 인용되는 논문`과 `같은 토대를 공유하는 논문`을 분리된 두 섹션으로 렌더하고, 반복 후보 리스트 안에는 seed 논문을 넣지 않으며, `RESEARCH_ROUTE_BODY_RAIL_CLASS` width rail without nested `px-5` horizontal padding을 사용함을 단언한다.
+    executionRefs:
+      - execution:run-002
+      - execution:run-010
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-adjacency-count-shown
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` ("renders co-cited and coupled graph-neighbor sections with adjacency-count signals"). 각 후보에 `함께 인용 49회` / `참고문헌 80개 공유` 근거 수치가 붙음을 단언한다.
+    executionRefs:
+      - execution:run-002
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-seed-excluded
+    assertion: vitest @ `app/server/services/__tests__/graph-neighbor-papers.test.ts` ("excludes the seed paper if the provider echoes it back"). provider가 seed corpus_id를 이웃으로 돌려줘도 두 축과 papers에서 제외함을 단언한다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-006
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-graph-failure-degraded
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` + `app/components/research-route-renderers/__tests__/graph-neighbors-view.test.tsx` + `app/server/services/__tests__/episteme-literature.test.ts` ("degrades graph discovery when E3 reports unavailable completeness"; "preserves graph discovery rate-limit classification"). 전용 비슷한 논문 route에서 provider failure, E3 unavailable completeness, rate limiting은 visible degraded + deterministic 재시도로, 실제 빈 결과는 정직한 부재 문장으로 구분한다. `/similar?seedPaperId=...` route는 ownerPrincipalId 입력 없이 현재 조건 URL의 seed로 ephemeral graph_neighbors view를 만들며, 인용 관계 ResearchRoutePayload는 계보 본체를 중심으로 유지된다.
+    executionRefs:
+      - execution:run-002
+      - execution:run-006
+    scenarios:
+      - scenario:graph-neighbor-provider-degraded
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-paginated-window
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` ("paginates each graph-neighbor axis to 10 initial cards with a 더보기 (+10) window"; "paginates citation direction cards to the same 10-card window"). 그래프 축과 인용 관계 본체 목록이 처음 10편만 보이고 `더보기 (10/12)` 라벨이 붙으며, 클릭하면 같은 목록 안에서 +10으로 12편 전부 보인다 (검색 결과 window와 같은 `SEARCH_RESULTS_INITIAL_VISIBLE_COUNT` 정책, aspect:paper-card-list-windowing).
+    executionRefs:
+      - execution:run-002
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-neighbor-card-action-parity
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` ("renders graph-neighbor list items with the same visible card hierarchy as search results") + `app/components/research-route-renderers/__tests__/paper-card-derived-followup-parity.test.tsx` ("routes different-position searches from citation_lineage paper cards in the current window"; "routes different-position searches from graph_neighbors paper cards in the current window"; "opens modified different-position searches from citation_lineage paper cards in a new window"; "opens modified different-position searches from graph_neighbors paper cards in a new window"; "opens middle-click different-position searches in a new window") + `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx` ("opens a different-position query without source provenance"; "carries known library availability without a result-basis preference"; "drops retired basis state on keyword routes"). 그래프 이웃·인용 계보 반복 리스트 카드가 검색 결과 카드 fixture와 같은 panel/title class, 비조작 영역 전체 disclosure, icon-only 접근성 state, explicit-action isolation, 연도→venue→분야 metadata 행과 최대 세 명을 기본 표시하는 저자 행, DOI/PDF/citation/similar action row, inline-analysis 위치를 렌더한다. 인라인 분석 `다른 입장` 후보도 같은 search-term handler로 서버 왕복 없이 즉시 query-only `/search?q=` route로 이동하며 destination route가 URL 조건에서 검색을 실행한다. plain click은 현재 창을 push하고, Ctrl/Cmd/가운데 클릭은 같은 entry URL을 새 탭으로 연다. 출발 논문·입장·쟁점, legacy selected library ids, retired personalize preference는 운반하지 않는다 (`onOpenCitationLineage` + `onOpenGraphNeighbors` + `onSearchTerm` thread, aspect:paper-card-presentation-consistency).
+    executionRefs:
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-keyword-click-feedback
+    assertion: vitest @ `app/components/research/__tests__/inline-ai-comment-treatment.test.tsx` (graph-neighbor research-term handler) + `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` (shared repeated card hierarchy) + `app/components/research-route-renderers/__tests__/paper-card-derived-followup-parity.test.tsx` (graph-neighbor different-position plain/modifier/middle follow-up) + `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx` + `app/components/research/__tests__/search-followup-activation.test.tsx` + `app/components/research/__tests__/research-route-shell.test.tsx` ("keeps the newest keyword activation when an older destination arrives"). Graph-neighbor AI comment 연구 용어와 반복 카드 keyword follow-up은 plain click 시 현재 scroll viewport에 query receipt를 표시하고 origin axes/cards를 유지한다. detached click은 같은 URL을 새 탭에서 열고 현재 창 Context를 시작하지 않는다.
+    executionRefs:
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-card-data-hydration
+    assertion: vitest @ `app/server/services/__tests__/episteme-literature.test.ts` ("posts the E3 search contract and accepts nullable relevance"; "hydrates stored numeric ids through E3 paper refs and rich projection") + `app/server/services/__tests__/graph-neighbor-papers.test.ts` ("marks empty graph-neighbor route payloads as ready instead of pending") + `app/server/domain-access/__tests__/graph-neighbor-hydration-access.test.ts` ("drops embedded analysis when hydrated paper input changes") + `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbor-states.test.tsx` ("uses the shared paper-card detail loading frame while graph-neighbor card data hydrates") + `app/components/research/__tests__/ResearchBackgroundTasks.graph-neighbor-hydration.test.tsx` ("hydrates pending graph-neighbor card data from the background runner"; "settles pending graph-neighbor card data when hydration keeps failing"; "does not retry a correctable 400 with the same graph snapshot"; "preserves concurrent review state but drops analysis when hydration changes its input"; "settles graph hydration after abort-ignoring transports hit the bounded deadline") + `app/lib/__tests__/fetch-with-silence-timeout.test.ts` ("settles at the deadline even when the transport ignores abort"; "settles a body read when the upstream reader ignores abort"). 비슷한 논문은 co-cited/coupled page 결과로 lightweight route result를 먼저 렌더하고, 후보가 있으면 첫 paint 뒤 `ResearchBackgroundTasks`가 graph-neighbor hydrate route를 호출한다. 전용 ResearchRoutePayload 화면은 shared `SearchResultItem` 안에서 action row의 `PDF 확인 중`과 action row 아래 `paper detail hydration frame`을 보여 준다. 이 frame은 현재 표준 세 단계인 `논문 정보 보강 중`, `저자·초록 보강`, `분석 입력 보강`으로 카드 재료 보강 상태를 이름 붙인다. Background hydrate는 abstract/venue/fields/PDF/external ids를 current papers와 axes에 merge하고 reviewed state를 보존한다. 먼저 도착한 inline analysis는 hydration 뒤에도 canonical input이 같을 때만 보존하고, 입력이 달라지면 stale 분석을 버린 뒤 ready로 닫는다. 65초 silence rail은 fetch/body abort를 무시하는 transport도 `429`·`5xx`·timeout·transport loss에 한정된 최대 3회 retry로 넘긴다. Correctable/auth/conflict 응답은 같은 snapshot을 반복하지 않고 lightweight 후보를 유지한 채 `cardDataHydration.ready`로 닫는다. 빈 후보 route payload도 처음부터 ready로 닫아 `paper detail hydration frame`이 무한 지속되지 않게 한다.
+    executionRefs:
+      - execution:run-006
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-search-card-entry
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-result-item.graph-neighbors.test.tsx` ("uses the 비슷한 논문 button for an Episteme 3 paper ref"; "falls back to the seeded search similar action for non-corpus paper ids") + `app/server/services/__tests__/episteme-literature.test.ts` ("derives both graph axes from E3 discovery evidence"). 검색 결과 카드 action row는 숫자형 S2 alias와 E3 `paper_uid` 모두 graph route로 보내고, provider reference가 없는 legacy id만 keyword fallback으로 보낸다. 서버는 E3 discovery evidence의 co-citation과 bibliographic-coupling을 두 축으로 분리한다.
+    executionRefs:
+      - execution:run-005
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-immediate-navigation
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/use-graph-neighbors-handler.test.tsx` ("navigates to the similar seed route and leaves execution to the destination"; "navigates to the seed route even when a doc for the same seed already exists"; "opens the similar seed route in a new window for detached clicks"). 비슷한 논문 클릭은 provider 실행을 기다리지 않고 즉시 `/similar?seedPaperId=` seed route로 이동하며(plain push 또는 detached 새 브라우저 탭, 출발 route/view 상태 불변, origin `currentView` merge나 origin 실행 상태 emit 없음), destination route가 URL seed context로 provider 실행을 소유한다.
+    executionRefs:
+      - execution:run-007
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-search-first-seed
+    assertion: vitest @ `app/(research)/__tests__/relationship-route-page.test.tsx` ("executes graph neighbors from seed URL params without redirecting to an owned ResearchRoutePayload") + `app/server/services/__tests__/relationship-execution.test.ts` ("builds the seed paper from URL params without repository access") + guard @ `scripts/quality/check-search-first-paint-no-db.mjs`. 목적지가 seed identity/display context를 URL params로 받고, owned source ResearchRoutePayload나 same-seed persisted resource를 조회하지 않으며, repository-free relationship execution service로 graph_neighbors ephemeral ResearchRoutePayload를 렌더하고 `/similar/:id`로 승격하지 않음을 잠근다.
+    executionRefs:
+      - execution:run-007
+      - execution:run-012
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-gap-surface
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx` ("shows the owned research-gap map action above the graph-neighbor AI comment frame") + `app/components/research/__tests__/AgentPanel.citation-lineage.test.tsx` ("renders the graph_neighbors reaction card and defers the gap action to the host") + `app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx` + `app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts` + `app/api/gap-reports/__tests__/route.test.ts` ("creates from a visible result snapshot without loading a source ResearchRoutePayload") + `app/api/gap-reports/__tests__/route.source-paper-ids.test.ts` + `app/server/agent/__tests__/route-ai-comment-generation.test.ts` ("adds next-path guidance only for search view snapshots"). 비슷한 논문 gap 진입은 AI comment frame 위/밖의 host-owned `연구 공백 지도 만들기` action이며, body-only 반응에서도 host action이 유지되고 클릭하면 graph_neighbors 후보 전체를 중복 제거한 compact paper/source snapshot과 co-cited/coupled shared-count 관계 근거로 기존 gap_network 입력에 넘김을 단언한다 (aspect:knowledge-map-followup-surface).
+    executionRefs:
+      - execution:run-008
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-reaction-own-view
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/use-graph-neighbors-handler.test.tsx` ("navigates to the similar seed route and leaves execution to the destination"; "with forceRefetch re-runs the same seed route through route-owned replacement") + `app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx` ("bootstraps graph-neighbor route AI comment generation for a hydrated similar-paper ResearchRoutePayload with no reaction block") + `app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx` ("waits for graph-neighbor card hydration and generates once with relationship authors") + `app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts` ("waits for graph-neighbor card hydration before building its generation command") + `app/lib/__tests__/view-snapshot.test.ts` ("keeps hydrated graph-neighbor authors in the relationship prompt") + `app/components/research/__tests__/route-ai-comment-generation-scheduler.test.ts`. 생성/reuse는 이전 검색 route runtime에서 opened generation을 소비하지 않고 seed route navigation에 맡긴다. 열린 route는 lightweight card hydration 동안 pending AI comment를 유지하고 보강 시도가 terminal ready가 된 route bootstrap에서 한 번만 targeted generation command를 보낸다. 성공적으로 받은 authors는 relationship snapshot에 포함하고, 보강 실패 시에는 유지된 lightweight 관계 근거를 사용한다. Degraded forceRefetch는 current degraded view를 유지한 채 seed route replacement를 요청하고, route-owned replacement가 만든 교체 view id로만 직접 targeted queueing된다.
+    executionRefs:
+      - execution:run-007
+      - execution:run-008
+      - execution:run-011
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-seed-title-card-pinned
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` ("places the AI comment below the graph-neighbor title context"; "renders co-cited and coupled graph-neighbor sections with adjacency-count signals") + `app/components/research-route-renderers/__tests__/graph-neighbors-view.test.tsx` ("renders a degraded notice and a retry button when graphLoadFailed is true"; "renders the honest-empty message when both axes are empty and not failed") + `app/components/research/__tests__/ResearchRouteLayout.narrow.test.tsx` ("keeps relationship route AI comments inline below the seed context on narrow viewports") + browser evidence @ `scripts/evidence-ledger/relationship-seed-sticky-browser-check.mjs`. Asserts graph_neighbors renders a sticky, background-style seed context header with the source paper title and guide before the AI comment and co-cited/coupled axes, preserves that header in degraded and honest-empty states, keeps inline relationship reactions in the document flow below the seed context, and verifies actual sticky scroll behavior in Chrome.
+    executionRefs:
+      - execution:run-002
+      - execution:run-009
+      - execution:run-010
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/server/services/__tests__/graph-neighbor-papers.test.ts
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx
+      - app/components/research-route-renderers/__tests__/graph-neighbors-view.test.tsx
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/paper-card-derived-followup-parity.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/components/research/__tests__/inline-ai-comment-treatment.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx
+      - app/components/research/__tests__/search-followup-activation.test.tsx
+      - app/components/research/__tests__/research-route-shell.test.tsx
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item.graph-neighbors.test.tsx
+      - app/server/services/__tests__/episteme-literature.test.ts
+  - id: execution:run-006
+    kind: vitest
+    files:
+      - app/server/services/__tests__/graph-neighbor-papers.test.ts
+      - app/server/services/__tests__/episteme-literature.test.ts
+      - app/server/domain-access/__tests__/graph-neighbor-hydration-access.test.ts
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbor-states.test.tsx
+      - app/components/research/__tests__/ResearchBackgroundTasks.graph-neighbor-hydration.test.tsx
+      - app/lib/__tests__/fetch-with-silence-timeout.test.ts
+  - id: execution:run-007
+    kind: vitest
+    files:
+      - app/server/services/__tests__/relationship-execution.test.ts
+      - app/(research)/__tests__/relationship-route-page.test.tsx
+      - app/components/research-route-renderers/__tests__/use-graph-neighbors-handler.test.tsx
+  - id: execution:run-008
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx
+      - app/components/research/__tests__/AgentPanel.citation-lineage.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx
+      - app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts
+      - app/api/gap-reports/__tests__/route.test.ts
+      - app/api/gap-reports/__tests__/route.source-paper-ids.test.ts
+      - app/server/agent/__tests__/route-ai-comment-generation.test.ts
+      - app/components/research/__tests__/route-ai-comment-generation-scheduler.test.ts
+      - app/lib/__tests__/view-snapshot.test.ts
+  - id: execution:run-009
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteLayout.narrow.test.tsx
+    testNamePattern: relationship route AI comments inline
+  - id: execution:run-010
+    kind: registered-script
+    script: relationship-seed-sticky-browser
+  - id: execution:run-011
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx
+  - id: execution:run-012
+    kind: guard
+    script: guard:search-first-paint-no-db
+implementationContracts:
+  - The listed Promise(s) are verified by the Acceptance Check entries and structured executions on this ledger.
+  - "`aspect:visible-explanation-sufficiency`: 전용 비슷한 논문 ResearchRoutePayload에서 근접도 수치(공동 인용 횟수 / 공유 참고문헌 수)와 각 축의 의미가 같은 surface 안에서 읽히고, provider가 주지 않은 축은 정직한 부재로 드러난다."
+  - 각 그래프 축은 검색 결과 window와 같은 `SEARCH_RESULTS_INITIAL_VISIBLE_COUNT`(10) 정책으로 처음 10편만 보이고 더보기로 +10씩 펼친다. 더보기 버튼은 검색 결과와 동일한 `search.label.search-view-content.loadMore` `(보임/전체)` 라벨을 쓴다. window state는 축별로 분리되어 한 축의 더보기가 다른 축에 영향을 주지 않는다 (aspect:paper-card-list-windowing).
+  - 그래프 이웃 카드는 검색 결과 카드와 같은 `SearchResultItem` 표현과 액션 세트를 노출하도록 `onOpenPdf`에 더해 `onOpenCitationLineage`(`useCitationLineageHandler`), `onOpenGraphNeighbors`(`useGraphNeighborsHandler`), `onSearchTerm`(`useSearchTermHandler`)을 thread한다. Evidence는 handler/action text뿐 아니라 panel class, title class, 연도→venue→분야 metadata 행과 최대 세 명을 기본 표시하는 저자 행, DOI/PDF/citation/similar action row, inline-analysis 위치를 검색 결과 카드 fixture와 직접 비교하고, `다른 입장` 후보 클릭이 출발 provenance 없는 query-only search route를 만드는지 확인한다 (aspect:paper-card-presentation-consistency; aspect:paper-card-action-loading-feedback).
+  - 그래프 이웃의 경량 후보는 초기 응답 속도를 위해 E3 discovery 결과만으로 먼저 route-owned `graph_neighbors` view payload가 된다. 이때 metadata에는 `cardDataHydration.status = pending`을 남기고, `/similar?seedPaperId=...` 조건 route의 반복 리스트 카드는 검색 결과와 같은 `SearchResultItem`의 `paper detail hydration frame`으로 PDF/콘텐츠/분석 입력 보강 상태를 드러낸다. Background hydrate가 E3 paper reference를 `/api/v3/papers/batch` rich projection으로 보강해 abstract/venue/fields/open access/PDF/external ids를 채우면 같은 route view를 `ready` payload로 교체한다. 이 데이터 공급 계약이 빠지면 검색 결과 카드와 같은 인라인 분석 큐잉·표현을 보장할 수 없으므로, visible hierarchy parity와 별도의 서버/DOM/handler evidence로 닫는다.
+  - 비슷한 논문 ResearchRoutePayload는 seed context header를 본문 상단에 sticky로 고정해 사용자가 어떤 논문과의 관계를 보고 있는지 잃지 않게 한다. 이 header는 반복 후보 리스트의 `SearchResultItem`이 아니라 배경형 ResearchRoutePayload 컨텍스트이며, seed 논문은 co-cited/coupled 후보 축 자체에서는 계속 제외된다.
+  - Gap follow-up adapter는 provider 응답에 paper/source 중복이 있어도 snapshot 경계에서 이를 제거하고, 100명을 넘는 저자처럼 분석에 쓰이지 않는 예외 metadata를 제거한 뒤 co-cited/coupled source 동일성만 compact id로 전달한다. 이 방어는 `app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts`와 `app/api/gap-reports/__tests__/route.source-paper-ids.test.ts`에서 검증한다.
+verdict: met

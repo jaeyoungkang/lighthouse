@@ -1,0 +1,37 @@
+schemaVersion: 2
+slug: gap-report-surface
+review: reviews/gap-report-surface.reviews.md
+sourcePromises:
+  - promise:gap-report-margin
+appliedAspects:
+  - aspect:document-content-width-governance
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:gap-report-margin#acceptance-check:gap-report-margin-wide-shell-classes
+    assertion: vitest @ `app/components/research/__tests__/research-route-layout.shared.test.ts` ("keeps the visualization rail wider than the reading rail")가 gap 시각화 rail이 읽기 rail보다 충분히 넓다는 관계(구조 floor ≥1.2배)를 단일 출처 상수에서 deterministic하게 잠그고 구체 픽셀 값은 잠그지 않는다. 중앙 정렬(mx-auto) sub-claim은 vitest @ `app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx` ("renders hydrated gap views with the shared visual ResearchRoutePayload rail")가 shell을 `GAP_VIEW_CONTENT_SHELL_CLASS`(mx-auto 포함)로 렌더함을 단언해 같은 ledger에서 함께 닫는다
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios: []
+  - key: promise:gap-report-margin#acceptance-check:gap-report-margin-distinct-from-reading-shell
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx` ("renders hydrated gap views with the shared visual ResearchRoutePayload rail"). Asserts `gap-network-content-shell`이 `GAP_VIEW_CONTENT_SHELL_CLASS`를 사용하고 `RESEARCH_ROUTE_ROUTE_CONTENT_SHELL_CLASS`를 직접 사용하지 않음을 같은 테스트에서 deterministic하게 잠근다.
+    executionRefs:
+      - execution:run-002
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research/__tests__/research-route-layout.shared.test.ts
+    testNamePattern: wider than the reading rail
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx
+    testNamePattern: shared visual ResearchRoutePayload rail
+implementationContracts:
+  - The listed Promise(s) are verified by the Acceptance Check entries and structured executions on this ledger.
+verdict: met

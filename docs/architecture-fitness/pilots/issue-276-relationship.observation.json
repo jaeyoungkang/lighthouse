@@ -1,0 +1,373 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-observation",
+  "serviceId": "lighthouse",
+  "policySetRef": "issue-276-relationship-state-boundary",
+  "policySetVersion": "2026-07-30.v11",
+  "policyDigest": "8b18c535d5c5e824ae8907b55bf02998c676cafb9c5120439dde9373ffe46f63",
+  "revision": "bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+  "collector": {
+    "adapterRef": "scripts/architecture-fitness/collect-relationship-state-boundary.mjs",
+    "id": "lighthouse-issue-276-relationship-state-collector",
+    "version": "14",
+    "scope": "materialized exact-revision citation and similar URL-seed projection with field-level URL provenance and mutation rejection, top-level relationship execution owner selection with nested same-name decoy rejection, canonical-path relationship execution owner inventory sharing the state-boundary analysis engine and one invocation-local TypeScript Program with the keyword-search boundary, relationship-wrapper projection into the shared route-owned result lifetime, static route-kind prefixes, the separately reported shared SHA-256 digest implementation, canonical relationship identity, current route/service tests executed with collector-authority config, setup, and dependencies and a bounded two-worker path-test command across target root-config and lock drift, and condition/identity/snapshot negative mutations",
+    "definitionDigest": "c15ea0d95664ef4758d3ef9062816f1f8437a9bbee42a9d7c946af4615d9417d",
+    "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+    "runRef": "fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+    "command": "node scripts/architecture-fitness/collect-relationship-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-276-relationship.policy.json --revision bb7e361ab69a11f3237dffb51fc0f6e25b176037 --run-ref fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+    "attestation": {
+      "algorithm": "hmac-sha256",
+      "keyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1",
+      "payloadDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "evidence": [
+    {
+      "id": "relationship-state-coverage-static:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "kind": "static",
+      "role": "state-coverage-static",
+      "source": "collector:issue-276-relationship-state-inventory:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "sourceRevision": "bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "summary": "The exact-revision collector inspected citation and similar URL seed projection, relationship execution owners, shared route snapshot lifetime, and canonical citation/graph-neighbor view identities.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-relationship-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-276-relationship.policy.json --revision bb7e361ab69a11f3237dffb51fc0f6e25b176037 --run-ref fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "commandExitCode": 0,
+      "artifactDigest": "2d419419f5083caba48de4a7fa12d2f8beeba6c5a32a3baa3d16550539bb1cbf",
+      "collectorRunRef": "fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "target": {
+        "policyRef": "issue-276:relationship-seed-state-boundary",
+        "capabilityRef": "capability:relationship-seed-route-state",
+        "stateRefs": [
+          "state:relationship-execution-condition",
+          "state:current-relationship-result-snapshot"
+        ],
+        "identityRefs": [
+          "identity:ephemeral-citation-view",
+          "identity:ephemeral-graph-neighbors-view"
+        ],
+        "factRefs": [
+          "coverage:all-state-boundaries"
+        ]
+      }
+    },
+    {
+      "id": "relationship-state-coverage-negative-guard:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "kind": "test",
+      "role": "state-coverage-negative-guard",
+      "source": "collector:issue-276-relationship-state-negative-mutations",
+      "sourceRevision": "bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "summary": "The collector rewrote both URL-derived relationship inputs, injected an aliased seed helper, added nondeterministic seed state, introduced an alternate-path protected-module owner, coupled both identities to mutable output, changed a prefix owner, broke relationship-wrapper pass-through, and added a parallel route-store writer; every mutation had to be rejected.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-relationship-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-276-relationship.policy.json --revision bb7e361ab69a11f3237dffb51fc0f6e25b176037 --run-ref fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "commandExitCode": 0,
+      "artifactDigest": "b5792caa51a1de075bd2f534c191251dc12ff4bdfa6a8eaefcd029fd448bbdbb",
+      "collectorRunRef": "fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "target": {
+        "policyRef": "issue-276:relationship-seed-state-boundary",
+        "capabilityRef": "capability:relationship-seed-route-state",
+        "stateRefs": [
+          "state:relationship-execution-condition",
+          "state:current-relationship-result-snapshot"
+        ],
+        "identityRefs": [
+          "identity:ephemeral-citation-view",
+          "identity:ephemeral-graph-neighbors-view"
+        ],
+        "factRefs": [
+          "coverage:undeclared-state-and-identity-rejected"
+        ]
+      }
+    },
+    {
+      "id": "relationship-state-static:condition:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "kind": "static",
+      "role": "state-static",
+      "source": "app/(research)/relationship-route-page.tsx",
+      "sourceRevision": "bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "summary": "Both relationship route pages build one canonical seed directly from URL params and pass it unchanged to their sole execution owner.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-relationship-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-276-relationship.policy.json --revision bb7e361ab69a11f3237dffb51fc0f6e25b176037 --run-ref fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "commandExitCode": 0,
+      "artifactDigest": "2d419419f5083caba48de4a7fa12d2f8beeba6c5a32a3baa3d16550539bb1cbf",
+      "collectorRunRef": "fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "target": {
+        "policyRef": "issue-276:relationship-seed-state-boundary",
+        "capabilityRef": "capability:relationship-seed-route-state",
+        "stateRefs": [
+          "state:relationship-execution-condition"
+        ],
+        "identityRefs": [],
+        "factRefs": [
+          "authority:relationship-condition-url",
+          "carrier:relationship-condition-url",
+          "carrier:relationship-server-execution-input"
+        ]
+      }
+    },
+    {
+      "id": "relationship-state-test:condition:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "kind": "test",
+      "role": "state-test",
+      "source": "app/(research)/__tests__/relationship-route-page.test.tsx,app/server/services/__tests__/search-execution.test.ts",
+      "sourceRevision": "bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "summary": "Exact-revision route and service tests exercise citation and similar URL seed normalization and prove the destination route executes the resulting relationship input.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run 'app/(research)/__tests__/relationship-route-page.test.tsx' app/server/services/__tests__/search-execution.test.ts app/server/services/__tests__/ephemeral-view-id.test.ts app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "085e7283426260fd1771879d169beb4790896a35abed90545b6e5edc7d796d7f",
+      "collectorRunRef": "fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "target": {
+        "policyRef": "issue-276:relationship-seed-state-boundary",
+        "capabilityRef": "capability:relationship-seed-route-state",
+        "stateRefs": [
+          "state:relationship-execution-condition"
+        ],
+        "identityRefs": [],
+        "factRefs": [
+          "authority:relationship-condition-url",
+          "carrier:relationship-condition-url",
+          "carrier:relationship-server-execution-input"
+        ]
+      }
+    },
+    {
+      "id": "relationship-state-static:snapshot:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "kind": "static",
+      "role": "state-static",
+      "source": "app/(research)/research-route-runtimes.tsx,app/components/research/ResearchRouteRuntime.tsx",
+      "sourceRevision": "bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "summary": "The relationship execution document is passed directly to the shared route runtime, whose execution id owns hydration and unmount cleanup of the single current-view carrier.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-relationship-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-276-relationship.policy.json --revision bb7e361ab69a11f3237dffb51fc0f6e25b176037 --run-ref fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "commandExitCode": 0,
+      "artifactDigest": "2d419419f5083caba48de4a7fa12d2f8beeba6c5a32a3baa3d16550539bb1cbf",
+      "collectorRunRef": "fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "target": {
+        "policyRef": "issue-276:relationship-seed-state-boundary",
+        "capabilityRef": "capability:relationship-seed-route-state",
+        "stateRefs": [
+          "state:current-relationship-result-snapshot"
+        ],
+        "identityRefs": [],
+        "factRefs": [
+          "authority:route-relationship-execution",
+          "carrier:route-payload",
+          "carrier:client-current-view-store"
+        ]
+      }
+    },
+    {
+      "id": "relationship-state-test:snapshot:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "kind": "test",
+      "role": "state-test",
+      "source": "app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx",
+      "sourceRevision": "bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "summary": "The exact-revision shared runtime test rejects a foreign store view and removes the execution-owned route payload on unmount.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run 'app/(research)/__tests__/relationship-route-page.test.tsx' app/server/services/__tests__/search-execution.test.ts app/server/services/__tests__/ephemeral-view-id.test.ts app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "ce0905441eeabbae4d99628401058c16b4061b1aa1899465ea96567e5cb0d444",
+      "collectorRunRef": "fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "target": {
+        "policyRef": "issue-276:relationship-seed-state-boundary",
+        "capabilityRef": "capability:relationship-seed-route-state",
+        "stateRefs": [
+          "state:current-relationship-result-snapshot"
+        ],
+        "identityRefs": [],
+        "factRefs": [
+          "authority:route-relationship-execution",
+          "carrier:route-payload",
+          "carrier:client-current-view-store"
+        ]
+      }
+    },
+    {
+      "id": "relationship-identity-static:citation:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "kind": "static",
+      "role": "identity-static",
+      "source": "app/server/services/relationship-execution.ts",
+      "sourceRevision": "bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "summary": "The ephemeral citation view id is minted only by relationship execution from the canonical URL seed key and a static route-kind prefix.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-relationship-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-276-relationship.policy.json --revision bb7e361ab69a11f3237dffb51fc0f6e25b176037 --run-ref fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "commandExitCode": 0,
+      "artifactDigest": "2d419419f5083caba48de4a7fa12d2f8beeba6c5a32a3baa3d16550539bb1cbf",
+      "collectorRunRef": "fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "target": {
+        "policyRef": "issue-276:relationship-seed-state-boundary",
+        "capabilityRef": "capability:relationship-seed-route-state",
+        "stateRefs": [],
+        "identityRefs": [
+          "identity:ephemeral-citation-view"
+        ],
+        "factRefs": [
+          "state:relationship-execution-condition",
+          "normalization:canonical-relationship-seed-v1"
+        ]
+      }
+    },
+    {
+      "id": "relationship-identity-test:citation:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "kind": "test",
+      "role": "identity-test",
+      "source": "app/server/services/__tests__/ephemeral-view-id.test.ts",
+      "sourceRevision": "bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "summary": "The exact-revision identity test keeps citation identity stable across mutable result snapshots and changes it when the canonical seed condition changes.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run 'app/(research)/__tests__/relationship-route-page.test.tsx' app/server/services/__tests__/search-execution.test.ts app/server/services/__tests__/ephemeral-view-id.test.ts app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "b95a668d1834c7c7826ba6664aa4dea3763a7e5672e56ad5b96c7e8ae0043c11",
+      "collectorRunRef": "fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "target": {
+        "policyRef": "issue-276:relationship-seed-state-boundary",
+        "capabilityRef": "capability:relationship-seed-route-state",
+        "stateRefs": [],
+        "identityRefs": [
+          "identity:ephemeral-citation-view"
+        ],
+        "factRefs": [
+          "state:relationship-execution-condition",
+          "normalization:canonical-relationship-seed-v1"
+        ]
+      }
+    },
+    {
+      "id": "relationship-identity-static:graph-neighbors:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "kind": "static",
+      "role": "identity-static",
+      "source": "app/server/services/relationship-execution.ts",
+      "sourceRevision": "bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "summary": "The ephemeral graph-neighbors view id is minted only by relationship execution from the canonical URL seed key and a static route-kind prefix.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-relationship-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-276-relationship.policy.json --revision bb7e361ab69a11f3237dffb51fc0f6e25b176037 --run-ref fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "commandExitCode": 0,
+      "artifactDigest": "2d419419f5083caba48de4a7fa12d2f8beeba6c5a32a3baa3d16550539bb1cbf",
+      "collectorRunRef": "fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "target": {
+        "policyRef": "issue-276:relationship-seed-state-boundary",
+        "capabilityRef": "capability:relationship-seed-route-state",
+        "stateRefs": [],
+        "identityRefs": [
+          "identity:ephemeral-graph-neighbors-view"
+        ],
+        "factRefs": [
+          "state:relationship-execution-condition",
+          "normalization:canonical-relationship-seed-v1"
+        ]
+      }
+    },
+    {
+      "id": "relationship-identity-test:graph-neighbors:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "kind": "test",
+      "role": "identity-test",
+      "source": "app/server/services/__tests__/ephemeral-view-id.test.ts",
+      "sourceRevision": "bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "summary": "The exact-revision identity test keeps graph-neighbors identity stable across mutable result snapshots and changes it when the canonical seed condition changes.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run 'app/(research)/__tests__/relationship-route-page.test.tsx' app/server/services/__tests__/search-execution.test.ts app/server/services/__tests__/ephemeral-view-id.test.ts app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "b95a668d1834c7c7826ba6664aa4dea3763a7e5672e56ad5b96c7e8ae0043c11",
+      "collectorRunRef": "fixture-run:issue-276-relationship-v11-baseline:bb7e361a",
+      "target": {
+        "policyRef": "issue-276:relationship-seed-state-boundary",
+        "capabilityRef": "capability:relationship-seed-route-state",
+        "stateRefs": [],
+        "identityRefs": [
+          "identity:ephemeral-graph-neighbors-view"
+        ],
+        "factRefs": [
+          "state:relationship-execution-condition",
+          "normalization:canonical-relationship-seed-v1"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation:issue-276-relationship-seed-state:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+      "policyRef": "issue-276:relationship-seed-state-boundary",
+      "capabilityRef": "capability:relationship-seed-route-state",
+      "completeness": "complete",
+      "coverageEvidenceRefs": [
+        "relationship-state-coverage-static:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+        "relationship-state-coverage-negative-guard:bb7e361ab69a11f3237dffb51fc0f6e25b176037"
+      ],
+      "states": [
+        {
+          "id": "observed-state:relationship-condition:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+          "stateRef": "state:relationship-execution-condition",
+          "authorityRefs": [
+            "authority:relationship-condition-url"
+          ],
+          "coordinationRefs": [],
+          "carrierRefs": [
+            "carrier:relationship-condition-url",
+            "carrier:relationship-server-execution-input"
+          ],
+          "evidenceRefs": [
+            "relationship-state-static:condition:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+            "relationship-state-test:condition:bb7e361ab69a11f3237dffb51fc0f6e25b176037"
+          ]
+        },
+        {
+          "id": "observed-state:relationship-result-snapshot:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+          "stateRef": "state:current-relationship-result-snapshot",
+          "authorityRefs": [
+            "authority:route-relationship-execution"
+          ],
+          "coordinationRefs": [],
+          "carrierRefs": [
+            "carrier:route-payload",
+            "carrier:client-current-view-store"
+          ],
+          "evidenceRefs": [
+            "relationship-state-static:snapshot:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+            "relationship-state-test:snapshot:bb7e361ab69a11f3237dffb51fc0f6e25b176037"
+          ]
+        }
+      ],
+      "canonicalIdentities": [
+        {
+          "id": "observed-identity:ephemeral-citation-view:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+          "identityRef": "identity:ephemeral-citation-view",
+          "participatingStateRefs": [
+            "state:relationship-execution-condition"
+          ],
+          "normalizationRefs": [
+            "normalization:canonical-relationship-seed-v1"
+          ],
+          "evidenceRefs": [
+            "relationship-identity-static:citation:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+            "relationship-identity-test:citation:bb7e361ab69a11f3237dffb51fc0f6e25b176037"
+          ]
+        },
+        {
+          "id": "observed-identity:ephemeral-graph-neighbors-view:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+          "identityRef": "identity:ephemeral-graph-neighbors-view",
+          "participatingStateRefs": [
+            "state:relationship-execution-condition"
+          ],
+          "normalizationRefs": [
+            "normalization:canonical-relationship-seed-v1"
+          ],
+          "evidenceRefs": [
+            "relationship-identity-static:graph-neighbors:bb7e361ab69a11f3237dffb51fc0f6e25b176037",
+            "relationship-identity-test:graph-neighbors:bb7e361ab69a11f3237dffb51fc0f6e25b176037"
+          ]
+        }
+      ]
+    }
+  ]
+}

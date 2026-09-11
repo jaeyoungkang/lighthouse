@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-policy",
+  "service": {
+    "id": "lighthouse",
+    "repository": "https://github.com/corca-ai/lighthouse.git",
+    "adapterRef": "scripts/architecture-fitness/collect-relationship-state-boundary.mjs"
+  },
+  "policySet": {
+    "id": "issue-276-relationship-state-boundary",
+    "version": "2026-07-30.v11",
+    "scope": "the executable citation and similar relationship-seed URL authority, route-owned result snapshot, and canonical ephemeral citation/graph-neighbor identity subcase of issue #276",
+    "owner": "Lighthouse relationship route state boundaries",
+    "source": "https://github.com/corca-ai/lighthouse/issues/276",
+    "sourceRevision": "human:2026-07-30:issue-515-collector-authority-config",
+    "collectorAuthority": {
+      "adapterRef": "scripts/architecture-fitness/collect-relationship-state-boundary.mjs",
+      "id": "lighthouse-issue-276-relationship-state-collector",
+      "version": "14",
+      "scope": "materialized exact-revision citation and similar URL-seed projection with field-level URL provenance and mutation rejection, top-level relationship execution owner selection with nested same-name decoy rejection, canonical-path relationship execution owner inventory sharing the state-boundary analysis engine and one invocation-local TypeScript Program with the keyword-search boundary, relationship-wrapper projection into the shared route-owned result lifetime, static route-kind prefixes, the separately reported shared SHA-256 digest implementation, canonical relationship identity, current route/service tests executed with collector-authority config, setup, and dependencies and a bounded two-worker path-test command across target root-config and lock drift, and condition/identity/snapshot negative mutations",
+      "definitionDigest": "c15ea0d95664ef4758d3ef9062816f1f8437a9bbee42a9d7c946af4615d9417d",
+      "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+      "attestationKeyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1"
+    }
+  },
+  "coverage": [
+    {
+      "id": "coverage:issue-276-relationship-state-boundary",
+      "lens": "Q1 relationship state boundary",
+      "status": "included",
+      "owner": "Lighthouse relationship route state boundaries",
+      "reason": "Architecture Fitness v0.5 supports the relationship-seed state authority, carrier, and canonical-identity implementation subcase.",
+      "reentryTrigger": "Re-collect when citation/similar URL seed fields, relationship input normalization, relationship execution owners, route payload/store lifetime, relationship view identity or prefix, the collector, or its negative guard changes.",
+      "policyRefs": ["issue-276:relationship-seed-state-boundary"]
+    },
+    {
+      "id": "coverage:issue-276-relationship-product-outcome",
+      "lens": "Q1 relationship product outcome",
+      "status": "unsupported",
+      "owner": "Lighthouse product and architecture owner",
+      "reason": "The implementation boundary case does not prove that a user successfully understood or used citation lineage or graph-neighbor results.",
+      "reentryTrigger": "Re-enter after a qualified small-cohort outcome observation exists and a generic executable outcome contract is approved.",
+      "policyRefs": []
+    }
+  ],
+  "policies": [
+    {
+      "id": "issue-276:relationship-seed-state-boundary",
+      "caseKind": "state-boundary",
+      "question": "Do citation and similar routes keep relationship seed conditions URL-owned, keep their current result snapshot route-owned, and derive each ephemeral view identity only from the canonical seed condition?",
+      "capabilityRef": "capability:relationship-seed-route-state",
+      "owner": "Lighthouse citation and similar relationship route state",
+      "desired": "URL seed fields project into the relationship execution input; the current citation or graph-neighbor result is carried only by the route payload and active client store for that execution; changing result papers or timestamps cannot change either canonical ephemeral relationship identity.",
+      "stateRules": [
+        {
+          "id": "state:relationship-execution-condition",
+          "required": true,
+          "authorityRefs": ["authority:relationship-condition-url"],
+          "coordinationRefs": [],
+          "requiredCarrierRefs": [
+            "carrier:relationship-condition-url",
+            "carrier:relationship-server-execution-input"
+          ],
+          "allowedCarrierRefs": [
+            "carrier:relationship-condition-url",
+            "carrier:relationship-server-execution-input"
+          ],
+          "requiredEvidenceRoles": ["state-static", "state-test"]
+        },
+        {
+          "id": "state:current-relationship-result-snapshot",
+          "required": true,
+          "authorityRefs": ["authority:route-relationship-execution"],
+          "coordinationRefs": [],
+          "requiredCarrierRefs": ["carrier:route-payload", "carrier:client-current-view-store"],
+          "allowedCarrierRefs": ["carrier:route-payload", "carrier:client-current-view-store"],
+          "requiredEvidenceRoles": ["state-static", "state-test"]
+        }
+      ],
+      "canonicalIdentities": [
+        {
+          "id": "identity:ephemeral-citation-view",
+          "requiredStateRefs": ["state:relationship-execution-condition"],
+          "forbiddenStateRefs": ["state:current-relationship-result-snapshot"],
+          "normalizationRefs": ["normalization:canonical-relationship-seed-v1"],
+          "requiredEvidenceRoles": ["identity-static", "identity-test"]
+        },
+        {
+          "id": "identity:ephemeral-graph-neighbors-view",
+          "requiredStateRefs": ["state:relationship-execution-condition"],
+          "forbiddenStateRefs": ["state:current-relationship-result-snapshot"],
+          "normalizationRefs": ["normalization:canonical-relationship-seed-v1"],
+          "requiredEvidenceRoles": ["identity-static", "identity-test"]
+        }
+      ],
+      "verificationPlan": [
+        "Collect the exact-revision relationship URL/execution/store/identity inventory, execute bounded negative mutations, run the current route/service/identity tests, and attest the observation in the protected host gate."
+      ]
+    }
+  ]
+}

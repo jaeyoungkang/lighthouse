@@ -1,0 +1,18 @@
+{
+  "$comment": "수동 authoritative lane의 신선도 budget 선언 — issue #652. lastTargetSha는 해당 lane의 마지막 authoritative 실행이 검증한 exact target revision이다.",
+  "lanes": [
+    {
+      "id": "architecture-fitness-attestation",
+      "description": "protected exact-main Q1-Q5 signed attestation (.github/workflows/architecture-fitness-attestation.yml)",
+      "lastTargetSha": "118b66dfac55a48e5b73f5c0c676a6aee4a5432b",
+      "budgetCommits": 100,
+      "enforcement": "block",
+      "owner": "operational-readiness owner",
+      "onExceeded": "운영자가 architecture-fitness-attestation.yml을 protected main에서 수동 실행하고, 성공한 target SHA로 lastTargetSha를 갱신한다",
+      "refs": [
+        "docs/architecture-fitness/README.md",
+        "https://github.com/jaeyoungkang/lighthouse/issues/652"
+      ]
+    }
+  ]
+}

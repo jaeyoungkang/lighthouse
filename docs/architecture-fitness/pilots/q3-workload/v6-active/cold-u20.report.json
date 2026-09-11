@@ -1,0 +1,157 @@
+{
+  "schemaVersion": "4",
+  "generatedAt": "2026-07-17T03:03:06.964Z",
+  "runLabel": "q3-pr338-cold-u20",
+  "node": "v24.5.0",
+  "config": {
+    "baseUrl": "http://127.0.0.1:3001",
+    "query": "transformer attention",
+    "timeoutMs": 30000,
+    "mode": "one-shot",
+    "targetRevision": "a02caaf757b2050aab062816249f96269dd052cf",
+    "workingTreeDirty": false,
+    "runOwner": "operational-readiness",
+    "inputProfile": "typical-transformer-attention-first-session-v1",
+    "providerProfile": "real-episteme-approved-20-window-20260717",
+    "topologyProfile": "local-single-next-process-production-default-8x12",
+    "users": 20
+  },
+  "cohorts": [
+    {
+      "users": 20,
+      "wallClockMs": 4608.840959,
+      "endpoints": [
+        {
+          "endpoint": "GET /search",
+          "count": 20,
+          "outcomes": {
+            "2xx": 20,
+            "4xx": 0,
+            "5xx": 0,
+            "timeout": 0,
+            "network-error": 0
+          },
+          "p50": 552.21625,
+          "p95": 634.076584,
+          "p99": 634.3407920000001,
+          "max": 634.3407920000001
+        },
+        {
+          "endpoint": "GET /search?q= (query execution)",
+          "count": 20,
+          "outcomes": {
+            "2xx": 20,
+            "4xx": 0,
+            "5xx": 0,
+            "timeout": 0,
+            "network-error": 0
+          },
+          "p50": 1768.3398340000003,
+          "p95": 2369.034792,
+          "p99": 2522.10725,
+          "max": 2522.10725
+        },
+        {
+          "endpoint": "GET /search?q= (seeded follow-up execution)",
+          "count": 20,
+          "outcomes": {
+            "2xx": 20,
+            "4xx": 0,
+            "5xx": 0,
+            "timeout": 0,
+            "network-error": 0
+          },
+          "p50": 1496.1545420000002,
+          "p95": 1747.659166,
+          "p99": 1784.3984580000001,
+          "max": 1784.3984580000001
+        }
+      ],
+      "serverTimingPhases": [],
+      "searchReadiness": [
+        {
+          "userIndex": 0,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 1,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 2,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 3,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 4,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 5,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 6,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 7,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 8,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 9,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 10,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 11,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 12,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 13,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 14,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 15,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 16,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 17,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 18,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 19,
+          "paperCount": 10
+        }
+      ],
+      "totalErrorCount": 0,
+      "firstRequestFailure": null
+    }
+  ]
+}

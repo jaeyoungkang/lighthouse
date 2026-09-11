@@ -1,0 +1,63 @@
+schemaVersion: 2
+slug: moonlight-handoff
+review: reviews/moonlight-handoff.reviews.md
+sourcePromises:
+  - promise:delegate-deep-read-to-moonlight
+appliedAspects: []
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:delegate-deep-read-to-moonlight#acceptance-check:delegate-deep-read-to-moonlight-result-card-link
+    assertion: Result-card PDF controls render Moonlight external links; the title stays identification text while the card's non-interactive region owns inspection.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:pdf-04-01-01
+  - key: promise:delegate-deep-read-to-moonlight#acceptance-check:delegate-deep-read-to-moonlight-href-built-from-paper
+    assertion: The shared paper-card helper builds `https://themoonlight.io/file?url=<encoded>` from the direct PDF URL; analytics tracks behavior metadata without raw URLs.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:pdf-04-01-01
+  - key: promise:delegate-deep-read-to-moonlight#acceptance-check:delegate-deep-read-to-moonlight-no-broken-link
+    assertion: Missing or hydrating PDF states do not render broken Moonlight links; disabled/checking affordances stay non-navigating.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:pdf-04-01-01
+  - key: promise:delegate-deep-read-to-moonlight#acceptance-check:delegate-deep-read-to-moonlight-opens-new-tab
+    assertion: Moonlight links use `target="_blank" rel="noopener noreferrer"` and leave the Light House research route intact.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:pdf-04-01-02
+  - key: promise:delegate-deep-read-to-moonlight#acceptance-check:delegate-deep-read-to-moonlight-result-surfaces
+    assertion: Search, citation-lineage, and graph-neighbor shared paper-card surfaces use the same Moonlight handoff from result-card PDF clicks. `pdf_opened` carries the inherited journey/search context plus paper id/title/rank/surface/PDF/evidence metadata, omits the raw PDF URL and query, and the nested PDF action does not open or close card inspection.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:pdf-04-01-02
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.analytics.test.tsx
+      - app/components/research-route-renderers/__tests__/CitationLineageView.test.tsx
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+implementationContracts:
+  - Result-card PDF affordances hand off to Moonlight. The title remains identification text, while the card's non-interactive region owns inspection.
+  - PDF link activation is isolated from the card disclosure state.
+  - The encoded URL source is the direct PDF URL. Raw URLs do not enter analytics payloads.
+  - "`pdf_opened` is the only active product handoff event. It reuses the paper-card journey/search context and does not dual-write the retired `product.pdf_open.clicked` event."
+  - The handoff is an external link that preserves the Light House research route.
+  - Missing or unresolved PDF availability keeps the existing disabled/checking states rather than rendering a broken external link.
+verdict: met

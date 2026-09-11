@@ -1,0 +1,332 @@
+{
+  "schemaVersion": "4",
+  "generatedAt": "2026-07-17T03:04:17.690Z",
+  "runLabel": "q3-pr338-sustained-open-1ps-60s",
+  "node": "v24.5.0",
+  "config": {
+    "baseUrl": "http://127.0.0.1:3001",
+    "query": "transformer attention",
+    "timeoutMs": 30000,
+    "mode": "sustained-open",
+    "targetRevision": "a02caaf757b2050aab062816249f96269dd052cf",
+    "workingTreeDirty": false,
+    "runOwner": "operational-readiness",
+    "inputProfile": "typical-transformer-attention-first-session-v1",
+    "providerProfile": "real-episteme-approved-20-window-20260717",
+    "topologyProfile": "local-single-next-process-production-default-8x12",
+    "durationMs": 60000,
+    "warmupMs": 0,
+    "cooldownPolicy": "drain-admitted",
+    "arrivalRatePerSecond": 1,
+    "maxInFlight": 20
+  },
+  "cohorts": [
+    {
+      "users": 60,
+      "wallClockMs": 60236.093540999995,
+      "endpoints": [
+        {
+          "endpoint": "GET /search",
+          "count": 60,
+          "outcomes": {
+            "2xx": 60,
+            "4xx": 0,
+            "5xx": 0,
+            "timeout": 0,
+            "network-error": 0
+          },
+          "p50": 5.726333999999042,
+          "p95": 41.02600000000166,
+          "p99": 79.00187499999993,
+          "max": 79.00187499999993
+        },
+        {
+          "endpoint": "GET /search?q= (query execution)",
+          "count": 60,
+          "outcomes": {
+            "2xx": 60,
+            "4xx": 0,
+            "5xx": 0,
+            "timeout": 0,
+            "network-error": 0
+          },
+          "p50": 643.0421249999999,
+          "p95": 821.9320000000007,
+          "p99": 1076.401834,
+          "max": 1076.401834
+        },
+        {
+          "endpoint": "GET /search?q= (seeded follow-up execution)",
+          "count": 60,
+          "outcomes": {
+            "2xx": 60,
+            "4xx": 0,
+            "5xx": 0,
+            "timeout": 0,
+            "network-error": 0
+          },
+          "p50": 631.7335840000014,
+          "p95": 783.9407910000009,
+          "p99": 1051.570249999997,
+          "max": 1051.570249999997
+        }
+      ],
+      "serverTimingPhases": [],
+      "searchReadiness": [
+        {
+          "userIndex": 0,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 1,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 2,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 3,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 4,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 5,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 6,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 7,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 8,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 9,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 10,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 11,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 12,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 13,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 14,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 15,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 16,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 17,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 18,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 19,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 20,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 21,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 22,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 23,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 24,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 25,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 26,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 27,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 28,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 29,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 30,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 31,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 32,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 33,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 34,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 35,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 36,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 37,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 38,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 39,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 40,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 41,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 42,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 43,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 44,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 45,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 46,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 47,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 48,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 49,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 50,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 51,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 52,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 53,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 54,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 55,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 56,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 57,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 58,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 59,
+          "paperCount": 10
+        }
+      ],
+      "totalErrorCount": 0,
+      "firstRequestFailure": null
+    }
+  ],
+  "sustainedWorkload": {
+    "arrivalModel": "open",
+    "configuredDurationMs": 60000,
+    "wallClockMs": 60236.093540999995,
+    "scheduledArrivals": 60,
+    "admittedJourneys": 60,
+    "completedJourneys": 60,
+    "shedArrivals": 0,
+    "maxInFlight": 2,
+    "achievedThroughputPerSecond": 0.9960805303411766
+  }
+}

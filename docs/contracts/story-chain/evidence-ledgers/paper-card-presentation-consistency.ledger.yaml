@@ -1,0 +1,127 @@
+schemaVersion: 2
+slug: paper-card-presentation-consistency
+review: reviews/paper-card-presentation-consistency.reviews.md
+sourcePromises:
+  - promise:search-results-fast-window
+  - promise:search-result-library-add
+  - promise:citation-lineage
+  - promise:graph-neighbor-papers
+  - promise:inline-analysis-auto-run
+appliedAspects:
+  - aspect:paper-card-presentation-consistency
+intent:
+  mode: delegated
+  checks: []
+  delegations:
+    - key: promise:citation-lineage#intent-check:body-explains-citation-flow-not-counts
+      ledger: citation-lineage
+    - key: promise:inline-analysis-auto-run#intent-check:semantic-profile-is-phrase-not-keyword
+      ledger: immediate-navigation
+acceptanceChecks:
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-card-triage-metadata
+    assertion: "Search cards render the shared hierarchy inside one compact responsive collapsed-card minimum: one-line title, one year→venue→fields bibliography metadata row, one author row, DOI/PDF/citation/similar actions, then a stable analysis region with a summary preview of at most two lines. The year is unboxed text, venue follows it, and fields remain directly adjacent to venue; a missing year reserves no placeholder. The author row shows up to three names; selecting an author starts that author search, while `외 N명 펼치기` and `접기` reveal or hide the remainder inline without toggling card inspection. Missing values render low-emphasis `출처 정보 없음`, `분야 정보 없음`, or `저자 정보 미제공` at the corresponding row instead of a blank gap. The fixed-width DOI slot shows only `DOI`: it is a link when an identifier exists and the same-width disabled control when absent, so PDF and citation anchors do not shift. A click on the card's non-interactive region toggles natural-height inspection, while links and buttons remain independent. The source badge appears only after expansion."
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:search-result-library-add#acceptance-check:search-result-library-add-card-action
+    assertion: The compact bookmark toggle stays inside the shared search-result card title row while remaining visually separate from the DOI/PDF/citation/similar navigation action row. Its fixed square footprint preserves title width; outline/accent and filled/success treatments distinguish unsaved and saved state without repeated visible command text.
+    executionRefs:
+      - execution:run-002
+    scenarios:
+      - scenario:search-result-library-add
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-paper-row-actions-preserved
+    assertion: "Citation-lineage references/citations render a repeated paper-list item with the same visible card hierarchy and interaction as `SearchResultItem`: panel and title classes, whole-card non-interactive-region disclosure, icon-only accessible state, explicit-action isolation, year→venue→fields metadata row, separate author row, action row, and inline-analysis placement are compared against a search-result fixture."
+    executionRefs:
+      - execution:run-003
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-card-data-hydration
+    assertion: vitest @ `app/server/services/__tests__/episteme-literature.test.ts` ("fetches E3 citation directions with exact availability") + `scripts/evidence-ledger/helpers/__tests__/relationship-execution.test.ts` ("constructs the citation ResearchRoutePayload from batch-hydrated relation papers"). Citation-lineage references/citations use the same batch metadata include set as search results before the relationship `ResearchRoutePayload` is constructed, so shared cards receive abstract, venue, fields, PDF, and external ids for inline analysis.
+    executionRefs:
+      - execution:run-004
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-neighbor-card-action-parity
+    assertion: "Graph-neighbor and citation-lineage cards render a repeated paper-list item with the same visible hierarchy and interaction as `SearchResultItem`: whole-card non-interactive-region disclosure, icon-only accessible state, explicit-action isolation, year→venue→fields metadata row, a separate author row with three-name default and inline expansion, action row, inline-analysis placement, and query-only different-position follow-up behavior are compared against the search-result fixture/handler contract. Source paper/position/axis provenance and legacy selected library ids stay off the destination route."
+    executionRefs:
+      - execution:run-005
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-card-data-hydration
+    assertion: Graph-neighbor co-cited/coupled candidates can open from lightweight page results first, but the repeated cards still use the shared `SearchResultItem` hierarchy while `cardDataHydration` is pending and then receive the same batch metadata include set as search results in the background.
+    executionRefs:
+      - execution:run-006
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-exposed-card-start
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` ("queues inline analysis for graph-neighbor document cards inside the first visible budget") + `app/components/research-route-renderers/__tests__/GraphNeighborsView.inline-analysis-terms.test.tsx` ("queues inline analysis for visible graph-neighbor axes") + `app/components/research-route-renderers/__tests__/CitationLineageView.inline-analysis-budget.test.tsx` ("queues inline analysis for citation-lineage cards inside the first visible budget"). Derived ResearchRoutePayload paper cards queue inline analysis in the same card position as search cards, without queueing hidden candidates outside the visible budget.
+    executionRefs:
+      - execution:run-007
+    scenarios:
+      - scenario:search-inline-analysis-visible-first
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-evidence-limit-preview
+    assertion: Search, citation-lineage, and graph-neighbor repeated cards preserve the shared analysis region when no analysis result exists. Missing or whitespace-only abstracts show a visible metadata-only limit from fields without author-based inference, and cards with an abstract but no task show a neutral not-started state rather than queued. Ready sparse fixtures cover both relation surfaces.
+    executionRefs:
+      - execution:run-008
+    scenarios:
+      - scenario:search-inline-analysis-visible-first
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item-spatial-stability.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item.pdf-links.test.tsx
+      - app/server/services/__tests__/episteme-literature.test.ts
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item-library-action.test.tsx
+      - app/components/research-route-renderers/__tests__/SearchView.library-action.test.tsx
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/server/services/__tests__/episteme-literature.test.ts
+      - scripts/evidence-ledger/helpers/__tests__/relationship-execution.test.ts
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx
+      - app/components/research-route-renderers/__tests__/paper-card-derived-followup-parity.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx
+  - id: execution:run-006
+    kind: vitest
+    files:
+      - app/server/services/__tests__/graph-neighbor-papers.test.ts
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx
+      - app/components/research-route-renderers/__tests__/use-graph-neighbors-handler.test.tsx
+  - id: execution:run-007
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx
+      - app/components/research-route-renderers/__tests__/GraphNeighborsView.inline-analysis-terms.test.tsx
+      - app/components/research-route-renderers/__tests__/CitationLineageView.inline-analysis-budget.test.tsx
+  - id: execution:run-008
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item-spatial-stability.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view.whitespace-abstract.test.ts
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbor-states.test.tsx
+implementationContracts:
+  - Repeated paper list items use the shared `SearchResultItem` card hierarchy.
+  - Collapsed repeated cards use the shared responsive minimum-height class and stable metadata/author/action/analysis rows. Venue and visibly labeled fields share one compact metadata row. The author row shows up to three names by default, preserves author search on each name, and reveals the remainder inline through one persistent expand/collapse control; missing values show low-emphasis unavailable copy at the corresponding row. The DOI action shows only a fixed-width `DOI` label immediately before PDF; present identifiers use a link and absent identifiers use the same-width disabled control so later action anchors stay predictable. The exact `rem` value remains a design value in `docs/design-standards.md`, not an Aspect threshold.
+  - A click on the repeated card's non-interactive region toggles inspection; a repeated click closes it. The title remains identification text rather than a button or navigation link. The compact chevron is icon-only visually and keeps the accessible name, `aria-expanded`, and controlled-region relationship. No visible `논문 정보 펼치기`/`접기` command or inspection tooltip is rendered.
+  - Explicit links and controls inside the card, including DOI, PDF, citation, similar, author/topic/follow-up, and library actions, do not bubble into the card toggle.
+  - Surface-specific context, such as graph adjacency chips, direction headings, seed-paper cards, or representative-paper cards, stays outside or above the repeated paper list. These top-level context cards are not repeated list cards; repeated paper list items must use the shared `SearchResultItem` hierarchy.
+  - Inline analysis and AI feedback stay inside the shared card presentation rather than becoming surface-specific side panels.
+  - Presentation parity includes upstream paper data quality and pending-state grammar. Citation-lineage relation items hydrate before the relationship `ResearchRoutePayload` is constructed; graph-neighbor relation items may open from lightweight page results first for speed, but pending graph-neighbor cards must keep the shared `SearchResultItem` hierarchy and move to the same batch metadata include set used by search results through background hydration. Otherwise a shared component can still render as a thinner card and fail inline-analysis parity.
+verdict: met

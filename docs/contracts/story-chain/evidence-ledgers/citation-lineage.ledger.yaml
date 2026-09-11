@@ -1,0 +1,343 @@
+schemaVersion: 2
+slug: citation-lineage
+review: reviews/citation-lineage.reviews.md
+sourcePromises:
+  - promise:citation-lineage
+appliedAspects:
+  - aspect:first-paint-persistence-independence
+  - aspect:search-first-url-model
+  - aspect:immediate-navigation
+  - aspect:user-facing-language-governance
+  - aspect:ux-writing-voice-and-tone
+  - aspect:visible-explanation-sufficiency
+  - aspect:route-view-ai-reaction-rules
+  - aspect:route-view-ai-comment-generation-routing
+  - aspect:provider-failure-degraded-mode
+  - aspect:reaction-prefers-load-bearing-facts
+  - aspect:paper-card-list-windowing
+  - aspect:paper-card-presentation-consistency
+  - aspect:paper-card-action-loading-feedback
+  - aspect:knowledge-map-followup-surface
+  - aspect:document-content-width-governance
+  - aspect:ai-comment-research-term-suggestions
+intent:
+  mode: explicit
+  checks:
+    - key: promise:citation-lineage#intent-check:body-explains-citation-flow-not-counts
+      evidence: 'vitest @ `app/server/services/__tests__/citation-lineage-intent-qualitative.live.test.tsx` ("citation_lineage route AI comment first card DOM answers intent-check:citation-lineage-card-sufficiency via real Gemini runtime path"). The live test invokes the route AI comment generation runtime shape against the Transformer seedPaper + 3 references + 3 citations worst-case fixture and judges the rendered `AgentPanel` body for relationship-nature description. 2026-04-23 first-propagation verdict: met.'
+  delegations: []
+acceptanceChecks:
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-entry-point-counts-visible
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-result-item.test.tsx` ("uses citation count as the default card-level lineage signal"; "explains limited reference lists instead of showing a zero-reference lineage chip"; "still explains provider-limited references when no lineage paper IDs are available"). Asserts the search result entry point keeps citation count as the default card-level lineage signal, hides separate `선행 N` count chips from the search result card, preserves click-through to the same citation lineage document, and avoids false `선행 0` / `인용 정보 없음` states when provider count/availability metadata indicates lazy citation pages may exist.
+    executionRefs:
+      - execution:run-013
+    scenarios:
+      - scenario:citation-03-03-01
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-entry-opens-route-view
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/SearchView.citation-lineage.test.tsx` + `app/(research)/__tests__/relationship-route-page.test.tsx` + `app/server/services/__tests__/episteme-literature.test.ts` ("fetches E3 citation directions with exact availability"). Asserts the entry point navigates to the `/citation?seedPaperId=` seed route and the destination calls E3 `/api/v3/graph/citations` with a canonical paper ref for both directions, preserves exact direction availability, and renders a first-class `citation_lineage` ResearchRoutePayload without a pre-created route payload id or source payload lookup.
+    executionRefs:
+      - execution:run-003
+      - execution:run-014
+      - execution:run-022
+      - execution:run-024
+    scenarios:
+      - scenario:citation-03-03-01
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-immediate-navigation
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/SearchView.citation-lineage.test.tsx` ("navigates to the citation seed route and leaves execution to the destination"; "opens the citation seed route in a new window for detached clicks") + `app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx` (citation action payload). Asserts the click emits `citation_lineage_opened` with the source journey/search context and paper id/title/rank/surface/PDF/evidence/reference/citation metadata, then navigates immediately to the `/citation?seedPaperId=` seed route. Plain navigation carries the same context into the destination branch. Detached navigation opens a new browser tab without changing the origin route or its transient context; the destination tab uses its document identity as fallback context. The destination owns provider execution from URL seed context.
+    executionRefs:
+      - execution:run-014
+    scenarios:
+      - scenario:citation-03-03-01
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-search-first-seed
+    assertion: vitest @ `app/(research)/__tests__/relationship-route-page.test.tsx` ("executes citation lineage from seed URL params without redirect or a retired server analytics mirror") + `app/server/services/__tests__/relationship-execution.test.ts` ("builds the seed paper from URL params without repository access") + guard @ `scripts/quality/check-search-first-paint-no-db.mjs`. Asserts the destination carries seed identity/display context in URL params, rebuilds `seedPaper` without reading an owned source ResearchRoutePayload, executes through the repository-free relationship service, renders a client-only ephemeral ResearchRoutePayload, and does not redirect to `/citation/:id`.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-025
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+      - execution:run-013
+      - execution:run-014
+      - execution:run-015
+      - execution:run-016
+      - execution:run-017
+      - execution:run-018
+      - execution:run-019
+      - execution:run-020
+      - execution:run-021
+      - execution:run-022
+    scenarios:
+      - scenario:citation-03-03-01
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-metadata-directional-cap
+    assertion: vitest @ `app/server/services/__tests__/episteme-literature.test.ts` ("fetches E3 citation directions with exact availability") + `app/components/research-route-renderers/__tests__/citation-lineage.helpers.test.ts` ("puts papers matching metadata.referenceIds into references") + ("puts papers matching metadata.citationIds into citations"). Asserts seedPaper is passed unchanged, lazy citation page results remain direction-classifiable by metadata IDs, availability/truncation metadata is preserved, and viewed analytics counts come from the created citation-lineage metadata rather than the pre-lazy request arrays.
+    executionRefs:
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-021
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-layout-separates-seed-from-directions
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.test.tsx` ("renders the seed paper card and separated reference and citation sections"; "uses the shared ResearchRoutePayload body rail without an extra horizontal padding rail") + `app/components/research-route-renderers/__tests__/citation-lineage.helpers.test.ts` ("preserves paper order in each direction"). Asserts the seed paper card, separated references/citations headings, direction paper titles, no search input, stable per-direction ordering, shared search-result card grammar for repeated paper list items, and the `RESEARCH_ROUTE_BODY_RAIL_CLASS` width rail without nested `px-5` horizontal padding.
+    executionRefs:
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-011
+      - execution:run-012
+      - execution:run-015
+      - execution:run-021
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-ai-reaction-with-followup-gap-surface
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx` ("shows the owned research-gap map action above the citation-lineage AI comment frame") + `app/components/research/__tests__/AgentPanel.citation-lineage.test.tsx` ("renders the citation_lineage reaction card and defers the gap action to the host") + `app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx` + `app/server/services/__tests__/episteme-literature.test.ts` ("fetches E3 citation directions with exact availability") + `scripts/evidence-ledger/helpers/__tests__/relationship-execution.test.ts` ("constructs the citation ResearchRoutePayload from batch-hydrated relation papers") + `app/lib/__tests__/view-snapshot.test.ts` ("includes citation availability limits in the route-view snapshot prompt"; "marks missing citation evidence as unavailable instead of inferring from metadata"; "bounds and balances citation evidence while keeping it in the canonical projection") + `app/server/agent/__tests__/route-ai-comment-generation.test.ts` ("requires citation lineage synthesis from bounded evidence and explicit insufficiency"; "keeps the visible body within the 400-character structured contract") + `app/stores/__tests__/research-route-store.ai-comment-generation.test.ts` ("invalidates a citation reaction and rejects its late commit when evidence changes"). Asserts title/body rendering, the host-owned `연구 공백 지도 만들기` action, batch-hydrated seed plus bounded reference/citation evidence, unavailable-evidence placeholders, evidence-only two-direction prompt rules, the 400-character body cap, and stale completion rejection when citation evidence changes.
+    executionRefs:
+      - execution:run-020
+      - execution:run-003
+      - execution:run-026
+    scenarios:
+      - scenario:citation-limited-direction
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-direction-availability-distinguished
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.test.tsx` ("renders empty states for true-zero reference and citation directions"; "renders provider-limited reference state instead of a true-zero empty state") + `app/lib/__tests__/view-snapshot.test.ts` ("includes citation availability limits in the route-view snapshot prompt") + `app/components/research/__tests__/AgentPanel.citation-lineage.test.tsx` ("renders the citation_lineage reaction card and defers the gap action to the host"). Asserts rendered section empty states and the generated prompt context distinguish true-zero directions from provider-limited or unextracted lists; the AgentPanel fixture covers the true-zero body path while generated provider-limited wording remains governed by the Intent Check.
+    executionRefs:
+      - execution:run-008
+      - execution:run-011
+      - execution:run-012
+      - execution:run-015
+      - execution:run-018
+      - execution:run-019
+      - execution:run-020
+      - execution:run-026
+    scenarios:
+      - scenario:citation-limited-direction
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-paper-row-actions-preserved
+    assertion: 'vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.test.tsx` ("renders the seed paper card and separated reference and citation sections") + `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` ("renders citation direction list items with the same visible card hierarchy as search results"). Asserts non-link title identification text, removed review toggle, and search-result parity for citation direction list cards: panel and title classes, whole-card non-interactive-region inspection, icon-only accessible state, explicit-action isolation, year→venue→fields metadata row, separate author row with three-name default, DOI/PDF/citation/similar action row, and inline-analysis placement (aspect:paper-card-presentation-consistency).'
+    executionRefs:
+      - execution:run-008
+      - execution:run-011
+      - execution:run-012
+      - execution:run-015
+      - execution:run-016
+      - execution:run-017
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-keyword-click-feedback
+    assertion: vitest @ `app/components/research/__tests__/inline-ai-comment-treatment.test.tsx` (citation research-term handler) + `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` (shared repeated card hierarchy) + `app/components/research-route-renderers/__tests__/paper-card-derived-followup-parity.test.tsx` (citation different-position plain/modifier/middle follow-up) + `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx` (shared receipt admission/detached cleanup) + `app/components/research/__tests__/search-followup-activation.test.tsx` (identity, timeout, unmount) + `app/components/research/__tests__/research-route-shell.test.tsx` (sticky persistent status, matching-destination cleanup, and older-arrival identity safety). 인용 계보 AI comment 연구 용어와 반복 카드 keyword follow-up은 plain click 시 현재 scroll viewport에 query receipt를 표시하고 origin lineage/cards를 유지한다. detached click은 같은 URL을 새 탭에서 열고 현재 창 Context를 시작하지 않는다.
+    executionRefs:
+      - execution:run-017
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-reuse-refreshes-comment
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/SearchView.citation-lineage.test.tsx` ("navigates to the citation seed route even when a citation doc for the same seed already exists"). Asserts re-clicking a seed with an already-open `citation_lineage` document still navigates to the seed route without a client fetch or client dedup; the destination route owns re-execution and targets the opened document surface rather than leaving the previous search AI reaction or stale citation reaction in place.
+    executionRefs:
+      - execution:run-014
+    scenarios:
+      - scenario:citation-03-03-01
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-entry-disabled-when-no-lineage
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/SearchView.citation-lineage.test.tsx` ("disables the citation lineage entry point when both referenceIds and citationIds are empty"). Asserts the entry point is disabled only when direction ID lists are empty and no count/availability metadata indicates a lazy citation page can be fetched.
+    executionRefs:
+      - execution:run-014
+    scenarios:
+      - scenario:citation-03-03-01
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-batch-failure-error-reaction
+    assertion: Citation metadata fetch failure is owned by the seed-route destination instead of a client create/swap handler; the deleted client-create failure path no longer mutates the previous document view.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+      - execution:run-013
+      - execution:run-014
+      - execution:run-015
+      - execution:run-016
+      - execution:run-017
+      - execution:run-018
+      - execution:run-019
+      - execution:run-020
+      - execution:run-021
+    scenarios:
+      - scenario:citation-provider-failure
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-card-list-window
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` ("paginates citation direction cards to the same 10-card window"). Asserts references/citations sections reuse `SEARCH_RESULTS_INITIAL_VISIBLE_COUNT` by rendering only 10 cards initially and expanding the same direction by +10 with `더보기 (N/M)` (aspect:paper-card-list-windowing).
+    executionRefs:
+      - execution:run-016
+      - execution:run-017
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-card-data-hydration
+    assertion: vitest @ `app/server/services/__tests__/episteme-literature.test.ts` ("fetches E3 citation directions with exact availability"; "keeps a citation page usable when E3 omits default relation on an unresolved edge") + `scripts/evidence-ledger/helpers/__tests__/relationship-execution.test.ts` ("constructs the citation ResearchRoutePayload from batch-hydrated relation papers"). Asserts lazy E3 citation pages preserve their rich paper projection, direction IDs, and availability metadata when the relationship `ResearchRoutePayload` is constructed; an unresolved edge is omitted and reported as a truncated projection instead of failing the whole direction.
+    executionRefs:
+      - execution:run-003
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-no-graph-neighbor-axes
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbor-states.test.tsx` ("keeps graph-neighbor sections out of the citation-lineage page") + `scripts/evidence-ledger/helpers/__tests__/relationship-execution.test.ts` ("constructs the citation ResearchRoutePayload from batch-hydrated relation papers"). Asserts citation_lineage execution calls only the direct citation provider path, never starts the graph-neighbor provider, and renders no co-cited/coupled graph axes or graph degraded/empty states; graph relation exploration stays in the dedicated 비슷한 논문 document.
+    executionRefs:
+      - execution:run-003
+      - execution:run-023
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-seed-title-card-pinned
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.test.tsx` ("renders the seed paper card and separated reference and citation sections"; "places the AI comment below the citation relationship title context") + `app/components/research/__tests__/ResearchRouteLayout.narrow.test.tsx` ("keeps relationship route AI comments inline below the seed context on narrow viewports") + browser evidence @ `scripts/evidence-ledger/relationship-seed-sticky-browser-check.mjs`. Asserts the citation_lineage body renders a sticky, background-style seed context header with the seed title before the AI comment and references/citations sections and without search controls; relationship reactions stay in the normal document flow below the seed context rather than above it; and a real browser keeps the header pinned inside an overflow-y document scroller after scroll.
+    executionRefs:
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+      - execution:run-015
+    scenarios:
+      - scenario:citation-03-03-02
+executions:
+  - id: execution:run-001
+    kind: contract-check
+    target: product-boundary
+    subcase: document-model
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/server/services/__tests__/citation-lineage-intent-qualitative.live.test.tsx
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/server/services/__tests__/episteme-literature.test.ts
+      - scripts/evidence-ledger/helpers/__tests__/relationship-execution.test.ts
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/citation-lineage.helpers.test.ts
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/citation-lineage.helpers.test.ts
+  - id: execution:run-006
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/citation-lineage.helpers.test.ts
+  - id: execution:run-007
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/citation-lineage.helpers.test.ts
+  - id: execution:run-008
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/CitationLineageView.test.tsx
+  - id: execution:run-009
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteLayout.narrow.test.tsx
+  - id: execution:run-010
+    kind: registered-script
+    script: relationship-seed-sticky-browser
+  - id: execution:run-011
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/CitationLineageView.test.tsx
+  - id: execution:run-012
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/CitationLineageView.test.tsx
+  - id: execution:run-013
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item.test.tsx
+    testNamePattern: uses citation count as the default card-level lineage signal|explains limited reference lists instead of showing a zero-reference lineage chip|still explains provider-limited references when no lineage paper IDs are available
+  - id: execution:run-014
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/SearchView.citation-lineage.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx
+  - id: execution:run-015
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/CitationLineageView.test.tsx
+  - id: execution:run-016
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx
+  - id: execution:run-017
+    kind: vitest
+    files:
+      - app/components/research/__tests__/inline-ai-comment-treatment.test.tsx
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx
+      - app/components/research-route-renderers/__tests__/paper-card-derived-followup-parity.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx
+      - app/components/research/__tests__/search-followup-activation.test.tsx
+      - app/components/research/__tests__/research-route-shell.test.tsx
+  - id: execution:run-018
+    kind: vitest
+    files:
+      - app/lib/__tests__/view-snapshot.test.ts
+  - id: execution:run-019
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx
+      - app/components/research/__tests__/AgentPanel.citation-lineage.test.tsx
+  - id: execution:run-020
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx
+      - app/components/research/__tests__/AgentPanel.citation-lineage.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx
+      - app/lib/__tests__/view-snapshot.test.ts
+  - id: execution:run-021
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/citation-lineage.helpers.test.ts
+  - id: execution:run-022
+    kind: vitest
+    files:
+      - app/server/services/__tests__/relationship-execution.test.ts
+      - app/(research)/__tests__/relationship-route-page.test.tsx
+  - id: execution:run-023
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbor-states.test.tsx
+  - id: execution:run-024
+    kind: vitest
+    files:
+      - app/server/services/__tests__/search-service.test.ts
+  - id: execution:run-025
+    kind: guard
+    script: guard:search-first-paint-no-db
+  - id: execution:run-026
+    kind: vitest
+    files:
+      - app/lib/__tests__/view-snapshot.test.ts
+      - app/server/agent/__tests__/route-ai-comment-generation.test.ts
+      - app/stores/__tests__/research-route-store.ai-comment-generation.test.ts
+implementationContracts:
+  - 'The route view model includes `"citation_lineage"` as a first-class relationship view; there is no `source: "citation"` variant of `SearchMetadata`.'
+  - "`CitationLineageMetadata.referenceIds` / `citationIds` are the authoritative classification signal once a citation_lineage view resolves. New Episteme search results may have counts and availability metadata before IDs are loaded; route execution resolves IDs from lazy citation pages."
+  - The `citation_lineage` prompt context is built from the route-view `viewSnapshot` with explicit batch-hydrated seed, reference, citation, availability, and bounded abstract-evidence fields — distinct from the search snapshot's top-results list.
+  - Citation evidence includes the seed plus at most three references and three citations with 600-character normalized snippets. Both direction quotas are equal, evidence changes participate in canonical projection identity, and search hydration abstracts remain outside the search reaction basis.
+  - Citation generation connects prior method/topic evidence through the seed to later extension/application evidence. It treats missing direction evidence as an explicit limitation and may not infer relationship nature from titles, years, counts, or availability alone.
+  - "`buildViewSnapshotPromptContext` routes `citation_lineage` by snapshot type at the top level, not as a nested subsection of the search case."
+  - AI reactions for `citation_lineage` render title + body; the gap entry is the host-owned `연구 공백 지도 만들기` action above and outside the top AI comment frame (not an AI-reaction follow-up surface) when 선행/후속 입력이 있다.
+  - Inside the citation view, `splitPapersByCitationDirection` exposes direction-separated sections (`references` / `citations`) so grounding happens locally without going through an LLM tool.
+  - "The references and citations sections use the shared paper-card list windowing policy: initial 10 cards, `더보기 (N/M)`, +10 per click, section-local state (aspect:paper-card-list-windowing)."
+  - The references and citations sections render the same shared paper card as search results and graph-neighbor axes, preserving the title then year→venue→fields metadata, author, action-row, and inline-analysis placement (aspect:paper-card-presentation-consistency).
+  - The seed context header stays sticky above references/citations sections and is intentionally outside the repeated-list card grammar. It uses a background/border header treatment, not a candidate-card panel, while repeated direction papers continue to use `SearchResultItem`.
+  - Lazy E3 citation pages provide rich paper projections for repeated cards. The citation-lineage execution maps those direction papers directly into the `ResearchRoutePayload`; unresolved edge projections are omitted with truncated availability rather than failing the entire direction.
+  - The citation_lineage ResearchRoutePayload body is scoped to direct citation directions only. Graph relation axes are opened from the card-level `비슷한 논문` action and rendered only by `graph_neighbors`.
+verdict: met

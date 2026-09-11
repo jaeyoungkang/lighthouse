@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "nodeTypes": {
+    "experience": "experience:",
+    "moment": "moment:",
+    "promise": "promise:",
+    "acceptance-check": "acceptance-check:",
+    "evidence-ledger": "evidence-ledger:",
+    "evidence-ledger-entry": "evidence-ledger-entry:",
+    "aspect": "aspect:",
+    "intent-check": "intent-check:",
+    "execution": "execution:",
+    "scenario": "scenario:"
+  },
+  "relations": [
+    {
+      "name": "scenario_evidence_coverage",
+      "from": "scenario",
+      "to": "evidence-ledger-entry",
+      "count": "0..* -> 1..*",
+      "description": "Every active scenario must be evidenced by at least one Evidence Ledger acceptanceChecks entry; one entry may cover zero or more scenarios."
+    },
+    {
+      "name": "experience_moments",
+      "from": "experience",
+      "to": "moment",
+      "count": "1 -> 1..*",
+      "description": "Every Moment belongs to exactly one Experience; every Experience must have at least one Moment."
+    },
+    {
+      "name": "moment_promises",
+      "from": "moment",
+      "to": "promise",
+      "count": "1 -> 1..*",
+      "description": "Every Promise belongs to exactly one Moment; every Moment must carry at least one Promise."
+    },
+    {
+      "name": "promise_acceptance_checks",
+      "from": "promise",
+      "to": "acceptance-check",
+      "count": "1 -> 1..*",
+      "description": "Every Acceptance Check belongs to exactly one Promise; every Promise must declare at least one deterministic Acceptance Check."
+    },
+    {
+      "name": "promise_evidence_ledgers",
+      "from": "promise",
+      "to": "evidence-ledger",
+      "count": "1..* -> 1..*",
+      "description": "Every Evidence Ledger cites at least one source Promise; every Promise must be cited by at least one Evidence Ledger."
+    },
+    {
+      "name": "acceptance_check_evidence",
+      "from": "acceptance-check",
+      "to": "evidence-ledger-entry",
+      "count": "1 -> 1..*",
+      "description": "Every Evidence Ledger acceptanceChecks entry points to exactly one Promise Acceptance Check; every Promise Acceptance Check must have at least one assertion-bearing entry with executable references."
+    }
+  ],
+  "deferredVerificationTriggers": [
+    {
+      "idea": "adapter",
+      "trigger": "Introduce an adapter protocol when three ledgers need the same structured input/output or artifact exchange beyond exit codes, when unrelated registered scripts repeatedly expand the closed registry, or when contract-check can no longer express typed result ownership."
+    },
+    {
+      "idea": "alloy",
+      "trigger": "Introduce Alloy-style model checking when Story Chain state rules require proof over combinations or transitions: cyclic authority dependencies, impossible verdict transitions, cardinality rules that cannot be expressed as direct counts, or the same transition invariant being re-tested in three separate places."
+    }
+  ]
+}

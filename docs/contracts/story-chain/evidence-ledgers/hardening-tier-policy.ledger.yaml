@@ -1,0 +1,39 @@
+schemaVersion: 2
+slug: hardening-tier-policy
+sourcePromises:
+  - promise:hardening-tier-policy
+appliedAspects: []
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:hardening-tier-policy#acceptance-check:hardening-tier-policy-critical-path-criteria
+    assertion: vitest @ `scripts/mission-control/lib/__tests__/hardening-tier-policy.test.ts` ("defines critical-path AC criteria as a single labeled section"). Asserts §1 heading + invariant single-line + user-harm criteria.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:hardening-tier-policy#acceptance-check:hardening-tier-policy-manual-mutation-lane
+    assertion: vitest @ `scripts/mission-control/lib/__tests__/hardening-tier-policy.test.ts` ("names mutation tier pilot ledger and mutationScore convention with manual separation"). Asserts §2 heading + current `respond-contract-mutation-pilot.ledger.yaml` owner + manual-only/mutationScore convention.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:hardening-tier-policy#acceptance-check:hardening-tier-policy-negative-test-trigger
+    assertion: vitest @ `scripts/mission-control/lib/__tests__/hardening-tier-policy.test.ts` ("lists co-located negative test triggers for numeric-boundary critical-path ACs"). Asserts §3 heading + 숫자 boundary + search-results-fast-window example.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:hardening-tier-policy#acceptance-check:hardening-tier-policy-fuzz-trigger
+    assertion: vitest @ `scripts/mission-control/lib/__tests__/hardening-tier-policy.test.ts` ("scopes property-based fuzz to deterministic helper/route ledgers and excludes live LLM judges"). Asserts §4 heading + deterministic helper + live LLM judge exclusion.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/hardening-tier-policy.test.ts
+implementationContracts:
+  - "`docs/contracts/story-chain/hardening-tier-policy.md` is the single source of truth for hardening-tier triggers. The doc names criteria, pilot ledgers, and the deterministic hardening rules."
+  - This Promise carries no code changes; it is policy that other Promises and Evidence Ledgers reference when adopting mutation / negative test / fuzz tiers.
+verdict: met

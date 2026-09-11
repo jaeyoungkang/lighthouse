@@ -1,0 +1,162 @@
+schemaVersion: 2
+slug: story-chain-event-contract
+review: reviews/story-chain-event-contract.reviews.md
+sourcePromises:
+  - promise:story-chain-event-contract
+appliedAspects:
+  - aspect:admin-access-control
+intentJudgmentRefs:
+  - promise: promise:story-chain-event-contract
+    anchor: promise:story-chain-event-contract
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:story-chain-event-contract#acceptance-check:story-chain-event-contract-ref-validity
+    assertion: "`mc:validate-events` parses `docs/analytics/events.yaml`, rejects duplicate names, active product event/Amplitude/property/enum taxonomy names outside the snake_case convention, rejects dotted product names outside the exact legacy allowlist, and resolves Story Chain refs against current Experience/Moment/primary or related Promise/Aspect/Acceptance Check/scenario declarations"
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+    scenarios: []
+  - key: promise:story-chain-event-contract#acceptance-check:story-chain-event-contract-router-boundary
+    assertion: canonical event tests assert callers pass event name + runtime payload while the router composes version, Story Chain refs, privacy, and vendor sink mapping from `events.yaml`; the real contract requires each active search-journey property to resolve through the shared semantic schema and the router rejects wrong types, enum values, numeric ranges, missing emission identity, subject/property identity disagreement, undeclared keys, and forbidden raw query fields before store/sink writes; `mc:validate-events` scans production canonical event call sites and server mappings, rejects analytics-client import alias bypasses, and makes undeclared runtime names fail the gate; fan-out and scheduled public drain retain their existing boundaries; repository tests prove the writable serverless local-store path and that new JSONL rows preserve canonical fields while adding only allowlisted environment, build revision, and `runtime | manual | test` provenance without copying arbitrary environment values
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+    scenarios: []
+  - key: promise:story-chain-event-contract#acceptance-check:story-chain-event-contract-trigger-timing
+    assertion: event contract tests assert every canonical event declares trigger source, phase, and timing, and runtime tests cover requested/committed/failed trigger classes for product events
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+    scenarios: []
+  - key: promise:story-chain-event-contract#acceptance-check:story-chain-event-contract-payload-policy
+    assertion: Router tests load the real semantic property schema and reject undeclared keys, wrong types, free enum values, out-of-range numbers, raw query, and query hash on active search-journey events. `track.test.ts` proves submit/results/paper actions omit raw query, query-derived hashes, and paper title while retaining the declared journey/search/paper identity context; compatibility event tests prove allowed `fnv1a32:` hashes are emitted without raw query, corrected query, or term text. The event contract and analytics guide classify those legacy hashes as collision- and dictionary-prone same-event grouping keys rather than anonymity, identity, privacy, or cross-event join boundaries. Existing AI comment and landing tests continue to reject generated body/title and raw email payloads.
+    executionRefs:
+      - execution:run-005
+    scenarios: []
+  - key: promise:story-chain-event-contract#acceptance-check:story-chain-event-contract-admin-event-catalog
+    assertion: "`/admin/analytics` renders the canonical event contract catalog declared in `docs/analytics/events.yaml` with owner/version, trigger source/phase/timing, emission boundary/cardinality/emitter, Story Chain refs, subject/properties allowlist, and privacy/Amplitude sink policy"
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+    scenarios: []
+  - key: promise:story-chain-event-contract#acceptance-check:story-chain-event-contract-external-identity-continuity
+    assertion: Amplitude client bridge tests assert configured SDK initialization settles before the first canonical transport so the first event carries SDK `device_id` and `session_id`, while missing configuration or initialization failure falls back without blocking transport; sink tests assert external events carry email as `user_id` plus SDK identity; the research shell identifies the authenticated email for every research surface, successful sign-out resets the loaded SDK identity, and the public analytics route replaces caller-supplied actor ids with the authenticated server email or removes them for anonymous requests
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+    scenarios: []
+  - key: promise:story-chain-event-contract#acceptance-check:story-chain-event-contract-impact-review
+    assertion: "`mc:event-impact` tests assert changed `// @promise` surfaces are mapped to Promise refs, uncovered impacted Promises fail unless `events.yaml` is part of the change, `--sync` adds missing event drafts / removes stale events / updates Story Chain parent refs, and the generated event coverage inventory is kept fresh by `--update` or `--sync`"
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+    scenarios: []
+  - key: promise:story-chain-event-contract#acceptance-check:story-chain-event-contract-emission-boundary
+    assertion: "`mc:validate-events`는 canonical event의 emission boundary, cardinality, identity key, emitter를 검증한다. 활성 product event의 emitter는 export된 production 함수 하나로 연결되어야 한다. 이 함수는 선언한 event를 직접 한 번 발행하고 production 호출부를 가져야 하며, 다른 경로는 같은 event를 직접 발행할 수 없다. 검증기 회귀 테스트는 선언만 있는 상태, production 호출부가 없는 상태, emitter를 우회하는 상태를 각각 차단한다. `search-followup-activation.test.tsx`와 `track.test.ts`는 accepted search transition에서 submit이 한 번 발행되고, requery가 journey root를 유지한 채 새 search context를 parent에 연결하며, 같은 탭의 citation/similar branch가 같은 context를 이어받는지 검증한다. 직접 URL과 새 탭 복원은 destination 문서 identity로 fallback context를 만들고 새 검색 제출을 발행하지 않는다. Search view와 paper-action tests는 first-usable results, inspection reopen dedupe, primary/middle-click PDF, lineage, similar, save/unsave boundary를 검증한다. `server-analytics.test.ts`는 retired legacy search/PDF/citation success write가 product journey로 이중 발행되지 않고 citation failure trace는 보존됨을 검증한다. Production LSP reference inventory와 runtime scanner는 호출부가 없는 inline queue·gap document alias 세 개의 active declaration, writer, helper가 제거되고 같은 Promise의 current inspection·gap-view event만 남는지 검증한다."
+    executionRefs:
+      - execution:run-005
+    scenarios: []
+  - key: promise:story-chain-event-contract#acceptance-check:story-chain-event-contract-measurement-purpose
+    assertion: "`mc:validate-events` tests assert product events declare `measurement.purpose`, `measurement.decisionUse`, and property purposes for every required/optional property. The active search-journey contract rejects `ownerPrincipalId` as a required or identity key on `search_result_inspected`, while system delivery events remain separate from journey outcomes."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+    scenarios: []
+  - key: promise:story-chain-event-contract#acceptance-check:story-chain-event-contract-required-event-coverage
+    assertion: "`mc:validate-events` tests assert Promise `requiredEvents` entries exist in `docs/analytics/events.yaml` and use the declaring Promise as primary `storyRefs.promiseRef`; `relatedPromiseRefs` provides coverage/provenance but cannot satisfy event ownership."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - scripts/mission-control/__tests__/mc-validate-events.test.ts
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - scripts/mission-control/__tests__/mc-event-impact.test.ts
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/lib/analytics/__tests__/event-router.test.ts
+      - app/server/services/analytics/__tests__/event-router.ai-comment-expand.test.ts
+      - app/server/repository/__tests__/analytics-events.test.ts
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/lib/analytics/__tests__/client.test.ts
+      - app/lib/analytics/__tests__/amplitude-unified-client.test.ts
+      - app/server/services/analytics/__tests__/amplitude-sink.test.ts
+      - app/api/analytics-events/__tests__/route.test.ts
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/components/research/__tests__/AgentPanel.test.tsx
+      - app/lib/__tests__/track.test.ts
+      - app/lib/analytics/__tests__/event-router.test.ts
+      - app/server/services/analytics/__tests__/event-router.ai-comment-expand.test.ts
+      - app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx
+      - app/components/research/__tests__/search-followup-activation.test.tsx
+      - app/components/research-route-renderers/__tests__/SearchView.library-action.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx
+      - app/server/domain-access/__tests__/server-analytics.test.ts
+  - id: execution:run-006
+    kind: vitest
+    files:
+      - app/components/admin/__tests__/AnalyticsEventsDashboard.test.tsx
+implementationContracts:
+  - "`docs/analytics/events.yaml` is the canonical event contract file."
+  - "`npm run quality:fast` includes `npm run mc:validate-events`, and the event gate fails when event Story Chain refs are missing, malformed, stale, or cross-linked to the wrong Promise."
+  - "`npm run quality:commit` also runs `npm run mc:validate-events`, because the runtime emitted-event scanner reads production source across `app/` rather than only staged contract files."
+  - "`npm run quality:fast` and commit-time quality gates include `npm run mc:event-impact`. The command reports changed Promise surfaces, fails uncovered impacts that do not also update `events.yaml`, and keeps `docs/analytics/event-coverage.generated.md` synchronized through `npm run mc:event-impact -- --update`."
+  - "`npm run mc:event-impact -- --sync` updates `events.yaml` directly: it adds `AUTO-DRAFT` canonical events for changed Promises without coverage, removes events whose `promiseRef` is not declared, updates each event's Moment ref from its Promise and Experience ref from that Moment, prunes stale Acceptance Check refs, and regenerates the coverage inventory. `mc:validate-events` rejects individually declared refs when those parent relations disagree."
+  - The runtime router loads event definitions from `events.yaml`; call sites do not pass Story Chain refs or vendor event names. `mc:validate-events` also scans production `trackCanonicalEvent("...")` call sites and canonical server canonical mappings, so a runtime-emitted canonical event must be declared in `events.yaml` before the gate passes. Direct runtime calls must use literal canonical event names unless they are an intentional router/API method boundary. Unreachable legacy product events are retired from the active declaration and writer surface; historical local/vendor rows remain read-only and are not renamed or summed with current events.
+  - Every canonical event declares an `emission` contract. `boundary` names the semantic emission point, `cardinality` says whether the event is every action, once per identity, once per session, or a state transition, `identityKeys` list the declared subject/property paths that make the logical event instance stable, and `emitter` names the implementation boundary responsible for firing it. For active product events, `mc:validate-events` resolves that emitter to exactly one exported production function, requires one direct declared-event emission and a production caller, and rejects direct bypass emissions. Render/update/effect re-execution is not an emission boundary by itself.
+  - Every product event declares a `measurement` contract. `purpose` names the product question, `decisionUse` names how operators use the signal, and `propertyPurposes` names why each required/optional property is collected.
+  - Active search-journey properties resolve through the shared `propertySchemas` contract. Each schema declares description, type, examples, sensitivity, context group, lifetime, source owner, and enum/range where applicable. Runtime routing rejects mismatches.
+  - Accepted in-app search transitions create an opaque `search_context_id`. Requeries keep the journey root and link the preceding search through `parent_search_context_id`; same-tab citation and similar-paper routes retain the source search context. Direct URL and new-tab restores begin a local fallback context and do not impersonate an in-app submit.
+  - Active search-journey events use `search_submitted`, `search_results_viewed`, `search_result_inspected`, `pdf_opened`, `citation_lineage_opened`, `similar_papers_opened`, `paper_saved`, and `paper_unsaved`. Canonical names and Amplitude sink names are identical snake_case values. Analytics subject and shared property schema keys also use snake_case. Their legacy `product.*` writers are retired without dual writes.
+  - Compatibility `product.*` events may retain `fnv1a32:` query or term hashes only as approximate grouping keys inside the same event. The values are collision- and dictionary-prone and are not anonymity, user identity, a sensitive-data boundary, or a cross-event join key. Active search-journey events do not collect them; a future algorithm change requires a new event version or property and must not reinterpret historical rows.
+  - Product Promises may declare `requiredEvents` in frontmatter. The validator treats a missing event name or an event pointing at another Promise as a contract failure.
+  - Internal event storage receives only declared canonical properties; undeclared payload keys fail before store writes. External sink payloads are generated from the same event-specific allowlist. A local store write failure is reported as a store error but does not block external sink fan-out for events that are otherwise valid and externally allowed. The default local JSONL store writes to `.local/analytics-events.jsonl` in local development, uses `LOCAL_ANALYTICS_EVENT_STORE_PATH` when explicitly configured, and uses the OS temp directory in Vercel/serverless runtime so canonical event collection does not attempt to create `.local` under the deployment bundle. New local rows preserve canonical fields and add `localProvenance` with schema version, allowlisted environment/build revision, and `runtime | manual | test`; rows without it remain legacy/unknown and are not rewritten. Local provenance is not sent to Amplitude.
+  - "External vendor fan-out is sink-driven: the router iterates the registered sinks (currently Amplitude HTTP V2), and each sink fires only when the event declares that vendor under `sinks.<vendor>` and `privacy.allowExternalSinks` is `true`."
+  - Amplitude HTTP V2 delivery resolves its API key from the configured process environment and, for local server execution, loads `.env.local` before deciding the key is absent. Missing default configuration, network failures, and HTTP rejection failures surface as sink errors so route callers can keep returning 204 without losing the operational signal. Retryable delivery failures are retried with a stable `insert_id` so Amplitude can deduplicate the same event attempt.
+  - External sink fan-out forwards a stable user_id (email for identified users) and the client-side `@amplitude/unified` device_id/session_id so anonymous and identified events resolve to a single vendor profile and Amplitude Session Replay can match events to the same device/session replay. Callers do not pass pseudonymous browser uuids as `actor.id`; anonymous events leave `actor.id` empty and the sink emits `device_id` and `session_id` when the SDK provides them.
+verdict: met

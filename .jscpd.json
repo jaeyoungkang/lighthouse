@@ -1,0 +1,11 @@
+{
+  "absolute": false,
+  "ignore": ["**/__tests__/**", "**/*.test.ts", "**/*.test.tsx"],
+  "minLines": 8,
+  "minTokens": 80,
+  "output": "coverage/jscpd",
+  "path": ["app"],
+  "pattern": "**/*.{ts,tsx}",
+  "reporters": ["console", "json"],
+  "threshold": 0
+}

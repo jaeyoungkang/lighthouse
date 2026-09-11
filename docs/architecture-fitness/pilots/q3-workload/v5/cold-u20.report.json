@@ -1,0 +1,157 @@
+{
+  "schemaVersion": "4",
+  "generatedAt": "2026-07-17T02:55:58.930Z",
+  "runLabel": "q3-protected-605ff8df-cold-u20-r2",
+  "node": "v24.5.0",
+  "config": {
+    "baseUrl": "http://127.0.0.1:3001",
+    "query": "transformer attention",
+    "timeoutMs": 30000,
+    "mode": "one-shot",
+    "targetRevision": "605ff8dfd17929a5615e343235176b01c42c9a26",
+    "workingTreeDirty": false,
+    "runOwner": "operational-readiness",
+    "inputProfile": "typical-transformer-attention-first-session-v1",
+    "providerProfile": "real-episteme-approved-20-window-20260717",
+    "topologyProfile": "local-single-next-process-production-default-8x12",
+    "users": 20
+  },
+  "cohorts": [
+    {
+      "users": 20,
+      "wallClockMs": 4781.160125,
+      "endpoints": [
+        {
+          "endpoint": "GET /search",
+          "count": 20,
+          "outcomes": {
+            "2xx": 20,
+            "4xx": 0,
+            "5xx": 0,
+            "timeout": 0,
+            "network-error": 0
+          },
+          "p50": 448.47575000000006,
+          "p95": 450.092666,
+          "p99": 458.4765,
+          "max": 458.4765
+        },
+        {
+          "endpoint": "GET /search?q= (query execution)",
+          "count": 20,
+          "outcomes": {
+            "2xx": 20,
+            "4xx": 0,
+            "5xx": 0,
+            "timeout": 0,
+            "network-error": 0
+          },
+          "p50": 2230.028458,
+          "p95": 2907.1764169999997,
+          "p99": 2909.1697080000004,
+          "max": 2909.1697080000004
+        },
+        {
+          "endpoint": "GET /search?q= (seeded follow-up execution)",
+          "count": 20,
+          "outcomes": {
+            "2xx": 20,
+            "4xx": 0,
+            "5xx": 0,
+            "timeout": 0,
+            "network-error": 0
+          },
+          "p50": 1513.528167,
+          "p95": 1873.9224579999996,
+          "p99": 1984.5660410000005,
+          "max": 1984.5660410000005
+        }
+      ],
+      "serverTimingPhases": [],
+      "searchReadiness": [
+        {
+          "userIndex": 0,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 1,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 2,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 3,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 4,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 5,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 6,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 7,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 8,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 9,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 10,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 11,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 12,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 13,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 14,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 15,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 16,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 17,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 18,
+          "paperCount": 10
+        },
+        {
+          "userIndex": 19,
+          "paperCount": 10
+        }
+      ],
+      "totalErrorCount": 0,
+      "firstRequestFailure": null
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-llm-candidates",
+  "serviceId": "lighthouse",
+  "policySetRef": "issue-278-least-authority",
+  "revision": "2066f24671d2f24d89c59359888df19f8befb89d",
+  "candidates": []
+}

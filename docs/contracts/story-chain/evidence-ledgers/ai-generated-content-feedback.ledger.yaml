@@ -1,0 +1,86 @@
+schemaVersion: 2
+slug: ai-generated-content-feedback
+review: reviews/ai-generated-content-feedback.reviews.md
+sourcePromises:
+  - promise:inline-analysis-auto-run
+  - promise:gap-network-detection-from-search
+  - promise:gap-report-prepared-reaction
+  - promise:gap-overlay-decision-evidence
+appliedAspects:
+  - aspect:ai-generated-content-feedback
+intent:
+  mode: delegated
+  checks: []
+  delegations:
+    - key: promise:inline-analysis-auto-run#intent-check:semantic-profile-is-phrase-not-keyword
+      ledger: immediate-navigation
+    - key: promise:gap-network-detection-from-search#intent-check:cluster-narrative-describes-research-work
+      ledger: gap-network-e2
+    - key: promise:gap-network-detection-from-search#intent-check:representative-papers-show-cluster-grain
+      ledger: gap-network-e2
+    - key: promise:gap-network-detection-from-search#intent-check:adjacency-shows-network-position
+      ledger: gap-network-e2
+    - key: promise:gap-report-prepared-reaction#intent-check:title-and-intro-name-the-discipline
+      ledger: gap-network-e2
+    - key: promise:gap-report-prepared-reaction#intent-check:cluster-background-and-comparison
+      ledger: gap-network-e2
+    - key: promise:gap-report-prepared-reaction#intent-check:gap-inference-method-traceable
+      ledger: gap-network-e2
+    - key: promise:gap-overlay-decision-evidence#intent-check:hypothesis-proposals-have-depth
+      ledger: gap-network-e2
+    - key: promise:gap-overlay-decision-evidence#intent-check:proposals-grounded-in-system-resources
+      ledger: gap-network-e2
+    - key: promise:gap-overlay-decision-evidence#intent-check:meta-is-qualitative-not-numeric
+      ledger: gap-network-e2
+acceptanceChecks:
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-exposed-card-start
+    assertion: 'vitest @ `app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx` ("queues inline analysis for graph-neighbor document cards inside the first visible budget") + `app/components/research-route-renderers/__tests__/CitationLineageView.inline-analysis-budget.test.tsx` ("queues inline analysis for citation-lineage cards inside the first visible budget") + `app/components/research-route-renderers/__tests__/search-result-item.test.tsx` ("records feedback for inline AI analysis with paper provenance"). Asserts the shared paper-card surface still auto-queues inline analysis when citation-lineage and graph-neighbor documents render cards inside the first visible budget, then verifies the feedback Aspect on that same inline analysis output: feedback stays hidden while the dense card is collapsed, and after details open it emits paper id, source, promise ref, expanded-detail surface id/kind, and output fingerprint provenance without raw AI analysis text.'
+    executionRefs:
+      - execution:run-002
+      - execution:run-001
+      - execution:run-005
+    scenarios: []
+  - key: promise:gap-report-prepared-reaction#acceptance-check:gap-report-prepared-reaction-vertical-stack-edge-fallback
+    assertion: Cross-cut Aspect row — verifies the feedback Aspect on the rendered lower content report surface required by the vertical-stack AC; the vertical-stack composition, pending/edge-fallback behavior, and empty-section guards are locked in `gap-network-e2.ledger.yaml`. vitest @ `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkContentReport.test.tsx` ("records feedback once at report level for gap content prose with gap report provenance"). Asserts gap ResearchRoutePayload prose feedback renders once for the whole report, then emits ResearchRoutePayload id, report-level surface id/kind, promise ref, selected value, and title/body fingerprint provenance for the rendered narrative without storing raw overview/cluster/gap inference prose.
+    executionRefs:
+      - execution:run-003
+    scenarios: []
+  - key: promise:gap-overlay-decision-evidence#acceptance-check:gap-overlay-decision-evidence-gap-card-bounds
+    assertion: vitest @ `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkFocusedSelectionSummary.feedback.test.tsx` ("records feedback for focused gap overlay proposals with gap report provenance"). Cross-cut Aspect row — verifies the feedback Aspect on the focused gap card surface required by the AC body (selected gap zoom + meta/proposals + card bounds); the gap card rendering and bounds invariant are locked in `gap-network-e2.ledger.yaml`. Asserts focused gap overlay feedback emits the gap ResearchRoutePayload id, selection kind, promise ref, selected value, and output fingerprint provenance for the rendered card without raw overlay proposal text.
+    executionRefs:
+      - execution:run-004
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/__tests__/ai-content-feedback.test.tsx
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item.test.tsx
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkContentReport.test.tsx
+    testNamePattern: records feedback
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkFocusedSelectionSummary.feedback.test.tsx
+    testNamePattern: records feedback
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx
+      - app/components/research-route-renderers/__tests__/CitationLineageView.inline-analysis-budget.test.tsx
+implementationContracts:
+  - Visible AI-generated content carries a low-friction feedback affordance near the content it evaluates.
+  - Dense repeated AI summary surfaces may defer feedback until the user expands or focuses the AI output details.
+  - Submitted feedback displays an immediate visible saved state, leaves the selected value visually stronger than the unselected value, and restores that selection for the same browser-session output surface after remount.
+  - Selected feedback uses small-area visual emphasis such as icon fill and border/text color, not a filled button background that competes with AI content.
+  - Feedback records preserve provenance for the source ResearchRoutePayload or artifact, visible surface, Promise family, and AI output fingerprint. Raw AI output text is not stored in the telemetry payload.
+  - Feedback collection does not obscure the AI content body or required follow-up actions.
+  - Feedback persistence failure does not break the user's reading flow.
+  - This Aspect does not promise immediate model training, response regeneration, ranking changes, or quality guarantees.
+verdict: met

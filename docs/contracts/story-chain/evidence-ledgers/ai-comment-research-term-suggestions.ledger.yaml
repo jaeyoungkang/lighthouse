@@ -1,0 +1,77 @@
+schemaVersion: 2
+slug: ai-comment-research-term-suggestions
+review: reviews/ai-comment-research-term-suggestions.reviews.md
+sourcePromises:
+  - promise:search-results-suggest-english-terms
+  - promise:search-results-fast-window
+  - promise:search-reaction-summarizes-terrain
+  - promise:citation-lineage
+  - promise:graph-neighbor-papers
+appliedAspects:
+  - aspect:ai-comment-research-term-suggestions
+intent:
+  mode: explicit
+  checks:
+    - key: promise:search-reaction-summarizes-terrain#intent-check:result-set-terrain-is-not-query-repetition
+      evidence: The Aspect keeps research-term suggestions as subordinate AI comment text so the generated search reaction remains focused on concrete result-set terrain, verified by `search-reaction.ledger.yaml`.
+    - key: promise:citation-lineage#intent-check:body-explains-citation-flow-not-counts
+      evidence: The Aspect appends grounded research-term text after the citation-lineage body in the same AI comment frame, without replacing or diluting the citation-flow body intent, verified by `citation-lineage.ledger.yaml` and `inline-ai-comment-treatment.test.tsx`.
+    - key: promise:search-reaction-summarizes-terrain#intent-check:search-reaction-ux-writing-voice
+      evidence: live judge over the real route AI comment generation output at `app/server/services/__tests__/search-awareness-intent-qualitative.live.test.ts` ("search completion route AI comment generation answers the UX-writing voice·tone Critical Intent Questions") plus `app/server/agent/__tests__/route-ai-comment-generation.test.ts` ("adds next-path guidance only for search view snapshots").
+  delegations: []
+acceptanceChecks:
+  - key: promise:search-results-suggest-english-terms#acceptance-check:search-results-suggest-english-terms-result-basis
+    assertion: vitest @ `app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx` ("keeps search metadata compact and renders research terms as clickable AI comment text") + `app/components/research-route-renderers/__tests__/search-view-content.term-discovery.test.tsx` ("keeps research terms as clickable AI comment text"; "preserves the term seed without rendering a results-header iteration trace"). Asserts research terms render inside the search header AI comment frame as a sentence containing clickable text links from existing term-discovery candidates, with the `주요 연구 용어` prefix and following keywords kept on one no-wrap line inside the term section; not as `다음 검색 후보:`, `연구 용어 목록:` label text, boxed chips, explanatory count prose, or a separate overview row; pending and degraded states stay compact in that AI comment term area; no-answer renders no forced empty term section; clicking a term invokes the follow-up search handler with `termSeed.sourceQuery`, clicked `term`, `candidateType`, and `supportCount`; and the next results preserve that seed without rendering a results-header iteration trace.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-english-term-discovery
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-year-distribution
+    assertion: vitest @ `app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx` ("keeps search metadata compact and renders research terms as clickable AI comment text") + `app/components/research-route-renderers/__tests__/search-view-content.year-range.test.tsx` ("keeps publication-year distribution inside the year filter dropdown"). Publication-year distribution renders as a distinct block inside the publication-year filter dropdown panel (`search-year-filter-panel`) when that dropdown is open. `app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx` ("draws the year distribution as a continuous full-width axis") asserts the chart renders one equal-width bar per year from the earliest to the latest result year (a bar for every year in the span, including gap years marked `data-empty="true"`) so present years are never dropped and the axis always fills the width, and that each year bar exposes a `{year}년 {count}편` app-rendered hover tooltip (`search-year-tooltip-<year>`). `app/components/research-route-renderers/__tests__/search-view-content.year-range.test.tsx` ("accents only the bars inside the entered publication-year range") asserts the accent highlight tracks the entered 시작~끝 range (bars in range carry `data-highlight="true"`, others `false`) and that an empty range highlights nothing.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios: []
+  - key: promise:search-reaction-summarizes-terrain#acceptance-check:search-reaction-summarizes-terrain-host-gap-action
+    assertion: vitest @ `app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx` verifies the search AI comment frame can host the readable generated reaction plus compact existing-candidate research-term text links while the host-owned `상위 논문 40개의 관계를 분석하여 연구 공백 찾아보기 >` action sits on the result-basis row and the filter/sort controls keep only search metadata.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-ai-reaction-with-followup-gap-surface
+    assertion: vitest @ `app/components/research/__tests__/inline-ai-comment-treatment.test.tsx` ("uses one frame treatment for search, citation lineage, and graph-neighbor AI comments"). Asserts citation-lineage AI comment hosts append grounded inline-analysis research terms as compact clickable text in the same AI comment frame while preserving the host-owned research-gap action above and outside that frame and `termSeed` follow-up search behavior.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:citation-limited-direction
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-gap-surface
+    assertion: vitest @ `app/components/research/__tests__/inline-ai-comment-treatment.test.tsx` ("uses one frame treatment for search, citation lineage, and graph-neighbor AI comments") + `app/components/research-route-renderers/__tests__/GraphNeighborsView.inline-analysis-terms.test.tsx` ("renders graph-neighbor research terms inside the AI comment frame") + `app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx` ("shows the owned research-gap map action above the graph-neighbor AI comment frame") + `app/server/services/__tests__/episteme-literature.test.ts` ("derives both graph axes from E3 discovery evidence") + `app/api/gap-reports/__tests__/route.test.ts` ("creates from a visible result snapshot without loading a source ResearchRoutePayload") + gap-network source coverage in `gap-network-e2.ledger.yaml` ("acceptance-check:gap-network-detection-from-search-graph-neighbor-source"). Asserts graph-neighbor AI comment hosts append grounded inline-analysis research terms as compact clickable text in the same AI comment frame while preserving the host-owned research-gap action above and outside that frame when graph candidates exist; term clicks use `termSeed` follow-up search behavior. The graph-neighbor source evidence stores co-cited/coupled adjacency counts in graph_neighbors metadata, and the gap-network source ledger verifies the visible graph-neighbor snapshot is accepted by the gap route/server path so all graph candidates plus co-cited/coupled shared-count support reach the existing gap-network builder without source route payload reload.
+    executionRefs:
+      - execution:run-001
+      - execution:run-003
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.term-discovery.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+      - app/components/research/__tests__/inline-ai-comment-treatment.test.tsx
+      - app/components/research-route-renderers/__tests__/GraphNeighborsView.inline-analysis-terms.test.tsx
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-view-content.year-range.test.tsx
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx
+      - app/server/services/__tests__/graph-neighbor-papers.test.ts
+      - app/server/services/__tests__/episteme-literature.test.ts
+      - app/api/gap-reports/__tests__/route.test.ts
+implementationContracts:
+  - Research terms use compact text-like buttons inside a sentence in the AI comment frame. The `주요 연구 용어` prefix and following keywords stay on one no-wrap line inside the term section; if the line is wider than the frame, the section may scroll horizontally. Generated prose stays readable, while research-term suggestions read as part of the same AI comment flow. The search gap action is owned by the result-basis row; citation-lineage and graph-neighbor gap actions remain host-owned actions above and outside the AI comment frame.
+  - "The search metadata preview is separate from term exploration: publication-year distribution belongs inside the publication-year filter dropdown panel, while research terms sit in the AI comment frame."
+  - Relationship documents build grounded term candidates only from the current ResearchRoutePayload's current-version, fingerprinted inline-analysis semantic profiles backed by a usable abstract. Legacy or whitespace-only embedded analysis produces no term line; the surface does not invent generic terms just because the Aspect applies.
+verdict: met

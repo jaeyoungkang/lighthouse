@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "1",
+  "architectureImpact": "none",
+  "cairVerdict": "none",
+  "decisionRoot": "uncertain",
+  "rationale": "현재 경계로 충분하다는 근거를 적는다. declared를 선택하면 durable CAIR recordRef도 채운다."
+}

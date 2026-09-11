@@ -1,0 +1,247 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-policy",
+  "service": {
+    "id": "lighthouse",
+    "repository": "https://github.com/corca-ai/lighthouse.git",
+    "adapterRef": "scripts/architecture-fitness/collect-q4-technical-grain.mjs"
+  },
+  "policySet": {
+    "id": "issue-297-q4-technical-grain",
+    "version": "2026-08-27.v19",
+    "scope": "four Human-approved Lighthouse effect seams and two representative contract-change propagation traces",
+    "owner": "Lighthouse architecture owner",
+    "source": "docs/architecture-fitness/issue-297-q4-technical-grain.md",
+    "sourceRevision": "issue-297-comment-4971843973+pr-531-live-reviewed-paper-context+issue-414-gap-enrichment-retry+issue-417-per-principal-gap-admission+issue-683-inline-analysis-effect-owner+issue-683-single-owner-guard",
+    "collectorAuthority": {
+      "adapterRef": "scripts/architecture-fitness/collect-q4-technical-grain.mjs",
+      "id": "lighthouse-issue-297-q4-technical-grain-collector",
+      "version": "22",
+      "scope": "materialized exact-revision seam inventory with exclusive current-or-legacy background-inline transport ownership, exclusive current-or-legacy judgment-owner resolution, duplicate-owner rejection, definition-bound full-SHA collector-only historical Gemini, outbound HTTP, and Supabase-owner compatibility, collector-authority source-policy tests, guards, and dependencies across target lock drift, and bounded historical change traces",
+      "definitionDigest": "b8b4daded94582cc76f8b2f6f8d50cb9c60f3a798e759238190eba69107a9a92",
+      "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+      "attestationKeyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1"
+    }
+  },
+  "coverage": [
+    {
+      "id": "coverage:issue-297-q4-technical-grain",
+      "lens": "Q4 effect chokepoints and representative contract propagation",
+      "status": "included",
+      "owner": "Lighthouse architecture owner",
+      "reason": "Four Human-approved seams have exact-revision static and collector-authority source-policy evidence, and two historical contract changes have bounded propagation traces.",
+      "reentryTrigger": "Re-collect when a declared chokepoint, responsibility, caller, invariant, guard, or propagation policy changes.",
+      "policyRefs": ["issue-297:technical-grain-conformance"]
+    },
+    {
+      "id": "coverage:issue-297-dynamic-effect-paths",
+      "lens": "Q4 dynamic imports, callbacks, and runtime-only effect acquisition",
+      "status": "unsupported",
+      "owner": "Lighthouse architecture owner",
+      "reason": "Static inventories and deterministic behavior suites do not prove every runtime callback or dynamically selected provider path.",
+      "reentryTrigger": "Add a runtime trace only when a dynamic acquisition path or related incident creates a concrete requirement.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-297-mechanism-only-future-locality",
+      "lens": "Q4 future mechanism-change locality",
+      "status": "unsupported",
+      "owner": "Lighthouse architecture owner",
+      "reason": "The two ratified historical changes also changed product contracts, so they cannot honestly prove a pure mechanism-only future change.",
+      "reentryTrigger": "Record the next real provider or repository mechanism-only change and compare it with an approved propagation set.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-297-production-background-lifetime",
+      "lens": "Q4 production browser and platform background lifetime",
+      "status": "unsupported",
+      "owner": "Lighthouse runtime-flow owner",
+      "reason": "Component tests prove cancellation and stale-completion rules but not production duplicate or lost work across browser and platform lifetimes.",
+      "reentryTrigger": "Re-enter after a lost-work or duplicate-work incident, or when platform lifecycle ownership changes.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:q4-process-effectiveness",
+      "lens": "Architecture Fitness process effectiveness",
+      "status": "unsupported",
+      "owner": "Lighthouse agent-process owner",
+      "reason": "Machine conformance cannot decide whether Q4 authoring and maintenance cost is proportionate to release-decision value.",
+      "reentryTrigger": "Audit unique findings, false positives, runtime, and maintenance volume at Q4 and integrated Q1-Q5 closeout.",
+      "policyRefs": []
+    }
+  ],
+  "policies": [
+    {
+      "id": "issue-297:technical-grain-conformance",
+      "caseKind": "technical-grain",
+      "question": "Do the four approved effect boundaries remain enforced, and did the bounded representative contract traces reach their declared owner groups?",
+      "capabilityRef": "capability:lighthouse-effect-boundaries",
+      "owner": "Lighthouse architecture owner",
+      "desired": "Provider, AI, persistence, and client-lifetime effects pass through responsibility-bearing owners while declared contract changes reach the necessary authority, implementation, test, and guard surfaces.",
+      "seams": [
+        {
+          "id": "seam:episteme-provider-gateway",
+          "required": true,
+          "requiredChokepointRefs": [
+            "chokepoint:literature-provider-fetch",
+            "chokepoint:episteme-circuit-breaker"
+          ],
+          "requiredResponsibilityRefs": [
+            "responsibility:request-metadata",
+            "responsibility:timeout-and-abort",
+            "responsibility:bounded-connect-retry",
+            "responsibility:breaker-and-admission",
+            "responsibility:failure-normalization"
+          ],
+          "allowedCallerRefs": [
+            "caller:episteme-literature",
+            "caller:episteme-paper-neighborhood"
+          ],
+          "forbiddenBypassRefs": ["bypass:raw-literature-http"],
+          "requiredInvariantRefs": [
+            "invariant:provider-effect-behind-gateway",
+            "invariant:episteme-self-protection",
+            "invariant:bounded-provider-failure"
+          ],
+          "requiredEvidenceRoles": [
+            "technical-grain-seam-static",
+            "technical-grain-behavior-test"
+          ]
+        },
+        {
+          "id": "seam:structured-ai-gateway",
+          "required": true,
+          "requiredChokepointRefs": [
+            "chokepoint:structured-generation-gateway",
+            "chokepoint:execute-judgment"
+          ],
+          "requiredResponsibilityRefs": [
+            "responsibility:provider-acquisition",
+            "responsibility:deadline-and-no-retry",
+            "responsibility:usage-normalization",
+            "responsibility:judgment-parse-fallback-ledger"
+          ],
+          "allowedCallerRefs": [
+            "caller:execute-judgment",
+            "caller:route-ai-comment-generation"
+          ],
+          "forbiddenBypassRefs": ["bypass:direct-ai-provider-acquisition"],
+          "requiredInvariantRefs": [
+            "invariant:provider-effect-behind-ai-gateway",
+            "invariant:judgment-policy-separated",
+            "invariant:bounded-structured-generation"
+          ],
+          "requiredEvidenceRoles": [
+            "technical-grain-seam-static",
+            "technical-grain-behavior-test"
+          ]
+        },
+        {
+          "id": "seam:reviewed-paper-domain-repository",
+          "required": true,
+          "requiredChokepointRefs": [
+            "chokepoint:reviewed-paper-domain-access",
+            "chokepoint:reviewed-papers-repository"
+          ],
+          "requiredResponsibilityRefs": [
+            "responsibility:principal-and-product-action",
+            "responsibility:table-query-and-row-mapping",
+            "responsibility:owner-predicate"
+          ],
+          "allowedCallerRefs": [
+            "caller:reviewed-paper-domain-access",
+            "caller:search-enrichment-domain-access",
+            "caller:graph-neighbor-hydration-domain-access"
+          ],
+          "forbiddenBypassRefs": [
+            "bypass:route-or-service-to-repository",
+            "bypass:repository-outside-raw-db"
+          ],
+          "requiredInvariantRefs": [
+            "invariant:domain-access-owns-principal",
+            "invariant:repository-owns-storage",
+            "invariant:opaque-db-handle"
+          ],
+          "requiredEvidenceRoles": [
+            "technical-grain-seam-static",
+            "technical-grain-behavior-test"
+          ]
+        },
+        {
+          "id": "seam:client-background-server-effect",
+          "required": true,
+          "requiredChokepointRefs": [
+            "chokepoint:research-background-tasks",
+            "chokepoint:purpose-api-route"
+          ],
+          "requiredResponsibilityRefs": [
+            "responsibility:client-cancellation",
+            "responsibility:stale-completion-rejection",
+            "responsibility:server-auth-and-effect"
+          ],
+          "allowedCallerRefs": ["caller:research-route-shell"],
+          "forbiddenBypassRefs": [
+            "bypass:client-imports-server",
+            "bypass:client-acquires-provider-or-db"
+          ],
+          "requiredInvariantRefs": [
+            "invariant:browser-lifetime-separated",
+            "invariant:stale-work-not-applied",
+            "invariant:primary-result-not-replaced"
+          ],
+          "requiredEvidenceRoles": [
+            "technical-grain-seam-static",
+            "technical-grain-behavior-test"
+          ]
+        }
+      ],
+      "changeScenarios": [
+        {
+          "id": "scenario:incident-183-release-contract",
+          "required": true,
+          "changeClass": "contract",
+          "allowedPropagationRefs": [
+            "propagation:operational-authority",
+            "propagation:provider-gateway",
+            "propagation:provider-callers",
+            "propagation:behavior-tests",
+            "propagation:structural-guard",
+            "propagation:story-chain-contract"
+          ],
+          "requiredPropagationRefs": [
+            "propagation:operational-authority",
+            "propagation:provider-gateway",
+            "propagation:provider-callers",
+            "propagation:behavior-tests",
+            "propagation:structural-guard",
+            "propagation:story-chain-contract"
+          ],
+          "requiredEvidenceRoles": ["technical-grain-change-trace"]
+        },
+        {
+          "id": "scenario:pr-229-ai-trust-contract",
+          "required": true,
+          "changeClass": "contract",
+          "allowedPropagationRefs": [
+            "propagation:runtime-authority",
+            "propagation:ai-gateway",
+            "propagation:ai-caller",
+            "propagation:behavior-tests",
+            "propagation:story-chain-contract"
+          ],
+          "requiredPropagationRefs": [
+            "propagation:runtime-authority",
+            "propagation:ai-gateway",
+            "propagation:ai-caller",
+            "propagation:behavior-tests",
+            "propagation:story-chain-contract"
+          ],
+          "requiredEvidenceRoles": ["technical-grain-change-trace"]
+        }
+      ],
+      "verificationPlan": [
+        "Collect the exact-revision seam inventory as read-only source, execute the collector-authority negative policy suite and guards without loading target modules, and reproduce the two bounded historical contract traces."
+      ]
+    }
+  ]
+}

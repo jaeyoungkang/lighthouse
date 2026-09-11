@@ -1,0 +1,79 @@
+schemaVersion: 2
+slug: admin-access-control
+review: reviews/admin-access-control.reviews.md
+sourcePromises:
+  - promise:evidence-ledger-implementation-trace
+  - promise:invited-user-access-management
+  - promise:story-chain-event-contract
+appliedAspects:
+  - aspect:admin-access-control
+intentJudgmentRefs:
+  - promise: promise:evidence-ledger-implementation-trace
+    anchor: promise:evidence-ledger-implementation-trace
+  - promise: promise:invited-user-access-management
+    anchor: promise:invited-user-access-management
+  - promise: promise:story-chain-event-contract
+    anchor: promise:story-chain-event-contract
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:evidence-ledger-implementation-trace#acceptance-check:evidence-ledger-implementation-trace-internal-admin-domain
+    assertion: Internal admin identity is limited to `@corca.ai`, while the external product allowlist does not grant admin authority.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:invited-user-access-management#acceptance-check:invited-user-access-management-admin-surface
+    assertion: "`/admin/access` rechecks internal admin auth, rejects external users as not-found, renders the effective external email list, exposes add/remove Server Actions plus failure feedback, and emits only operator/add-remove canonical metadata after commit."
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:invited-user-access-management#acceptance-check:invited-user-access-management-normalized-membership
+    assertion: Access policy, domain-access, repository, and migration evidence normalize one external email key, reject malformed/internal addresses, and retain at most one current membership row.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:invited-user-access-management#acceptance-check:invited-user-access-management-next-auth-request
+    assertion: Auth identity and magic-link issuance read current DB membership on each external request, ignore the retired environment variable, and fail closed when the DB decision is unavailable.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:invited-user-access-management#acceptance-check:invited-user-access-management-admin-separation
+    assertion: External invited access remains product-only, while both the rendered page and each mutation require the separate internal admin authority.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:invited-user-access-management#acceptance-check:invited-user-access-management-failure-preserves-state
+    assertion: A failed membership insert or delete returns the explicit preserved-state failure notice without reporting success or emitting a committed operation event.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:story-chain-event-contract#acceptance-check:story-chain-event-contract-admin-event-catalog
+    assertion: "`/admin/analytics` calls the internal admin gate before rendering the canonical event contract catalog."
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/server/auth/__tests__/internal-admin.test.ts
+      - app/server/auth/__tests__/access-policy.test.ts
+      - app/server/auth/__tests__/identity.test.ts
+      - app/api/auth/magic-link/__tests__/route.test.ts
+      - app/admin/__tests__/admin-access.test.tsx
+      - app/server/domain-access/__tests__/server-analytics.test.ts
+      - app/lib/analytics/__tests__/event-router.test.ts
+      - app/components/admin/__tests__/AnalyticsEventsDashboard.test.tsx
+      - scripts/quality/__tests__/check-search-first-paint-no-db.test.ts
+implementationContracts:
+  - Rendered admin routes call the internal admin auth boundary, and every invited-access Server Action repeats that authorization.
+  - The admin boundary is `@corca.ai`; external product allowlist entries do not become administrators.
+  - "`lighthouse.access_allowlist_entries` is the only external allowlist source: row presence grants access and row absence denies it."
+  - Admin list reads use a fixed-size email-ordered keyset page while URL navigation carries only the row's opaque cursor id, never the invited email.
+  - The dedicated PostgreSQL integration lane executes `app/server/repository/__tests__/access-allowlist.postgres.integration.ts` through `npm run test:db:gap-report-concurrency` to prove first/next/previous/last ordering and concurrent insert/delete boundaries against the real schema and PostgREST query semantics.
+  - Existing environment entries are migrated before rollout and are not read by the runtime access policy.
+  - A committed add/remove emits the internal operator id and operation through the canonical Amplitude mapping; the invited email is never event payload.
+  - "`/admin/access` and `/admin/analytics` are the retained admin pages. Process-governance verdicts are read through Mission Control CLI and do not create web access boundaries."
+verdict: met

@@ -1,0 +1,354 @@
+{
+  "version": 1,
+  "routes": [
+    {
+      "path": "app/api/analytics-events/route.ts",
+      "methods": ["POST"],
+      "visibility": "public",
+      "work": ["durable-sink"],
+      "access": "write",
+      "body": {
+        "maxBytes": 65536,
+        "fieldCardinality": "event name <= 160 chars; subject/properties <= 64 keys each"
+      },
+      "authOrder": "public-admission-before-body",
+      "admission": [
+        {
+          "id": "public-telemetry-source",
+          "owner": "app/server/operational/public-telemetry-ingress.ts",
+          "limit": "default 120 requests / 60s / source / surface; env-overridable; max 1000 source keys / process"
+        }
+      ],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 15
+    },
+    {
+      "path": "app/api/auth/identify/route.ts",
+      "methods": ["GET", "POST", "DELETE"],
+      "visibility": "public",
+      "work": ["none"],
+      "access": "none",
+      "body": null,
+      "authOrder": "not-applicable",
+      "admission": [],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 15
+    },
+    {
+      "path": "app/api/auth/magic-link/route.ts",
+      "methods": ["POST"],
+      "visibility": "public",
+      "work": ["db", "provider"],
+      "access": "read-write",
+      "body": {
+        "maxBytes": 4096,
+        "fieldCardinality": "email <= 320 chars; object is strict"
+      },
+      "authOrder": "public-admission-before-body",
+      "admission": [
+        {
+          "id": "magic-link-source",
+          "owner": "app/server/operational/route-ingress-admission.ts",
+          "key": "source",
+          "maxRequests": 10,
+          "windowMs": 60000,
+          "maxKeys": 1000
+        },
+        {
+          "id": "magic-link-email",
+          "owner": "app/server/operational/route-ingress-admission.ts",
+          "key": "normalized-email",
+          "maxRequests": 3,
+          "windowMs": 900000,
+          "maxKeys": 1000
+        }
+      ],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 15
+    },
+    {
+      "path": "app/api/auth/moonlight-scholar/me/route.ts",
+      "methods": ["GET"],
+      "visibility": "public-bearer-auth",
+      "work": ["token-verify"],
+      "access": "read",
+      "body": null,
+      "authOrder": "bearer-auth-before-work",
+      "admission": [],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 15
+    },
+    {
+      "path": "app/api/auth/moonlight-scholar/session/route.ts",
+      "methods": ["POST", "DELETE"],
+      "visibility": "public-same-origin",
+      "work": ["token-verify", "db-tail"],
+      "access": "read-write",
+      "body": {
+        "maxBytes": 16384,
+        "fieldCardinality": "token <= 12288 chars; object is strict"
+      },
+      "authOrder": "same-origin-before-body",
+      "admission": [
+        {
+          "id": "same-origin",
+          "owner": "app/server/auth/moonlight-scholar-token.ts",
+          "limit": "exact request-origin match before body read"
+        }
+      ],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 15
+    },
+    {
+      "path": "app/api/auth/session-touch/route.ts",
+      "methods": ["POST"],
+      "visibility": "authenticated",
+      "work": ["db"],
+      "access": "write",
+      "body": null,
+      "authOrder": "domain-auth-before-work",
+      "admission": [],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 15
+    },
+    {
+      "path": "app/api/errors/route.ts",
+      "methods": ["POST"],
+      "visibility": "public",
+      "work": ["durable-sink"],
+      "access": "write",
+      "body": {
+        "maxBytes": 32768,
+        "fieldCardinality": "message <= 4000 chars; metadata <= 64 keys/object, <= 160 chars/key, <= 4 nested levels, <= 32 array items, <= 2048 chars/string, <= 512 visited values, <= 16384 UTF-8 JSON bytes; top-level __lighthouseTruncated is server-reserved"
+      },
+      "authOrder": "public-admission-before-body",
+      "admission": [
+        {
+          "id": "public-telemetry-source",
+          "owner": "app/server/operational/public-telemetry-ingress.ts",
+          "limit": "default 120 requests / 60s / source / surface; env-overridable; max 1000 source keys / process"
+        }
+      ],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 15
+    },
+    {
+      "path": "app/api/gap-reports/[id]/enrichment-retry/route.ts",
+      "methods": ["POST"],
+      "visibility": "authenticated",
+      "work": ["db", "llm"],
+      "access": "read-write",
+      "body": null,
+      "authOrder": "auth-before-work",
+      "admission": [
+        {
+          "id": "gap-build-principal",
+          "owner": "app/server/domain-access/gap-build-principal-admission.ts",
+          "limit": "one active Gap build per authenticated principal across reports; 70 second DB lease"
+        }
+      ],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 60
+    },
+    {
+      "path": "app/api/gap-reports/[id]/reaction/route.ts",
+      "methods": ["GET", "PUT", "DELETE"],
+      "visibility": "authenticated",
+      "work": ["db"],
+      "access": "read-write",
+      "body": {
+        "maxBytes": 400000,
+        "maxChars": 100000,
+        "fieldCardinality": "strict reaction payload schema"
+      },
+      "authOrder": "auth-before-body",
+      "admission": [],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 15
+    },
+    {
+      "path": "app/api/gap-reports/route.ts",
+      "methods": ["POST"],
+      "visibility": "authenticated",
+      "work": ["db", "provider", "llm"],
+      "access": "read-write",
+      "body": {
+        "maxBytes": 1000000,
+        "fieldCardinality": "papers/support <= 40; strict bounded gap schema"
+      },
+      "authOrder": "auth-before-body",
+      "admission": [
+        {
+          "id": "gap-build-principal",
+          "owner": "app/server/domain-access/gap-build-principal-admission.ts",
+          "limit": "one active Gap build per authenticated principal across reports; 70 second DB lease"
+        }
+      ],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 60
+    },
+    {
+      "path": "app/api/gap-reports/status/route.ts",
+      "methods": ["GET"],
+      "visibility": "authenticated",
+      "work": ["db"],
+      "access": "read",
+      "body": null,
+      "authOrder": "domain-auth-before-work",
+      "admission": [],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 60
+    },
+    {
+      "path": "app/api/graph-neighbors/hydrate/route.ts",
+      "methods": ["POST"],
+      "visibility": "authenticated",
+      "work": ["db", "provider"],
+      "access": "read",
+      "body": {
+        "maxBytes": 4000000,
+        "fieldCardinality": "papers/coCited/coupled <= 200 each"
+      },
+      "authOrder": "auth-before-body",
+      "admission": [],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 60
+    },
+    {
+      "path": "app/api/library-context/bootstrap/route.ts",
+      "methods": ["GET"],
+      "visibility": "authenticated",
+      "work": ["db", "provider-tail"],
+      "access": "read",
+      "body": null,
+      "authOrder": "route-auth-before-work",
+      "admission": [],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 120
+    },
+    {
+      "path": "app/api/papers/analyze-inline/route.ts",
+      "methods": ["POST"],
+      "visibility": "authenticated",
+      "work": ["db", "llm"],
+      "access": "read-write",
+      "body": {
+        "maxBytes": 4000000,
+        "maxChars": 1000000,
+        "fieldCardinality": "papers <= 5; strict per-paper field bounds"
+      },
+      "authOrder": "auth-before-body",
+      "admission": [
+        {
+          "id": "inline-analysis-breaker",
+          "owner": "app/server/domain-access/inline-analysis-access.ts",
+          "limit": "5 papers/request; one primary plus at most one secondary/paper; process-local breaker"
+        }
+      ],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 60
+    },
+    {
+      "path": "app/api/papers/reviewed/route.ts",
+      "methods": ["GET", "POST", "DELETE"],
+      "visibility": "authenticated",
+      "work": ["db"],
+      "access": "read-write",
+      "body": {
+        "maxBytes": 32768,
+        "fieldCardinality": "authors <= 100; bounded paper strings"
+      },
+      "authOrder": "auth-before-body",
+      "admission": [],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 15
+    },
+    {
+      "path": "app/api/route-ai-comments/generate/[id]/route.ts",
+      "methods": ["POST"],
+      "visibility": "authenticated",
+      "work": ["llm"],
+      "access": "ephemeral",
+      "body": {
+        "maxBytes": 98304,
+        "fieldCardinality": "ViewSnapshot JSON <= 20000 chars; papers <= 20"
+      },
+      "authOrder": "auth-before-body",
+      "admission": [
+        {
+          "id": "route-comment-dedupe",
+          "owner": "app/api/route-ai-comments/generate/[id]/route.ts",
+          "limit": "same principal/snapshot/trigger/generation projection coalesced per process"
+        }
+      ],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 30
+    },
+    {
+      "path": "app/api/search/enrichment/route.ts",
+      "methods": ["POST"],
+      "visibility": "authenticated",
+      "work": ["db", "provider"],
+      "access": "read",
+      "body": {
+        "maxBytes": 1000000,
+        "fieldCardinality": "v1 query <= 500; orderedPaperIds <= SEARCH_RESULT_POOL_PAPER_LIMIT; legacy metadata papers <= the same combined capacity during one-release dual-read"
+      },
+      "authOrder": "auth-before-body",
+      "admission": [],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 60
+    },
+    {
+      "path": "app/api/search/spelling-correction/route.ts",
+      "methods": ["POST"],
+      "visibility": "authenticated",
+      "work": ["llm"],
+      "access": "ephemeral",
+      "body": {
+        "maxBytes": 524288,
+        "fieldCardinality": "v1 query-only command <= 500 chars; legacy metadata papers <= SEARCH_RESULT_POOL_PAPER_LIMIT during one-release dual-read"
+      },
+      "authOrder": "auth-before-body-before-admission",
+      "admission": [
+        {
+          "id": "spelling-correction-principal",
+          "owner": "app/server/operational/route-ingress-admission.ts",
+          "key": "owner-principal-id",
+          "maxRequests": 12,
+          "windowMs": 60000,
+          "maxKeys": 2000
+        }
+      ],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 30
+    },
+    {
+      "path": "app/api/search/term-discovery/route.ts",
+      "methods": ["POST"],
+      "visibility": "authenticated",
+      "work": ["db", "llm"],
+      "access": "read",
+      "body": {
+        "maxBytes": 1000000,
+        "fieldCardinality": "v1 orderedPaperIds <= SEARCH_RESULT_POOL_PAPER_LIMIT and promptPapers <= TERM_CANDIDATE_LLM_PAPER_LIMIT; legacy metadata uses the same combined capacity during one-release dual-read"
+      },
+      "authOrder": "auth-before-body",
+      "admission": [],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 60
+    },
+    {
+      "path": "app/auth/confirm/route.ts",
+      "methods": ["GET"],
+      "visibility": "public",
+      "work": ["provider"],
+      "access": "session-write",
+      "body": null,
+      "authOrder": "otp-or-pkce-verification-before-session",
+      "admission": [],
+      "platformAdmission": "unknown",
+      "deadlineSeconds": 15
+    }
+  ]
+}

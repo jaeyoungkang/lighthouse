@@ -1,0 +1,283 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-observation",
+  "serviceId": "lighthouse",
+  "policySetRef": "issue-280-281-q2-macro",
+  "policySetVersion": "2026-09-03.v23",
+  "policyDigest": "baa3b1d6a3575643cdf9af0f3cb0e4df1c111264dcdadc744ce305bee1224304",
+  "revision": "d3365127e26aec3aa1f856926fb7e22b4b501baf",
+  "collector": {
+    "adapterRef": "scripts/architecture-fitness/collect-q2-macro.mjs",
+    "id": "lighthouse-issue-280-281-q2-macro-collector",
+    "version": "23",
+    "scope": "materialized exact-revision process topology, path-stable two-process breaker isolation, deterministic first-ready search await graph whose keyword-search role is discovered from lexical search-service import ownership and either a direct awaited result or a Promise.all joined result shape, and selected cross-epoch failure-isolation behavior executed with that revision's discovered export across target lock drift, including explicit bounded reviewed-library source failure, graph-preflight failure, keyword failure, and the concurrency regression that starts the E3 keyword provider beside the owner-scoped live library source and starts E3 discovery only after that source resolves; the trusted search execution harness accepts native E3 string paper references without changing the Q2 await or failure policy",
+    "definitionDigest": "4e9b9a038b0a59449e035ca1c3794f4489328b5dc446e0236f340855b0da14a6",
+    "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+    "runRef": "fixture-run:unified-search-result-projection-review:d3365127",
+    "command": "node scripts/architecture-fitness/collect-q2-macro.mjs --policy docs/architecture-fitness/pilots/issue-280-281.policy.json --revision d3365127e26aec3aa1f856926fb7e22b4b501baf --run-ref fixture-run:unified-search-result-projection-review:d3365127",
+    "attestation": {
+      "algorithm": "hmac-sha256",
+      "keyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1",
+      "payloadDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "evidence": [
+    {
+      "id": "topology-coverage-static:q2-macro",
+      "kind": "static",
+      "role": "topology-coverage-static",
+      "source": "app/server/external-http-gateway/episteme-circuit-breaker.ts",
+      "sourceRevision": "d3365127e26aec3aa1f856926fb7e22b4b501baf",
+      "summary": "The included topology inventory contains the Episteme process-self-protection scope.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q2-macro.mjs --policy docs/architecture-fitness/pilots/issue-280-281.policy.json --revision d3365127e26aec3aa1f856926fb7e22b4b501baf --run-ref fixture-run:unified-search-result-projection-review:d3365127",
+      "commandExitCode": 0,
+      "artifactDigest": "24eda39d839bab6effa2e1fdbcc9220afb58a15e0e458d72bd26909d10e1f14d",
+      "collectorRunRef": "fixture-run:unified-search-result-projection-review:d3365127",
+      "target": {
+        "policyRef": "issue-280:episteme-breaker-process-scope",
+        "capabilityRef": "capability:episteme-process-self-protection",
+        "scopeRefs": [
+          "scope:episteme-circuit-breaker"
+        ],
+        "factRefs": [
+          "coverage:all-topology-scopes"
+        ]
+      }
+    },
+    {
+      "id": "topology-coverage-negative-guard:q2-macro",
+      "kind": "test",
+      "role": "topology-coverage-negative-guard",
+      "source": "app/server/external-http-gateway/episteme-circuit-breaker.ts",
+      "sourceRevision": "d3365127e26aec3aa1f856926fb7e22b4b501baf",
+      "summary": "The exact-revision suite rejects missing module-local breaker ownership and verifies process isolation.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run <collector-authority>/scripts/architecture-fitness/__tests__/q2-macro-boundaries.test.ts <collector-authority>/app/server/services/__tests__/search-execution.test.ts <collector-authority>/scripts/architecture-fitness/__tests__/q2-search-failure-isolation.test.ts --config <collector-authority>/scripts/architecture-fitness/q2-vitest.config.mts --reporter=json --testNamePattern \"Q2 |degrades to the keyword first payload|returns a failed view when keyword retrieval fails\"",
+      "commandExitCode": 0,
+      "artifactDigest": "f3919901edc8d7f6425c1d153bb97f52190c8fcf29a8c340e4162b6ec90fcc21",
+      "collectorRunRef": "fixture-run:unified-search-result-projection-review:d3365127",
+      "target": {
+        "policyRef": "issue-280:episteme-breaker-process-scope",
+        "capabilityRef": "capability:episteme-process-self-protection",
+        "scopeRefs": [
+          "scope:episteme-circuit-breaker"
+        ],
+        "factRefs": [
+          "coverage:scope-mismatch-negative-guard"
+        ]
+      }
+    },
+    {
+      "id": "topology-static:episteme-breaker",
+      "kind": "static",
+      "role": "topology-static",
+      "source": "app/server/external-http-gateway/episteme-circuit-breaker.ts",
+      "sourceRevision": "d3365127e26aec3aa1f856926fb7e22b4b501baf",
+      "summary": "Circuit state, active slots, and waiters are module-local process state.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q2-macro.mjs --policy docs/architecture-fitness/pilots/issue-280-281.policy.json --revision d3365127e26aec3aa1f856926fb7e22b4b501baf --run-ref fixture-run:unified-search-result-projection-review:d3365127",
+      "commandExitCode": 0,
+      "artifactDigest": "01aa4c7e38d9237ae03a2e72713f1aeeb92529efeaba338efee9e9e0253563ba",
+      "collectorRunRef": "fixture-run:unified-search-result-projection-review:d3365127",
+      "target": {
+        "policyRef": "issue-280:episteme-breaker-process-scope",
+        "capabilityRef": "capability:episteme-process-self-protection",
+        "scopeRefs": [
+          "scope:episteme-circuit-breaker"
+        ],
+        "factRefs": [
+          "state-scope:process",
+          "coordination-scope:process"
+        ]
+      }
+    },
+    {
+      "id": "topology-behavior-test:episteme-breaker",
+      "kind": "test",
+      "role": "topology-behavior-test",
+      "source": "app/server/external-http-gateway/episteme-circuit-breaker.ts",
+      "sourceRevision": "d3365127e26aec3aa1f856926fb7e22b4b501baf",
+      "summary": "One spawned process trips OPEN while an independent process remains CLOSED.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run <collector-authority>/scripts/architecture-fitness/__tests__/q2-macro-boundaries.test.ts <collector-authority>/app/server/services/__tests__/search-execution.test.ts <collector-authority>/scripts/architecture-fitness/__tests__/q2-search-failure-isolation.test.ts --config <collector-authority>/scripts/architecture-fitness/q2-vitest.config.mts --reporter=json --testNamePattern \"Q2 |degrades to the keyword first payload|returns a failed view when keyword retrieval fails\"",
+      "commandExitCode": 0,
+      "artifactDigest": "f3919901edc8d7f6425c1d153bb97f52190c8fcf29a8c340e4162b6ec90fcc21",
+      "collectorRunRef": "fixture-run:unified-search-result-projection-review:d3365127",
+      "target": {
+        "policyRef": "issue-280:episteme-breaker-process-scope",
+        "capabilityRef": "capability:episteme-process-self-protection",
+        "scopeRefs": [
+          "scope:episteme-circuit-breaker"
+        ],
+        "factRefs": [
+          "behavior:n-instance-scope-observed",
+          "state-scope:process",
+          "coordination-scope:process"
+        ]
+      }
+    },
+    {
+      "id": "critical-path-coverage-static:q2-macro",
+      "kind": "static",
+      "role": "critical-path-coverage-static",
+      "source": "app/server/services/search-execution.ts",
+      "sourceRevision": "d3365127e26aec3aa1f856926fb7e22b4b501baf",
+      "summary": "The included critical-path inventory contains the first-ready search payload milestone.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q2-macro.mjs --policy docs/architecture-fitness/pilots/issue-280-281.policy.json --revision d3365127e26aec3aa1f856926fb7e22b4b501baf --run-ref fixture-run:unified-search-result-projection-review:d3365127",
+      "commandExitCode": 0,
+      "artifactDigest": "24eda39d839bab6effa2e1fdbcc9220afb58a15e0e458d72bd26909d10e1f14d",
+      "collectorRunRef": "fixture-run:unified-search-result-projection-review:d3365127",
+      "target": {
+        "policyRef": "issue-281:first-ready-search-payload",
+        "capabilityRef": "capability:lighthouse-search",
+        "milestoneRefs": [
+          "milestone:first-ready-search-payload"
+        ],
+        "factRefs": [
+          "coverage:all-critical-path-milestones"
+        ]
+      }
+    },
+    {
+      "id": "critical-path-coverage-negative-guard:q2-macro",
+      "kind": "test",
+      "role": "critical-path-coverage-negative-guard",
+      "source": "app/server/services/search-execution.ts",
+      "sourceRevision": "d3365127e26aec3aa1f856926fb7e22b4b501baf",
+      "summary": "The exact-revision suite rejects an omitted await or failure-isolation relation.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run <collector-authority>/scripts/architecture-fitness/__tests__/q2-macro-boundaries.test.ts <collector-authority>/app/server/services/__tests__/search-execution.test.ts <collector-authority>/scripts/architecture-fitness/__tests__/q2-search-failure-isolation.test.ts --config <collector-authority>/scripts/architecture-fitness/q2-vitest.config.mts --reporter=json --testNamePattern \"Q2 |degrades to the keyword first payload|returns a failed view when keyword retrieval fails\"",
+      "commandExitCode": 0,
+      "artifactDigest": "f3919901edc8d7f6425c1d153bb97f52190c8fcf29a8c340e4162b6ec90fcc21",
+      "collectorRunRef": "fixture-run:unified-search-result-projection-review:d3365127",
+      "target": {
+        "policyRef": "issue-281:first-ready-search-payload",
+        "capabilityRef": "capability:lighthouse-search",
+        "milestoneRefs": [
+          "milestone:first-ready-search-payload"
+        ],
+        "factRefs": [
+          "coverage:forbidden-blocking-negative-guard"
+        ]
+      }
+    },
+    {
+      "id": "critical-path-static:first-ready-search",
+      "kind": "static",
+      "role": "critical-path-static",
+      "source": "app/server/services/search-execution.ts",
+      "sourceRevision": "d3365127e26aec3aa1f856926fb7e22b4b501baf",
+      "summary": "The first ready payload awaits reviewed-library source, keyword search, and library preflight; keyword failure blocks readiness.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q2-macro.mjs --policy docs/architecture-fitness/pilots/issue-280-281.policy.json --revision d3365127e26aec3aa1f856926fb7e22b4b501baf --run-ref fixture-run:unified-search-result-projection-review:d3365127",
+      "commandExitCode": 0,
+      "artifactDigest": "98bd2e34e3271457c5566bfe3bc8f881367a78c7a7a181968bfcdef708517efc",
+      "collectorRunRef": "fixture-run:unified-search-result-projection-review:d3365127",
+      "target": {
+        "policyRef": "issue-281:first-ready-search-payload",
+        "capabilityRef": "capability:lighthouse-search",
+        "milestoneRefs": [
+          "milestone:first-ready-search-payload"
+        ],
+        "factRefs": [
+          "awaited-phase:phase:reviewed-library-source",
+          "awaited-phase:phase:keyword-search",
+          "awaited-phase:phase:library-preflight",
+          "failure-blocking-phase:phase:keyword-search"
+        ]
+      }
+    },
+    {
+      "id": "critical-path-behavior-test:first-ready-search",
+      "kind": "test",
+      "role": "critical-path-behavior-test",
+      "source": "app/server/services/search-execution.ts",
+      "sourceRevision": "d3365127e26aec3aa1f856926fb7e22b4b501baf",
+      "summary": "The collector-authority behavior harness verifies that reviewed-library source and graph-preflight failures preserve this target-revision keyword payload, while keyword failure blocks readiness and static negative mutations reject await-graph drift.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run <collector-authority>/scripts/architecture-fitness/__tests__/q2-macro-boundaries.test.ts <collector-authority>/app/server/services/__tests__/search-execution.test.ts <collector-authority>/scripts/architecture-fitness/__tests__/q2-search-failure-isolation.test.ts --config <collector-authority>/scripts/architecture-fitness/q2-vitest.config.mts --reporter=json --testNamePattern \"Q2 |degrades to the keyword first payload|returns a failed view when keyword retrieval fails\"",
+      "commandExitCode": 0,
+      "artifactDigest": "f3919901edc8d7f6425c1d153bb97f52190c8fcf29a8c340e4162b6ec90fcc21",
+      "collectorRunRef": "fixture-run:unified-search-result-projection-review:d3365127",
+      "target": {
+        "policyRef": "issue-281:first-ready-search-payload",
+        "capabilityRef": "capability:lighthouse-search",
+        "milestoneRefs": [
+          "milestone:first-ready-search-payload"
+        ],
+        "factRefs": [
+          "behavior:failure-isolation-observed",
+          "behavior:failure-isolation-observed:phase:reviewed-library-source",
+          "behavior:failure-isolation-observed:phase:library-preflight"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation:episteme-breaker-process-scope",
+      "policyRef": "issue-280:episteme-breaker-process-scope",
+      "capabilityRef": "capability:episteme-process-self-protection",
+      "completeness": "complete",
+      "coverageEvidenceRefs": [
+        "topology-coverage-static:q2-macro",
+        "topology-coverage-negative-guard:q2-macro"
+      ],
+      "scopes": [
+        {
+          "id": "observed-scope:episteme-circuit-breaker",
+          "scopeRef": "scope:episteme-circuit-breaker",
+          "stateScopes": [
+            "process"
+          ],
+          "coordinationScopes": [
+            "process"
+          ],
+          "evidenceRefs": [
+            "topology-static:episteme-breaker",
+            "topology-behavior-test:episteme-breaker"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "observation:first-ready-search-payload",
+      "policyRef": "issue-281:first-ready-search-payload",
+      "capabilityRef": "capability:lighthouse-search",
+      "completeness": "complete",
+      "coverageEvidenceRefs": [
+        "critical-path-coverage-static:q2-macro",
+        "critical-path-coverage-negative-guard:q2-macro"
+      ],
+      "milestones": [
+        {
+          "id": "observed-milestone:first-ready-search-payload",
+          "milestoneRef": "milestone:first-ready-search-payload",
+          "awaitedPhases": [
+            "phase:reviewed-library-source",
+            "phase:keyword-search",
+            "phase:library-preflight"
+          ],
+          "failureBlockingPhases": [
+            "phase:keyword-search"
+          ],
+          "evidenceRefs": [
+            "critical-path-static:first-ready-search",
+            "critical-path-behavior-test:first-ready-search"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "fetchedAt": "2026-08-14T22:41:22.746Z",
+  "source": "gh api repos/jaeyoungkang/lighthouse/branches/main/protection",
+  "requiredStatusChecks": {
+    "strict": false,
+    "contexts": [
+      "static",
+      "test (1)",
+      "test (2)",
+      "build",
+      "audit",
+      "review-closeout",
+      "db-integration"
+    ]
+  },
+  "enforceAdmins": true,
+  "allowForcePushes": false,
+  "allowDeletions": false,
+  "requiredApprovingReviewCount": 0
+}

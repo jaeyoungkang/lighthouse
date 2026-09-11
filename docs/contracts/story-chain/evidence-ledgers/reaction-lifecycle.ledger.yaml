@@ -1,0 +1,216 @@
+schemaVersion: 2
+slug: reaction-lifecycle
+review: reviews/reaction-lifecycle.reviews.md
+sourcePromises:
+  - promise:search-reaction-summarizes-terrain
+  - promise:inline-analysis-auto-run
+  - promise:gap-report-prepared-reaction
+  - promise:citation-lineage
+  - promise:graph-neighbor-papers
+  - promise:route-view-ai-comment-inline-surface
+appliedAspects:
+  - aspect:route-view-ai-reaction-rules
+  - aspect:visible-explanation-sufficiency
+intent:
+  mode: explicit
+  checks:
+    - key: promise:search-reaction-summarizes-terrain#intent-check:result-set-terrain-is-not-query-repetition
+      evidence: live judge over the real structured route AI comment payload at `app/server/services/__tests__/search-awareness-intent-qualitative.live.test.ts` ("search completion route AI comment generation answers the terrain Critical Intent Questions"). The live test judges the generated reaction body for terrain summarisation rather than query repetition; search gap navigation is owned by the result-basis row.
+    - key: promise:inline-analysis-auto-run#intent-check:semantic-profile-is-phrase-not-keyword
+      evidence: live judge @ `app/server/services/__tests__/inline-analysis-intent-qualitative.live.test.tsx`. Renders `SearchResultItem` with the inline analysis card expanded and judges whether `semanticProfile` reads as a phrase summarising the paper's role rather than a keyword list.
+    - key: promise:gap-report-prepared-reaction#intent-check:gap-inference-method-traceable
+      evidence: live judge @ `app/server/services/__tests__/cluster-card-intent-qualitative.live.test.tsx` and the gap-overlay companion. The live test renders the prepared gap reaction surfaces and judges whether the gap-inference body traces method/topic flow rather than emitting unsupported claims.
+    - key: promise:search-reaction-summarizes-terrain#intent-check:search-reaction-ux-writing-voice
+      evidence: live judge over the real route AI comment generation output at `app/server/services/__tests__/search-awareness-intent-qualitative.live.test.ts` ("search completion route AI comment generation answers the UX-writing voice·tone Critical Intent Questions") plus `app/server/agent/__tests__/route-ai-comment-generation.test.ts` ("adds next-path guidance only for search view snapshots").
+    - key: promise:gap-report-prepared-reaction#intent-check:title-and-intro-name-the-discipline
+      evidence: live judge @ `app/server/services/__tests__/gap-network-content-intent-qualitative.live.test.tsx`. The live test renders the gap_network ResearchRoutePayload content markdown and asks Gemini whether the title + intro frame the discipline (current `intent-check:title-and-intro-name-the-discipline`).
+    - key: promise:gap-report-prepared-reaction#intent-check:cluster-background-and-comparison
+      evidence: live judge @ `app/server/services/__tests__/gap-network-content-intent-qualitative.live.test.tsx` (Cluster differentiation CIQ — current `intent-check:cluster-background-and-comparison`).
+    - key: promise:citation-lineage#intent-check:body-explains-citation-flow-not-counts
+      evidence: 'vitest @ `app/server/services/__tests__/citation-lineage-intent-qualitative.live.test.tsx` ("citation_lineage route AI comment first card DOM answers intent-check:citation-lineage-card-sufficiency via real Gemini runtime path"). The live test invokes the route AI comment generation runtime shape against the Transformer seedPaper + 3 references + 3 citations worst-case fixture and judges the rendered `AgentPanel` body for relationship-nature description. 2026-04-23 first-propagation verdict: met.'
+  delegations: []
+acceptanceChecks:
+  - key: promise:gap-report-prepared-reaction#acceptance-check:gap-report-prepared-reaction-no-visible-reaction-section
+    assertion: "`gap_network` ResearchRoutePayload는 visible AI 반응 섹션을 렌더하지 않는다"
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+    scenarios:
+      - scenario:search-gap-report-prepared-reaction
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-does-not-recompute-search-reaction
+    assertion: 인라인 분석은 검색 완료 AI 반응이나 결과 리스트의 대표 논문 표시를 재계산하지 않는다
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+    scenarios:
+      - scenario:search-inline-analysis-preserves-reaction
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-status-badge-distinguishes-states
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view.helpers.test.ts` ("formats authors, badges, truncation, and progress summaries"). Verifies `getAnalysisStatusBadge` returns 4 distinct labels (queued / running / done / error) with spinner unique to running.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-ai-reaction-with-followup-gap-surface
+    assertion: citation_lineage reaction renders title/body on the owning ResearchRoutePayload while the top AI comment host owns the `연구 공백 지도 만들기` action above and outside the comment frame for the collected reference/citation input.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+    scenarios:
+      - scenario:citation-limited-direction
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-reuse-refreshes-comment
+    assertion: repeated citation seed actions navigate to the seed condition route, and destination route bootstrap queues a targeted `citation_lineage_opened` route AI comment generation for the route-owned citation view so the AI reaction refreshes
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-005
+    scenarios:
+      - scenario:citation-03-03-01
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-gap-surface
+    assertion: graph_neighbors reactions render title/body on the owning route view while the top AI comment host owns the `연구 공백 지도 만들기` action above and outside the comment frame when graph candidates exist; the gap-network route receives the visible graph-neighbor snapshot, including co-cited/coupled shared-count support, without reloading a source route payload id.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-006
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-reaction-own-view
+    assertion: graph_neighbors ResearchRoutePayloads show pending during lightweight card hydration, then target one author-bearing `graph_neighbors_opened` route AI comment generation to the similar-paper route payload id on ready route bootstrap for create/reuse; degraded force-refetch navigates to the seed URL while keeping the current degraded view until the route-owned replacement supplies the replacement view id for direct targeted queueing. The scheduler coalesces duplicate opened commands by `(trigger, targetRoutePayloadId)`.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-consistent-document-layout
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx` ("renders search reactions at the top of the main content"; "renders inline reaction text without chip-derived button surfaces") + `app/components/research/__tests__/ResearchRouteLayout.narrow.test.tsx` ("keeps route AI comments inline on narrow viewports"; "keeps relationship route AI comments inline below the seed context on narrow viewports"; "keeps route AI comments inline when the %s panel is narrow"). Locks the common `research-route-inline-reaction` wrapper and inline-only `AgentPanel` renderer across eligible ResearchRoutePayload types and viewport widths.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-visual-treatment-parity
+    assertion: vitest @ `app/components/research/__tests__/inline-ai-comment-treatment.test.tsx` ("uses one frame treatment for search, citation lineage, and graph-neighbor AI comments") + `app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx`. A single fixture renders the search results AI comment host, citation_lineage host, and graph_neighbors host and compares their shared frame treatment attribute/class; citation_lineage and graph_neighbors keep the common button treatment for the gap action above and outside the frame, search keeps the gap action on the result-basis row, and relationship ResearchRoutePayloads with grounded inline-analysis candidates render the same compact research-term text links inside the AI comment frame with termSeed follow-up behavior.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-007
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-owned-followup-action
+    assertion: vitest @ `app/components/research/__tests__/inline-ai-comment-treatment.test.tsx` ("uses one frame treatment for search, citation lineage, and graph-neighbor AI comments") + `app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx` ("shows the owned research-gap map action above the citation-lineage AI comment frame"; "shows the owned research-gap map action above the graph-neighbor AI comment frame"). Search keeps `상위 논문 40개의 관계를 분석하여 연구 공백 찾아보기 >` on the result-basis row, while citation_lineage and graph_neighbors expose `현재 논문 묶음의 관계를 분석하여 연구 공백 찾아보기 >` before their AI comment frame.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-008
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-active-document-content-only
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx` ("renders only the current route panel reaction as a child of that panel") + `app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx` ("never renders another route's store document, including the first frame") + `'app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts'` ("generates a reaction from the supplied viewSnapshot without loading or persisting a route payload row") + `'app/api/gap-reports/[id]/reaction/__tests__/route.test.ts'` ("persists a successful AI comment through the reaction sub-resource"). The UI renders only the current route ResearchRoutePayload panel/reaction, automatic generation uses the supplied snapshot without row reload or persistence, and explicit persisted successful comments still write through the reaction sub-resource.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-reactions-scoped-per-view
+    assertion: "vitest @ `app/components/research/__tests__/ResearchRouteRuntime.execution-lifecycle.test.tsx` (\"resets and bootstraps a new mount that reuses the same id and updatedAt\"; \"resets and bootstraps a new execution in the same React instance\"; \"keeps the same execution token on a simple rerender\") + `app/stores/__tests__/research-route-store.test.ts` + `'app/api/gap-reports/[id]/reaction/__tests__/route.test.ts'` (\"persists a successful AI comment through the reaction sub-resource\"; \"merges with existing reaction history when the client omits history\"; \"rejects degraded AI comment notices as persisted route payload state\") + `app/components/research-route-renderers/__tests__/GapNetworkView.persistence.test.tsx` (\"keeps a new-execution choice independent from the previous execution response\") + `app/components/research-route-renderers/__tests__/GapNetworkView.persistence-readback.test.tsx` (\"discards an unconfirmed write when the mounted route changes execution\"). Active route reaction/history state is scalar per execution: a new runtime mount or same-instance execution replacement receives a new execution token and fresh bootstrap state even for the same id, old cleanup/completion cannot clear or patch the replacement execution, and a simple rerender does not create a duplicate execution. Search/citation/similar reactions stay in client execution state; gap report successful comments persist through the artifact reaction sub-resource, while inactive writes are discarded and cannot block the new execution; degraded runtime notices remain session-only and are rejected from persisted gap state."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-empty-state-no-reserve
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx` ("does not reserve the inline reaction surface before a block or loading state exists"; "renders search reactions at the top of the main content") + `app/components/research/__tests__/ResearchRouteLayout.narrow.test.tsx` ("keeps route AI comments inline on narrow viewports"). Asserts surfaces without AI comment content or generation state do not reserve top content space, while initial empty search and gap network ResearchRoutePayloads use their own entry/report surfaces without a top inline reaction slot.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-generation-pending-visible
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx` ("keeps the pending AI comment visible while the route renderer chunk is loading"; "shows a pending inline reaction for automatic generation before content arrives"; "shows a pending inline reaction for a queued citation-lineage ResearchRoutePayload"; "shows a pending inline reaction for explicit regeneration while preserving the settled card") + `app/components/research-route-renderers/__tests__/followup-pending-view.test.tsx` ("renders the pending AI comment frame while the relationship ResearchRoutePayload is being created") + `app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx` ("bootstraps citation-lineage route AI comment generation for a hydrated citation ResearchRoutePayload with no reaction block"; "bootstraps graph-neighbor route AI comment generation for a hydrated similar-paper ResearchRoutePayload with no reaction block"; "fires at commit for a personalized pending search without waiting for card hydration") + `app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx` ("waits for a hydration-dependent search facet and generates once from the stable result set"; "waits for graph-neighbor card hydration and generates once with relationship authors"; "clears pending when hydration settles with an empty facet projection") + `app/components/research-route-renderers/__tests__/use-graph-neighbors-handler.test.tsx` ("with forceRefetch re-runs the same seed route through route-owned replacement") + `app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-cleanup.test.tsx` ("ignores stale route AI comment generation events for missing target route payloads") + `app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-queue.test.tsx` ("does not shorten a queued command's coalescing window when the active request settles") + `app/stores/__tests__/research-route-store.ai-comment-generation.test.ts` ("marks automatic generation pending without advancing generation"; "ignores stale ids and stale execution tokens"; "resets generation state when another execution becomes active"). Asserts planned, hydration-gated, queued, or active automatic generation renders the same `role=status` / `data-state=loading` inline AI comment surface before the first body arrives. Unfaceted search starts from the first-payload basis; hydration-owned search facets and lightweight graph-neighbor authors keep loading visible until one ready provider generation. A terminal ready facet projection with no results clears loading without provider work. Dynamic renderer loading keeps the surface above the fallback; stale/non-current/replaced-execution pending state clears; and explicit regeneration preserves the settled card while showing regeneration pending.
+    executionRefs:
+      - execution:run-001
+      - execution:run-003
+      - execution:run-009
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-regenerate-preserves-card
+    assertion: vitest @ `app/components/research/__tests__/AgentPanel.reaction-cards.test.tsx` ("keeps the current reaction and re-fires owning-route AI comment generation when 다시 생성 is clicked"; "does not offer 다시 생성 while a comment is still generating") + `app/stores/__tests__/research-route-store.ai-comment-generation.test.ts` ("regenerates without clearing the settled reaction and clears pending on success"; "clears regeneration progress without replacing the reaction") + `app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx` ("clears regeneration loading when route AI comment generation fails while preserving an existing comment"). Settled successful comments expose one deterministic `다시 생성` action that advances the reaction generation, marks regeneration as pending, and re-fires the owning ResearchRoutePayload's reaction generation without removing the settled card. The UI hides the button while showing `agent-panel-regenerate-pending`; a new success replaces the latest comment and clears pending; provider/generation failure during regeneration preserves the existing comment, clears regeneration pending, and does not leave `다시 생성 중...` stuck. No regenerate/stop action shows while generating.
+    executionRefs:
+      - execution:run-001
+      - execution:run-003
+      - execution:run-009
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-transport-timeout
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx` ("clears regeneration loading when route AI comment generation fails while preserving an existing comment") + `app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-cleanup.test.tsx` ("keeps generation single-flight and aborts the active transport when the runtime changes"; "releases single-flight generation when an abort-ignoring transport reaches the deadline") + `app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-queue.test.tsx` ("settles pending generation when a schema-valid response targets a different snapshot"; "keeps the 240ms coalescing window after pending state rerenders"; "does not shorten a queued command's coalescing window when the active request settles"; "rebases a queued regeneration command when the ViewSnapshot projection changes before flush"; "does not re-fire an active regeneration for a metadata-only freshness change"; "drops an active result and regenerates from the current ViewSnapshot projection after the basis changes") + `'app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts'` ("returns null generation results without persisting them"; "keeps Server-Timing on invalid generation payload responses"; "deduplicates generation requests for the same ViewSnapshot projection"; "does not deduplicate in-flight generations for different ViewSnapshot projections"; "does not return a late successful generation after every duplicate caller aborts"). Asserts automatic route AI comment generation closes route/generation/provider-timeout or response-coherence failure by clearing pending state; the client preserves the coalescing window across pending rerenders and active-request settlement, rebases a queued command to the current `ViewSnapshot` projection, aborts and rejects an active stale projection, does not re-fire for projection-equivalent UI-only metadata, remains single-flight, releases abort-ignoring fetch/body at the 15-second deadline, and aborts the only active transport when the route execution is replaced; regeneration failure preserves the settled card; null generation results are not persisted; server-side shared in-flight generation deduplicates only the same projection inside one application process; requests handled by different instances may execute separate provider calls; and a late provider success after every duplicate caller aborts is not returned to clients.
+    executionRefs:
+      - execution:run-001
+      - execution:run-003
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx
+      - app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts
+      - app/components/research/__tests__/ResearchRouteRuntime.execution-lifecycle.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-queue.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx
+      - app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx
+      - app/components/research/__tests__/ResearchRouteLayout.narrow.test.tsx
+      - app/components/research/__tests__/AgentPanel.reaction-cards.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view.helpers.test.ts
+      - app/components/research-route-renderers/__tests__/GapNetworkView.persistence.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.persistence-readback.test.tsx
+      - app/components/research-route-renderers/__tests__/followup-pending-view.test.tsx
+      - app/components/research-route-renderers/__tests__/use-graph-neighbors-handler.test.tsx
+      - app/stores/__tests__/research-route-store.test.ts
+      - app/components/research/__tests__/route-ai-comment-generation-scheduler.test.ts
+      - app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-cleanup.test.tsx
+      - app/stores/__tests__/research-route-store.ai-comment-active-session.test.ts
+      - app/lib/__tests__/view-snapshot.test.ts
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/api/gap-reports/[id]/reaction/__tests__/route.test.ts
+      - app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts
+      - app/components/research-route-renderers/__tests__/GapNetworkView.persistence.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.persistence-readback.test.tsx
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx
+      - app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts
+      - app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/SearchView.citation-lineage.test.tsx
+    testNamePattern: navigates to the citation seed route even when a citation doc
+  - id: execution:run-006
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx
+  - id: execution:run-007
+    kind: vitest
+    files:
+      - app/components/research/__tests__/inline-ai-comment-treatment.test.tsx
+      - app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx
+  - id: execution:run-008
+    kind: vitest
+    files:
+      - app/components/research/__tests__/inline-ai-comment-treatment.test.tsx
+      - app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx
+  - id: execution:run-009
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx
+      - app/stores/__tests__/research-route-store.ai-comment-generation.test.ts
+implementationContracts:
+  - Search, citation-lineage, and graph-neighbor route reactions are route-view state, generated from the visible `viewSnapshot` and not persisted through a route payload row.
+  - "Gap report reactions are the persisted artifact exception: successful comments write through `PUT /api/gap-reports/:id/reaction`, and degraded runtime notices are rejected from that persisted path."
+  - Explicit follow-up buttons append visible cards to the same `AgentPanel`; the complete card stack is restored after refresh or document rehydration.
+  - route AI comment generation commands emit on a single trigger source per `(trigger, targetRoutePayloadId)`.
+  - Visible pending state is raised as soon as an eligible routed document has a planned route AI comment and no settled reaction, even when the provider call is intentionally held for library hydration. Queue timing and visible loading timing are separate lifecycle edges.
+  - The route AI comment generation scheduler coalesces duplicate `(trigger, targetRoutePayloadId)` commands to the latest command inside an execution, while each command captures the execution id that may accept its completion. An exact duplicate of the active command is dropped; newer freshness or reaction generation remains eligible for the existing single-flight queue.
+  - The active execution owns one scalar reaction/history projection. Hydration patches reconcile that projection without clearing optimistic reaction state, and an old execution cannot mutate or clean up a replacement execution that reuses the same route payload id and timestamp.
+verdict: met

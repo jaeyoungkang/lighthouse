@@ -1,0 +1,119 @@
+[
+  {
+    "name": "all required cases healthy",
+    "assessment": {
+      "reviewId": "fixture-healthy",
+      "revision": "fixture-revision",
+      "caseAssessments": [
+        {
+          "caseRef": "implementation",
+          "verdicts": ["healthy"]
+        }
+      ]
+    },
+    "policy": {
+      "requiredCaseRefs": ["implementation"],
+      "unknownHandling": {},
+      "blockers": [],
+      "riskAcceptance": null
+    },
+    "expectedEligibility": "allow"
+  },
+  {
+    "name": "unknown required before merge",
+    "assessment": {
+      "reviewId": "fixture-unknown-required",
+      "revision": "fixture-revision",
+      "caseAssessments": [
+        {
+          "caseRef": "decision",
+          "verdicts": ["unknown"]
+        }
+      ]
+    },
+    "policy": {
+      "requiredCaseRefs": ["decision"],
+      "unknownHandling": {
+        "decision": {
+          "mode": "requiredBeforeMerge"
+        }
+      },
+      "blockers": [],
+      "riskAcceptance": null
+    },
+    "expectedEligibility": "block"
+  },
+  {
+    "name": "production-only unknown with complete deferral",
+    "assessment": {
+      "reviewId": "fixture-unknown-production",
+      "revision": "fixture-revision",
+      "caseAssessments": [
+        {
+          "caseRef": "runtime-evidence",
+          "verdicts": ["unknown"]
+        }
+      ]
+    },
+    "policy": {
+      "requiredCaseRefs": ["runtime-evidence"],
+      "unknownHandling": {
+        "runtime-evidence": {
+          "mode": "productionEvidenceOnly",
+          "owner": "operational-evidence-owner",
+          "evidencePlan": "Collect a bounded production trace.",
+          "deadline": "before-mandatory-gate-promotion"
+        }
+      },
+      "blockers": [],
+      "riskAcceptance": null
+    },
+    "expectedEligibility": "defer-with-owner"
+  },
+  {
+    "name": "degraded without acceptance",
+    "assessment": {
+      "reviewId": "fixture-degraded",
+      "revision": "fixture-revision",
+      "caseAssessments": [
+        {
+          "caseRef": "conformance",
+          "verdicts": ["degraded"]
+        }
+      ]
+    },
+    "policy": {
+      "requiredCaseRefs": ["conformance"],
+      "unknownHandling": {},
+      "blockers": [],
+      "riskAcceptance": null
+    },
+    "expectedEligibility": "block"
+  },
+  {
+    "name": "degraded with explicit bounded risk acceptance",
+    "assessment": {
+      "reviewId": "fixture-risk-accepted",
+      "revision": "fixture-revision",
+      "caseAssessments": [
+        {
+          "caseRef": "conformance",
+          "verdicts": ["degraded"]
+        }
+      ]
+    },
+    "policy": {
+      "requiredCaseRefs": ["conformance"],
+      "unknownHandling": {},
+      "blockers": [],
+      "riskAcceptance": {
+        "caseRefs": ["conformance"],
+        "approvedBy": "architecture-owner",
+        "reason": "Bounded migration window",
+        "expiresOn": "2026-08-31",
+        "revisitCondition": "Migration window closes or the mismatch expands."
+      }
+    },
+    "expectedEligibility": "defer-with-owner"
+  }
+]

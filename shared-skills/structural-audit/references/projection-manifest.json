@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "id": "lighthouse-production-static-imports-v1",
+  "title": "Light House production static imports",
+  "layout": {
+    "direction": "TB",
+    "nodeSpacing": 30,
+    "rankSpacing": 68,
+    "minWidthPx": 3000
+  },
+  "groups": [
+    {
+      "id": "entry",
+      "label": "Entrypoints",
+      "className": "entry",
+      "nodes": [
+        "app/(research)/search/page.tsx",
+        "app/(research)/search-route-page.tsx",
+        "app/api/gap-reports/route.ts",
+        "app/(admin)/admin/analytics/page.tsx"
+      ]
+    },
+    {
+      "id": "ui",
+      "label": "Browser UI",
+      "className": "ui",
+      "nodes": [
+        "app/(research)/research-route-runtimes.tsx",
+        "app/components/research-route-renderers/SearchView.tsx",
+        "app/components/research-route-renderers/search-view-content.tsx",
+        "app/components/research-route-renderers/search-result-item.tsx",
+        "app/components/research-route-renderers/search-view.helpers.ts",
+        "app/components/research-route-renderers/GapNetworkView.tsx",
+        "app/components/research-route-renderers/knowledge-map/GapNetworkReport.tsx",
+        "app/components/research-route-renderers/knowledge-map/gap-network.force-layout.ts",
+        "app/components/research-route-renderers/knowledge-map/gap-network.presentation.ts",
+        "app/components/admin/AnalyticsEventsDashboard.tsx",
+        "app/stores/research-route-store.ts"
+      ]
+    },
+    {
+      "id": "server",
+      "label": "Server",
+      "className": "server",
+      "nodes": [
+        "app/server/guards/route-guard.ts",
+        "app/server/services/search-execution.ts",
+        "app/server/services/search-service.ts",
+        "app/server/services/episteme-literature.ts",
+        "app/server/domain-access/gap-network-view-access.ts",
+        "app/server/services/analytics/event-contract.ts",
+        "app/server/services/analytics/event-contract-validation.ts",
+        "app/server/services/analytics/runtime-emitted-events.ts"
+      ]
+    },
+    {
+      "id": "authority",
+      "label": "Authority / persistence",
+      "className": "authority",
+      "nodes": [
+        "app/server/auth/identity.ts",
+        "app/server/domain-access/access-allowlist-access.ts",
+        "app/server/repository/db.ts",
+        "app/lib/supabase/repository-db-handle.ts"
+      ]
+    },
+    {
+      "id": "cross",
+      "label": "Shared / cross-cutting",
+      "className": "cross",
+      "nodes": [
+        "app/domain/research-route-payload.ts",
+        "app/domain/paper.ts",
+        "app/i18n/message-access.ts",
+        "app/i18n/messages.ts",
+        "app/lib/track.ts",
+        "app/lib/analytics/canonical-event.ts",
+        "app/lib/api-routes.ts"
+      ]
+    }
+  ],
+  "metricNodes": [
+    "app/components/research-route-renderers/search-view.helpers.ts",
+    "app/stores/research-route-store.ts",
+    "app/server/services/search-service.ts",
+    "app/server/auth/identity.ts",
+    "app/server/repository/db.ts",
+    "app/domain/research-route-payload.ts",
+    "app/i18n/message-access.ts",
+    "app/lib/track.ts",
+    "app/lib/api-routes.ts"
+  ]
+}

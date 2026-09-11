@@ -1,0 +1,85 @@
+schemaVersion: 2
+slug: similar-papers
+review: reviews/similar-papers.reviews.md
+sourcePromises:
+  - promise:similar-papers-discovery
+appliedAspects:
+  - aspect:search-first-url-model
+  - aspect:immediate-navigation
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:similar-papers-discovery#acceptance-check:similar-papers-discovery-similar-button-on-each-paper
+    assertion: "`비슷한 논문` 버튼은 Episteme 3 paper reference가 있으면 graph-backed ResearchRoutePayload를 열고 provider reference가 없는 legacy id에서는 키워드 search fallback을 연다. `similar_papers_opened`는 출발 카드의 journey/search context와 paper id/title/rank/surface/PDF/evidence metadata를 한 번 발행하고, 같은 탭의 목적지 branch는 같은 context를 이어받는다. 새 탭 복원은 destination 문서 identity로 fallback context를 만든다."
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-similar-papers-entry
+  - key: promise:similar-papers-discovery#acceptance-check:similar-papers-discovery-fallback-query-opens-route
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/SearchView.similar-paper.test.tsx` ("navigates immediately to the seeded search entry URL in the current window"; "drops retired basis state without carrying reviewed papers in the similar entry URL") + `app/components/research-route-renderers/__tests__/search-similar-paper.test.ts` (query construction cases) + `app/(research)/__tests__/relationship-route-page.test.tsx` ("redirects legacy non-corpus similar seed URLs to the seeded search fallback"). legacy/non-corpus fallback의 유사 논문 쿼리는 제목 첫 5단어와 inline topics 상위 3개를 조합하고, 서버 왕복을 기다리지 않고 현재 창의 `/search?q=` route로 열린다. legacy selected `libraryPaperIds`와 retired `personalize` 기준은 entry URL이나 실패 fallback route에 싣지 않는다. 수동 공유·legacy `/similar` URL도 빈 graph_neighbors 화면 대신 같은 seeded search fallback route로 돌아간다.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-similar-papers-query
+  - key: promise:similar-papers-discovery#acceptance-check:similar-papers-discovery-new-search-view-with-seed-metadata
+    assertion: vitest @ `app/server/services/__tests__/search-view-payload.test.ts` ("retains seedPaper metadata and excludes the seed paper from seeded search results"). legacy/non-corpus fallback 유사 논문 진입은 일반 search ResearchRoutePayload를 만들고 `seedPaper` metadata를 기록한다
+    executionRefs:
+      - execution:run-003
+    scenarios:
+      - scenario:search-similar-papers-entry
+  - key: promise:similar-papers-discovery#acceptance-check:similar-papers-discovery-seed-paper-excluded-from-results
+    assertion: vitest @ `app/server/services/__tests__/search-view-payload.test.ts` ("retains seedPaper metadata and excludes the seed paper from seeded search results"). legacy/non-corpus fallback 유사 논문 결과에서는 출발 논문 자체를 제외한다
+    executionRefs:
+      - execution:run-003
+    scenarios:
+      - scenario:search-similar-papers-exclude-seed
+  - key: promise:similar-papers-discovery#acceptance-check:similar-papers-discovery-fallback-to-title-only-query
+    assertion: 'vitest @ `app/components/research-route-renderers/__tests__/search-similar-paper.test.ts` ("AC5: 인라인 분석 없으면 제목 그대로 반환한다"; "AC5: inlineAnalysis가 undefined이면 제목 그대로 반환한다"; "AC5: 인라인 분석이 있어도 topics가 비어 있으면 제목 그대로 반환한다"). legacy/non-corpus fallback에서 인라인 분석이 없거나 topics가 비면 제목만으로 쿼리를 만든다'
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-similar-papers-query
+  - key: promise:similar-papers-discovery#acceptance-check:similar-papers-discovery-same-basis-reuse
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/SearchView.similar-paper.test.tsx` ("routes to the seeded search entry URL even when the same paper was clicked before"; "keeps retired basis state out of the seeded search entry URL") + `app/(research)/__tests__/research-routes.test.tsx` ("executes the search from the /search?q= URL without reserving a ResearchRoutePayload"). legacy/non-corpus fallback에서 같은 `seedPaper.paperId`의 search 문서가 있어도 current Search-first route는 `/search?q=` 조건 URL로 진입하며, legacy `libraryPaperIds` 차이를 새 URL 조건의 기준으로 삼지 않는다.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-similar-papers-entry
+  - key: promise:similar-papers-discovery#acceptance-check:similar-papers-discovery-author-topic-search
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx` ("opens author and topic terms through the search-term handler") + `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx` ("pushes the query-format search route immediately without waiting for a search POST"; "opens modified research term searches in a new window while preserving the seed carry"; "clears the keyword activation when the route push throws"; "carries known library availability without a result-basis preference"; "drops retired basis state on keyword routes") + `app/components/research/__tests__/search-followup-activation.test.tsx` (same-route no-op, consecutive identity, shell-owner unmount cleanup) + `app/components/research/__tests__/research-route-shell.test.tsx` ("shows keyword activation feedback without replacing the origin content"; "clears keyword activation feedback after the destination route arrives"; "keeps the newest keyword activation when an older destination arrives"). 저자명·주제 키워드는 shared handler로 즉시 `/search?q=` entry route를 연다. plain click은 선택한 query를 현재 scroll viewport의 persistent live region에 표시하고 origin cards/results를 유지한다. 목적지 도착·동기 navigation 호출 실패·bounded timeout은 같은 activation만 정리하며 shell unmount는 timer와 local state를 폐기한다. detached click과 exact same-route no-op은 현재 창 피드백을 만들지 않는다. legacy selected `libraryPaperIds`와 retired personalize preference는 운반하지 않는다.
+    executionRefs:
+      - execution:run-002
+    scenarios:
+      - scenario:search-similar-papers-entry
+  - key: promise:similar-papers-discovery#acceptance-check:similar-papers-discovery-seed-paper-in-reaction-context
+    assertion: vitest @ `app/lib/__tests__/view-snapshot.test.ts` ("includes seed paper context for similar-paper search snapshots"). Asserts the current route-view search `viewSnapshot` with `seedPaper` surfaces the seed title + paperId line that frames the reaction as a similar-papers view.
+    executionRefs:
+      - execution:run-003
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item.graph-neighbors.test.tsx
+      - app/components/research-route-renderers/__tests__/SearchView.similar-paper.test.tsx
+      - app/components/research-route-renderers/__tests__/search-similar-paper.test.ts
+      - app/(research)/__tests__/research-routes.test.tsx
+      - app/(research)/__tests__/relationship-route-page.test.tsx
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx
+      - app/components/research/__tests__/search-followup-activation.test.tsx
+      - app/components/research/__tests__/research-route-shell.test.tsx
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/server/services/__tests__/search-view-payload.test.ts
+      - app/lib/__tests__/view-snapshot.test.ts
+implementationContracts:
+  - The listed Promise(s) are verified by the Acceptance Check entries and structured executions on this ledger.
+  - "`similar_papers_opened` is the active product branch event. It does not dual-write the retired `product.similar_papers.clicked` event."
+verdict: met

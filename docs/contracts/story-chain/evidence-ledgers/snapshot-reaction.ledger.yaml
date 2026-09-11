@@ -1,0 +1,68 @@
+schemaVersion: 2
+slug: snapshot-reaction
+review: reviews/snapshot-reaction.reviews.md
+sourcePromises:
+  - promise:reaction-from-visible-snapshot
+appliedAspects:
+  - aspect:route-view-ai-reaction-rules
+  - aspect:route-view-ai-comment-generation-routing
+  - aspect:visible-explanation-sufficiency
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:reaction-from-visible-snapshot#acceptance-check:reaction-from-visible-snapshot-snapshot-input
+    assertion: vitest @ `'app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts'` ("generates a reaction from the supplied viewSnapshot without loading or persisting a route payload row"; "does not deduplicate in-flight generations for different ViewSnapshot projections") + `app/components/research/__tests__/ResearchRouteRuntime.targeting.test.tsx` ("sends the current route-owned viewSnapshot for automatic reaction generation") + `app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx` ("bootstraps search route AI comment generation for a hydrated result ResearchRoutePayload with no reaction block") + `app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx` ("waits for a hydration-dependent search facet and generates once from the stable result set"; "rechecks hydration readiness when a queued command becomes gated before flush"; "waits for graph-neighbor card hydration and generates once with relationship authors") + `app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts` + `app/components/research/__tests__/ResearchRouteRuntime.execution-lifecycle.test.tsx` ("resets and bootstraps a new mount that reuses the same id and updatedAt"; "resets and bootstraps a new execution in the same React instance") + `app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-queue.test.tsx` ("rebases a queued regeneration command when the ViewSnapshot projection changes before flush"; "does not re-fire an active regeneration for a metadata-only freshness change") + `app/lib/__tests__/view-snapshot.test.ts` ("builds the search reaction snapshot from the loaded facet projection"; "keeps background-hydrated card details outside the search reaction basis"; "keeps hydrated graph-neighbor authors in the relationship prompt") + `app/domain/__tests__/view-snapshot.test.ts` + `app/server/agent/__tests__/route-ai-comment-generation.test.ts` ("adds trust disclosure boundaries for %s automatic comments"). The client sends the request-time visible `viewSnapshot`, and structured generation builds prompt input from that projection without route payload row reload. Search result papers project committed id/title/year/citationCount while relationship snapshots retain author context. Server in-flight de-dupe separates different `ViewSnapshot` projections even when route id matches. A pre-flush visible mutation rebases the queued snapshot to the current facet projection, but every ingress and flush still rechecks hydration readiness before transport. Background search card details and other UI-only metadata whose `ViewSnapshot` projection is unchanged do not re-fire generation; hydration-owned facets and graph-neighbor authors reach one ready snapshot before transport. The prompt context preserves source limits and citation/graph availability so missing provider lists, unknown availability, truncated graph pages, and co-cited/coupled relation types enter the AI prompt as limited current-snapshot evidence rather than corpus-wide absence or direct citation lineage.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-view-reaction-respond-format
+  - key: promise:reaction-from-visible-snapshot#acceptance-check:reaction-from-visible-snapshot-ephemeral-lifetime
+    assertion: vitest @ `app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts` ("builds a search generation command for ephemeral search ResearchRoutePayloads") + `app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-queue.test.tsx` ("flushes route AI comment generation for the route-owned current ResearchRoutePayload") + `'app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts'` ("generates a reaction from the supplied viewSnapshot without loading or persisting a route payload row"). Ephemeral search/citation/similar commands carry snapshots, and automatic generation returns a client-applied reaction only without row persistence.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-view-reaction-respond-format
+  - key: promise:reaction-from-visible-snapshot#acceptance-check:reaction-from-visible-snapshot-viewer-preference-persists
+    assertion: vitest @ `app/api/gap-reports/[id]/reaction/__tests__/route.test.ts` + `app/components/research-route-renderers/__tests__/GapNetworkView.persistence.test.tsx` + `app/components/research-route-renderers/__tests__/GapNetworkView.persistence-readback.test.tsx` + `app/components/research-route-renderers/__tests__/gap-reaction-write-transport.test.ts` + `app/server/repository/__tests__/gap-reports.test.ts` ("stores reaction preference under the viewer and artifact version") + `app/server/domain-access/__tests__/gap-network-view-access.test.ts` ("allows another authenticated member to read the same report with their own preference"; "writes only the current viewer preference against the current artifact version"). Prepared reaction 선택은 report id와 현재 viewer principal별 CAS 행에 저장된다. 같은 가입자의 재조회에는 복원되지만 다른 가입자의 선택을 바꾸지 않으며, artifact version이 달라진 선호는 현재 본문에 합성하지 않는다.
+    executionRefs:
+      - execution:run-002
+    scenarios:
+      - scenario:search-gap-report-prepared-reaction
+  - key: promise:reaction-from-visible-snapshot#acceptance-check:reaction-from-visible-snapshot-basis-match
+    assertion: vitest @ `app/lib/__tests__/view-snapshot.test.ts` ("uses the prompt-relevant ViewSnapshot projection as the exact reaction basis"; "uses the canonical transport projection as the reaction basis"; "keeps background-hydrated card details outside the search reaction basis"; "keeps hydrated graph-neighbor authors in the relationship prompt"; "fails closed without throwing when a valid route payload exceeds snapshot bounds") + `app/stores/__tests__/research-route-store.ai-comment-generation.test.ts` ("clears a settled reaction and rejects its late commit after the ViewSnapshot projection changes"; "preserves a settled search reaction when background card details hydrate") + `app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx` ("keeps one generation when a lightweight search card hydrates after the comment settles"; "waits for a hydration-dependent search facet and generates once from the stable result set"; "rechecks hydration readiness when a queued command becomes gated before flush"; "reopens bootstrap when an active same-projection request becomes hydration-gated"; "waits for graph-neighbor card hydration and generates once with relationship authors") + `app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts` + `app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-queue.test.tsx` ("drops an active result and regenerates from the current ViewSnapshot projection after the basis changes"; "does not re-fire an active regeneration for a metadata-only freshness change") + `app/server/services/__tests__/search-hydration.test.ts` ("hydrates the committed corpus ids and preserves provider total when no library blend applies") + `'app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts'` ("deduplicates generation requests for the same ViewSnapshot projection"; "does not deduplicate in-flight generations for different ViewSnapshot projections"). `buildViewSnapshot` creates one bounded canonical projection without throwing into route render or store mutation. Facet-neutral search card hydration preserves committed terrain and remains projection-equivalent, so store mutation keeps the settled comment and generation while runtime keeps one provider call. Hydration-owned facets and graph-neighbor authors settle before their first transport; system-event ingress, queued flush, active transport, and late completion cannot bypass that readiness. A terminal empty facet projection closes pending without transport. A real query/result/sort basis change still clears the comment, rejects stale completion, and queues the current projection.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-view-reaction-respond-format
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts
+      - app/components/research/__tests__/ResearchRouteRuntime.targeting.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.execution-lifecycle.test.tsx
+      - app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts
+      - app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-queue.test.tsx
+      - app/components/research/__tests__/route-ai-comment-generation-scheduler.test.ts
+      - app/stores/__tests__/research-route-store.ai-comment-generation.test.ts
+      - app/lib/__tests__/view-snapshot.test.ts
+      - app/domain/__tests__/view-snapshot.test.ts
+      - app/server/agent/__tests__/route-ai-comment-generation.test.ts
+      - app/server/services/__tests__/search-hydration.test.ts
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/GapNetworkView.persistence.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.persistence-readback.test.tsx
+      - app/components/research-route-renderers/__tests__/gap-reaction-write-transport.test.ts
+      - app/api/gap-reports/[id]/reaction/__tests__/route.test.ts
+      - app/server/repository/__tests__/gap-reports.test.ts
+      - app/server/domain-access/__tests__/gap-network-view-access.test.ts
+implementationContracts:
+  - The listed Promise(s) are verified by the Acceptance Check entries and structured executions on this ledger.
+  - Route-view automatic comment prompts stay inside the current `viewSnapshot` / loaded result window / provider metadata / stored report body. Provider-limited empty lists and unknown availability are not prompt-level evidence of scholarly absence, and co-cited/coupled graph neighbors are not direct citation lineage.
+verdict: met

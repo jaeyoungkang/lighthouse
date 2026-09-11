@@ -1,0 +1,507 @@
+schemaVersion: 2
+slug: gap-network-e2
+review: reviews/gap-network-e2.reviews.md
+sourcePromises:
+  - promise:gap-network-detection-from-search
+  - promise:gap-report-prepared-reaction
+  - promise:gap-overlay-decision-evidence
+appliedAspects:
+  - aspect:visible-explanation-sufficiency
+  - aspect:search-first-url-model
+intent:
+  mode: explicit
+  checks:
+    - key: promise:gap-network-detection-from-search#intent-check:cluster-narrative-describes-research-work
+      evidence: live judge @ `app/server/services/__tests__/cluster-card-intent-qualitative.live.test.tsx`. The live test renders a realistic cluster card and asks Gemini whether the body answers the Subject CIQ (current `intent-check:cluster-narrative-describes-research-work`).
+    - key: promise:gap-network-detection-from-search#intent-check:representative-papers-show-cluster-grain
+      evidence: live judge @ `app/server/services/__tests__/cluster-card-intent-qualitative.live.test.tsx` (same realistic cluster fixture; Exemplar CIQ — current `intent-check:representative-papers-show-cluster-grain`).
+    - key: promise:gap-network-detection-from-search#intent-check:adjacency-shows-network-position
+      evidence: live judge @ `app/server/services/__tests__/cluster-card-intent-qualitative.live.test.tsx` (Adjacency CIQ — current `intent-check:adjacency-shows-network-position`).
+    - key: promise:gap-report-prepared-reaction#intent-check:title-and-intro-name-the-discipline
+      evidence: live judge @ `app/server/services/__tests__/gap-network-content-intent-qualitative.live.test.tsx`. The live test renders the gap_network ResearchRoutePayload content markdown and asks Gemini whether the title + intro frame the discipline (current `intent-check:title-and-intro-name-the-discipline`).
+    - key: promise:gap-report-prepared-reaction#intent-check:cluster-background-and-comparison
+      evidence: live judge @ `app/server/services/__tests__/gap-network-content-intent-qualitative.live.test.tsx` (Cluster differentiation CIQ — current `intent-check:cluster-background-and-comparison`).
+    - key: promise:gap-report-prepared-reaction#intent-check:gap-inference-method-traceable
+      evidence: live judge @ `app/server/services/__tests__/gap-network-content-intent-qualitative.live.test.tsx` (Gap inference transparency CIQ — current `intent-check:gap-inference-method-traceable`).
+    - key: promise:gap-overlay-decision-evidence#intent-check:hypothesis-proposals-have-depth
+      evidence: live judge @ `app/server/services/__tests__/gap-card-intent-qualitative.live.test.tsx`. The live test renders a realistic gap overlay card and asks Gemini whether each proposal has hypothesis depth (current `intent-check:hypothesis-proposals-have-depth`).
+    - key: promise:gap-overlay-decision-evidence#intent-check:proposals-grounded-in-system-resources
+      evidence: live judge @ `app/server/services/__tests__/gap-card-intent-qualitative.live.test.tsx` (Bridge CIQ — current `intent-check:proposals-grounded-in-system-resources`).
+    - key: promise:gap-overlay-decision-evidence#intent-check:meta-is-qualitative-not-numeric
+      evidence: live judge @ `app/server/services/__tests__/gap-card-intent-qualitative.live.test.tsx` (Pair CIQ — current `intent-check:meta-is-qualitative-not-numeric`).
+  delegations: []
+acceptanceChecks:
+  - key: promise:gap-report-prepared-reaction#acceptance-check:gap-report-prepared-reaction-payload-sync-on-click
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx` + `app/components/research-route-renderers/__tests__/GapNetworkView.persistence.test.tsx` + `app/components/research-route-renderers/__tests__/GapNetworkView.persistence-readback.test.tsx` + `app/components/research-route-renderers/__tests__/gap-reaction-write-transport.test.ts` ("reads the latest state and rebases a server 409 before issuing a new command"; "treats a semantic 422 rejection as terminal without retry or read-back") + `app/api/gap-reports/[id]/reaction/__tests__/route.test.ts` + `app/server/repository/__tests__/gap-reports.test.ts` + `app/server/domain-access/__tests__/gap-network-view-access.test.ts`. Prepared overview/cluster/gap 선택은 active execution을 즉시 갱신하고 report id와 현재 viewer principal별 preference CAS에 저장된다. Response loss는 same-payload retry와 현재 viewer의 read-back으로 확인한다. Stable `409`는 최신 viewer preference에서 새 command를 재기반하고 `422`는 terminal rejection으로 닫으며, 다른 가입자의 preference는 읽거나 덮어쓰지 않는다.
+    executionRefs:
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-032
+      - execution:run-034
+    scenarios:
+      - scenario:search-gap-report-prepared-reaction
+  - key: promise:gap-report-prepared-reaction#acceptance-check:gap-report-prepared-reaction-metadata-content-narrative
+    assertion: 'vitest @ `app/server/services/__tests__/gap-network-builder.test.ts` + `app/server/services/__tests__/gap-network-reaction-preparation.test.ts` + `app/domain/__tests__/research-route-payload-schema.test.ts` + `app/api/gap-reports/__tests__/route.test.ts` + `app/components/research-route-renderers/__tests__/GapNetworkView.enrichment.test.tsx`. `gap_network` core ResearchRoutePayload는 `gapNetworkBuild { core: "ready", enrichment: "pending" }`, clusters/gapPairs/metrics를 먼저 저장하지만, 관계 근거와 의미 있는 gapPairs가 있으면 route/display 완료로 취급하지 않는다. 독립 runner는 저장된 core payload를 재사용해 enrichment를 같은 ResearchRoutePayload에서 실행하고 `enrichment: "ready"` 또는 `"failed"` terminal marker로 닫는다. status route와 `/gap/:id`는 이 terminal marker를 관찰만 한다. ready 승격은 cluster narrative · gap meta · proposals, domainLabel, contentNarrative를 저장하고, cluster prepared reaction body도 LLM cluster narrative로 승격한다. Gap-pair narrative 해석과 domain/content narrative 체인은 서로 독립으로 시작되어 한쪽 LLM 단계가 다른 쪽을 불필요하게 직렬 대기시키지 않는다. 실패 시 같은 ResearchRoutePayload를 `enrichment: "failed"`로 닫고 core metadata를 보존한다. terminal empty-state는 enrichment 대상이 아니며, enrichment prose가 실패하거나 없으면 UI가 빈 세부 리포트로 표시하지 않는다'
+    executionRefs:
+      - execution:run-003
+      - execution:run-021
+      - execution:run-035
+      - execution:run-036
+      - execution:run-037
+      - execution:run-038
+      - execution:run-040
+    scenarios:
+      - scenario:search-gap-view-field-overview
+      - scenario:search-gap-view-method-trace
+      - scenario:search-gap-overlay-hypothesis-evidence
+  - key: promise:gap-report-prepared-reaction#acceptance-check:gap-report-prepared-reaction-explicit-enrichment-retry
+    assertion: vitest @ `app/server/domain-access/__tests__/gap-network-enrichment-retry.test.ts` + `app/server/domain-access/__tests__/gap-network-view-access.runner.test.ts` + `app/api/gap-reports/[id]/enrichment-retry/__tests__/route.test.ts` + `app/components/research-route-renderers/__tests__/GapNetworkView.enrichment.test.tsx` + `app/components/research-route-renderers/__tests__/GapNetworkView.retry-response.test.tsx` + `app/lib/__tests__/track.test.ts` + `app/lib/analytics/__tests__/event-router.gap-enrichment-retry.test.ts`; registered DB integration @ `scripts/db-integration/run-gap-report-concurrency.ts`. Only the authenticated command moves a failed enrichment on the same report/version to pending. One CAS winner schedules the existing runner, concurrent/pending/ready losers create no work, and PostgreSQL sessions converge on the same pending version. The first explicit retry is immediate; another failed retry starts a persisted report-scoped 60-second cooldown whose Retry-After response and UI countdown agree. The core graph stays visible, reads/revisits do not auto-retry, and exactly one privacy-bounded click event precedes each command attempt.
+    executionRefs:
+      - execution:run-046
+      - execution:run-047
+    scenarios:
+      - scenario:search-gap-analysis-entry
+  - key: promise:gap-report-prepared-reaction#acceptance-check:gap-report-prepared-reaction-vertical-stack-edge-fallback
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx` + `app/components/research-route-renderers/__tests__/GapNetworkView.enrichment.test.tsx` + `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx`. The component tests exercise the vertical stack page composition (page header + graph + scrollable content report) only after the ResearchRoutePayload is display-ready, assert enrichment-pending core ResearchRoutePayloads with edges and meaningful gapPairs keep the loading screen instead of rendering graph/report UI, assert unresolved blank reports render the core-pending status instead of `GapNetworkReport` or terminal insufficient-evidence copy, assert edge-insufficient settled ResearchRoutePayloads omit the detailed content report even when cluster narrative exists, and assert failed/missing enrichment prose does not create empty lower report sections.
+    executionRefs:
+      - execution:run-003
+      - execution:run-013
+      - execution:run-016
+      - execution:run-017
+      - execution:run-018
+      - execution:run-019
+      - execution:run-020
+      - execution:run-026
+      - execution:run-027
+      - execution:run-028
+      - execution:run-031
+      - execution:run-034
+      - execution:run-039
+      - execution:run-041
+    scenarios:
+      - scenario:search-gap-view-field-overview
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-top-result-input-set
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view-content.representative-filter.test.tsx` ("passes the current result pool to the gap action even when only 10 cards are visible"; "filters the visible list but opens gap analysis from the current top-result pool") + `app/components/research-route-renderers/__tests__/search-view-knowledge-map.test.ts` ("builds gap report metadata from the currently sorted result pool"; "can preserve an explicitly scoped gap report source set") + `app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts` ("serializes only the top 40 scoped source papers into the snapshot creation request"; 같은 요청에서 viewer-private review/inline-analysis 필드를 제거함) + `app/api/gap-reports/__tests__/route.admission.test.ts` ("rejects viewer-private paper fields at the shared artifact ingress") + `app/api/gap-reports/__tests__/route-graph-support-variant.test.ts` ("rejects variant-only %s/%s graph support field %s before union parsing") + `app/lib/__tests__/gap-report-input-budget.test.ts` ("truncates at a complete UTF-8 code point"; "accepts the exact byte ceiling and rejects the first byte above it") + `app/api/gap-reports/__tests__/route.source-paper-ids.test.ts` ("passes scoped source paper ids from the snapshot to gap creation"; "rejects an oversized snapshot before reserving provider work") + `app/server/domain-access/__tests__/gap-report-source-identity.test.ts` + `app/server/repository/__tests__/gap-reports.test.ts`. Asserts the search header gap action uses the current sorted/year/facet-filtered result pool rather than the visible 10-card window or AI comment input cap. The server accepts at most 40 papers and source ids, rejects viewer-private fields and graph-support fields outside their version+basis variant before reservation, then uses one share-safe canonical snapshot for digest, persistence, and rebuild. Viewer-private fields, unselected papers, query clauses, and graph timestamps do not split artifact identity.
+    executionRefs:
+      - execution:run-002
+      - execution:run-003
+      - execution:run-006
+    scenarios:
+      - scenario:search-gap-analysis-entry
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-cluster-gap-pipeline
+    assertion: vitest @ `app/server/services/__tests__/analyze-gap-network.test.ts` ("keeps one representative gap pair per cluster relation when multiple inter-cluster gaps qualify") + `app/server/services/__tests__/analyze-gap-network.graph-support.test.ts` ("counts graph support as auxiliary edges and uses it as a representative-paper tie-breaker"; graph-only and semantic-only sparse samples) + `app/server/services/__tests__/gap-network-builder.test.ts` (visible ai-for-science and semantic-only sparse reports) + `app/server/domain-access/__tests__/gap-network-view-access.runner.test.ts` (build input uses the stored snapshot and does not enrich missing graph support) + `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.insufficient-edge.test.tsx` + `app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx`. The pipeline uses only the reserved share-safe paper snapshot and its first-reveal graph support. Missing graph support does not trigger a keyword-result PaperNeighborhood call and degrades to citation/semantic evidence.
+    executionRefs:
+      - execution:run-003
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-015
+      - execution:run-034
+      - execution:run-042
+    scenarios:
+      - scenario:search-gap-network-generated
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-result-saved-gap-view
+    assertion: vitest @ `app/server/services/__tests__/gap-network-builder.test.ts` + `app/domain/__tests__/research-route-payload-schema.test.ts` + `app/api/gap-reports/__tests__/route.test.ts` + `app/server/repository/__tests__/gap-reports.test.ts` + `app/server/domain-access/__tests__/gap-network-view-access.test.ts` + `app/server/domain-access/__tests__/gap-report-source-identity.test.ts` + `app/server/domain-access/__tests__/gap-network-view-access.runner.test.ts` + `app/server/domain-access/__tests__/search-backed-knowledge-map-persistence.test.ts` + `app/components/research-route-renderers/__tests__/GapNetworkView.progress-pacing.test.tsx` + `app/stores/__tests__/research-route-store.test.ts` + `app/lib/analytics/__tests__/event-router.test.ts`. POST는 persisted share-safe snapshot digest로 공유 pending artifact를 예약하고 독립 runner를 시작한다. Runner는 artifact id/version/attempt lease로 build를 닫는다. Detached viewer는 queued 유예 또는 lease 만료 뒤 같은 인증 POST로 runner를 복구한다. status와 `/gap/:id`는 인증된 가입자의 observer-only read다. Gap wire payload는 `viewerPrincipalId`만 가지며 strict schema와 store patch가 retired `ownerPrincipalId` alias를 거부한다. Viewed event는 최소 진행 화면이 사라져 report가 실제로 보인 뒤 viewer/report identity로 한 번만 발행한다. 공유 artifact의 최초 `sourceSnapshotId`는 creation provenance이며 현재 viewer의 진입 출처로 발행하지 않는다.
+    executionRefs:
+      - execution:run-003
+      - execution:run-005
+      - execution:run-035
+      - execution:run-043
+    scenarios:
+      - scenario:search-gap-network-generated
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-progress-staged-pacing
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/gap-network-view.helpers.test.ts` ("advances one visible progress stage per min-dwell and holds on interpret") + `app/components/research-route-renderers/__tests__/GapNetworkView.progress-pacing.test.tsx` ("holds a fast empty-state build briefly, then reveals it before the meaningful-gap floor"; "reveals a reopened already-ready report immediately without the minimum-visible hold"; "starts a report opened mid-enrichment on the interpretation stage instead of replaying early stages"; "freezes the progress bar for a terminal-failed build instead of animating toward completion"). gap report 생성 진행 표시는 관찰 가능한 build phase가 coarse하고 deterministic core가 짧은 시간에 정착하므로 화면 단계 전환을 raw phase에 묶지 않고, client가 소유한 min-dwell 애니메이션으로 수집→보강→군집→분석→해석 단계를 순차 노출한다. 진행 stage 선택은 `GAP_NETWORK_PROGRESS_STAGE_DWELL_MS` 간격으로 한 단계씩 전진하고 마지막 pending 단계(해석)에서 멈춘다. 새로 생성 중이던 report는 core/enrichment가 빨리 끝나 display-ready가 되어도 `GAP_NETWORK_MIN_VISIBLE_PROGRESS_MS` 전에는 그래프 리포트로 전환하지 않고 진행 애니메이션 화면을 유지하므로, 빠른 완료나 관계 근거 부족 terminal empty-state 생성도 첫 단계만 반짝 뜨고 completed로 점프하지 않는다. terminal empty-state는 그래프가 아니라 짧은 근거 부족 안내라 `GAP_NETWORK_MIN_VISIBLE_EMPTY_PROGRESS_MS`(의미 있는 공백 리포트의 floor보다 짧음)로 먼저 공개한다. 이미 display-ready인 report를 다시 여는 재오픈 경로는 이 최소 노출 지연 없이 즉시 리포트를 보여준다
+    executionRefs:
+      - execution:run-003
+    scenarios:
+      - scenario:search-gap-network-generated
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-cluster-detail-zoom-render
+    assertion: vitest @ `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx` and `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.insufficient-edge.test.tsx` ("shows the focused cluster explanation in the side panel (outside the SVG) so the graph stays fully visible"; "opens a focused gap card in the side panel and auto-zooms the SVG"; "auto-zooms softly on cluster click — selected cluster emphasized but every cluster still visible"; "keeps the gap-pair layer static and renders cluster details under the cluster label"; "skips cluster visualization and explains missing paper evidence in quantities"; "renders the no-meaningful-gap empty state instead of the network when no meaningful gap exists"; "suppresses the canvas message when no meaningful gap candidates exist"). Asserts focused cluster/gap details render in a side-panel `<aside>` outside the SVG so the card never hides the graph; cluster/concept selection auto-zooms softly to the selected cluster's hull with a focus viewBox in the AC band (46–62% of base width) so every other cluster still stays visible at the edges; gap pair selection auto-zooms to the two-cluster region with the tighter gap focus cap (about 46–48% of base width); background click clears the selection and returns to base; the card contains grounded concept/paper evidence and omits keyword-relations + nearest-gap adjacency; when `totalEdgeCount` is 0 the report renders no SVG cluster hulls/labels/gap layer and shows only the insufficient-edge explanation with total papers, abstract-bearing papers, and paper-paper edge count; and when edges exist but no meaningful gap pair is found the report renders only the no-meaningful-gap empty state (no SVG, no canvas overlay) with body-sized prose explaining the total papers and edge count.
+    executionRefs:
+      - execution:run-013
+      - execution:run-016
+      - execution:run-017
+      - execution:run-018
+      - execution:run-019
+      - execution:run-020
+      - execution:run-026
+      - execution:run-027
+      - execution:run-028
+      - execution:run-031
+      - execution:run-039
+      - execution:run-041
+      - execution:run-042
+    scenarios:
+      - scenario:search-gap-no-clear-gap
+      - scenario:search-gap-cluster-detail-grounding
+      - scenario:search-gap-insufficient-evidence
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-cluster-size-encoding
+    assertion: 'vitest @ `app/server/services/__tests__/analyze-gap-network.test.ts` ("caps rendered cluster concept nodes by paper count") + vitest @ `app/components/research-route-renderers/knowledge-map/__tests__/gap-network.presentation.test.ts` ("scales cluster hull footprints by paper count") + vitest @ `app/components/research-route-renderers/knowledge-map/__tests__/gap-network.presentation.test.ts` ("keeps sparse paper clusters visibly smaller when node count is paper-capped"). Asserts the analyzer does not force every cluster to the same concept-node cap: sparse paper clusters expose fewer rendered concept nodes, and the presentation layer combines that node-count difference with `GapNetworkCluster.paperCount` hull scaling while concept node radius remains score-owned outside this check.'
+    executionRefs:
+      - execution:run-015
+    scenarios:
+      - scenario:search-gap-network-generated
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-layout-permutation-invariance
+    assertion: vitest @ `app/components/research-route-renderers/knowledge-map/__tests__/gap-network.presentation.test.ts` ("uses cluster id as the stable tie-breaker for equal two-cluster labels"; "keeps concept coordinates stable when cluster and node input order changes"; "keeps concept coordinates stable when edge input order changes"). 동일한 graph의 cluster와 concept 배열 순서 또는 edge 배열 순서만 바꿔도 cluster anchor와 concept 좌표가 같음을 잠근다. 두 cluster의 label이 같을 때는 stable id가 좌우 anchor를 결정하며, force simulation은 node id와 edge identity로 정규화된 sequence만 소비한다.
+    executionRefs:
+      - execution:run-048
+    scenarios:
+      - scenario:search-gap-network-generated
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-research-term-nodes
+    assertion: vitest @ `app/server/services/__tests__/analyze-gap-network.test.ts` ("keeps concept nodes on research terms instead of broad query labels") + `app/server/services/__tests__/knowledge-map-cluster.test.ts` ("keeps hub labels aligned with stored scientific-discovery topics instead of generic noise"). Asserts gap graph concept nodes and cluster labels stay on concrete research terms rather than query-equivalent or broad labels, using the same deterministic research-term quality boundary as English term discovery.
+    executionRefs:
+      - execution:run-010
+    scenarios:
+      - scenario:search-gap-network-generated
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-citation-source
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx` ("shows the owned research-gap map action above the citation-lineage AI comment frame") + `app/components/research-route-renderers/__tests__/CitationLineageView.test.tsx` ("keeps the research-gap follow-up out of the ResearchRoutePayload body") + `app/api/gap-reports/__tests__/route.test.ts` ("creates from a visible result snapshot without loading a source ResearchRoutePayload") + `app/api/gap-reports/__tests__/status-route.test.ts` ("polls by gap report id and completes when the runner has persisted a ready report") + `app/components/research-route-renderers/__tests__/citation-lineage.helpers.test.ts` + `app/server/services/__tests__/episteme-literature.test.ts` + `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.insufficient-edge.test.tsx`. The citation-lineage host-owned action opens the report in a detached browser window and persists the references+citations snapshot in order. Gap-network POST/status routes authenticate the current member, do not read a persisted source ResearchRoutePayload, return a gap report id, and leave building/status polling to `/gap/:id`.
+    executionRefs:
+      - execution:run-003
+      - execution:run-044
+    scenarios: []
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-citation-source-quality-parity
+    assertion: 'vitest @ `app/server/services/__tests__/citation-lineage-gap-parity.test.ts` ("keeps one product identity while a rich projection adds card details") + `app/server/services/__tests__/episteme-literature.test.ts` ("hydrates stored numeric ids through E3 paper refs and rich projection"; "fetches E3 citation directions with exact availability") + `app/server/services/__tests__/search-service.test.ts` ("does not hydrate non-corpus paper IDs as Episteme corpus IDs") + `app/server/external-http-gateway/__tests__/literature-provider-fetch.test.ts` ("rejects direct Semantic Scholar and lookalike outbound URLs"). Locks the Episteme-only path: actual search and batch schemas map their common fields to one corpus identity, hydration adds detailed metadata without changing that identity, direction availability survives lazy citation fetches, and the gateway refuses direct Semantic Scholar transport. Missing lists remain limited evidence, not a false "no relation" statement.'
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+      - execution:run-013
+      - execution:run-014
+      - execution:run-015
+      - execution:run-016
+      - execution:run-017
+      - execution:run-018
+      - execution:run-019
+      - execution:run-020
+      - execution:run-021
+      - execution:run-022
+      - execution:run-023
+      - execution:run-024
+      - execution:run-025
+      - execution:run-026
+      - execution:run-027
+      - execution:run-028
+      - execution:run-029
+      - execution:run-030
+      - execution:run-031
+      - execution:run-032
+      - execution:run-033
+      - execution:run-034
+      - execution:run-035
+      - execution:run-036
+      - execution:run-037
+      - execution:run-038
+      - execution:run-039
+      - execution:run-040
+      - execution:run-041
+      - execution:run-045
+    scenarios: []
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-graph-neighbor-source
+    assertion: vitest @ `app/api/gap-reports/__tests__/route.test.ts` ("creates from a visible result snapshot without loading a source ResearchRoutePayload") + `app/api/gap-reports/__tests__/status-route.test.ts` ("polls by gap report id and completes when the runner has persisted a ready report") + `app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx`. The gap-network build accepts graph-neighbor snapshot papers and co-cited/coupled shared-count graph support, preserves the scoped query, and skips search graph-support enrichment. POST/status authenticate the current member and do not read a persisted source ResearchRoutePayload.
+    executionRefs:
+      - execution:run-003
+      - execution:run-044
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-analysis-input-visible
+    assertion: vitest @ `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.gap-led-next-search.test.tsx` ("renders the analysis input summary above the canvas"). `gap_network` ResearchRoutePayload가 분석 입력 편수와 cluster 개수를 "검색 결과 N편을 M개 cluster로 나눴습니다" 한 줄로 노출해, 사용자가 cluster의 노드 수가 cap이 아니라 입력 표본을 cluster로 나눈 자연 분포임을 인식할 수 있다.
+    executionRefs:
+      - execution:run-029
+    scenarios:
+      - scenario:search-gap-analysis-entry
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-analysis-input-cap
+    assertion: vitest @ `app/lib/__tests__/graph-paper-snapshots.test.ts` ("MAX_GRAPH_SOURCE_PAPERS is literally 40 — changing the value breaks the gap input promise"; "constants.ts carries the @check-removes-fails comment naming this AC, anchored above the constant"; "returns at most 40 snapshots when more results are supplied"; "keeps the first 40 in the supplied result order"; "passes through every result when fewer than 40 are supplied"). `MAX_GRAPH_SOURCE_PAPERS`를 literal `40`으로 value-pin하고 (negative test + co-located `@check-removes-fails` marker), search→gap 입력의 유일한 경로인 `toGraphPaperSnapshots`가 현재 정렬·필터가 적용된 검색 결과 풀 안에서 앞 40편으로 캡하고 40편 미만이면 풀 전부를 통과시킴을 deterministic하게 잠근다.
+    executionRefs:
+      - execution:run-030
+    scenarios:
+      - scenario:search-gap-network-generated
+  - key: promise:gap-overlay-decision-evidence#acceptance-check:gap-overlay-decision-evidence-gap-card-bounds
+    assertion: vitest @ `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx` ("opens a focused gap card in the side panel and auto-zooms the SVG"; "auto-zooms into a clicked gap pair (no manual toggle)"). Asserts gap nodes/links remain visible, are clickable, mark the active gap, render the gap card in the side-panel `<aside>` (outside the SVG, same position as the cluster card), and auto-zoom the SVG to the two cluster hulls + gap label. The side-panel position means the focus viewBox no longer has to contain the card bounds.
+    executionRefs:
+      - execution:run-013
+      - execution:run-016
+      - execution:run-017
+      - execution:run-018
+      - execution:run-019
+      - execution:run-020
+      - execution:run-026
+      - execution:run-027
+      - execution:run-028
+      - execution:run-031
+      - execution:run-039
+      - execution:run-041
+    scenarios:
+      - scenario:search-gap-link-display
+executions:
+  - id: execution:run-001
+    kind: contract-check
+    target: gap-network-e2
+    subcase: gap-report-payload-shape
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/lib/__tests__/gap-report-input-budget.test.ts
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/server/services/__tests__/gap-network-builder.test.ts
+      - app/domain/__tests__/research-route-payload-schema.test.ts
+      - app/api/gap-reports/__tests__/route.test.ts
+      - app/api/gap-reports/__tests__/route.admission.test.ts
+      - app/api/gap-reports/__tests__/status-route.test.ts
+      - app/api/gap-reports/__tests__/route-graph-support-variant.test.ts
+      - app/server/lib/__tests__/bounded-json-body.test.ts
+      - app/server/repository/__tests__/gap-reports.test.ts
+      - app/server/domain-access/__tests__/gap-report-source-identity.test.ts
+      - app/server/domain-access/__tests__/gap-network-view-access.test.ts
+      - app/server/domain-access/__tests__/gap-network-view-access.runner.test.ts
+      - app/server/domain-access/__tests__/search-backed-knowledge-map-persistence.test.ts
+      - app/lib/__tests__/track.test.ts
+      - app/lib/analytics/__tests__/event-router.test.ts
+      - app/components/research-route-renderers/__tests__/gap-network-view.helpers.test.ts
+      - app/(research)/__tests__/gap-view-route-stale-core.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.enrichment.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.progress-pacing.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.persistence.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.persistence-readback.test.tsx
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/GapNetworkView.persistence.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.persistence-readback.test.tsx
+      - app/components/research-route-renderers/__tests__/gap-reaction-write-transport.test.ts
+      - app/api/gap-reports/[id]/reaction/__tests__/route.test.ts
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/server/domain-access/__tests__/gap-network-view-access.test.ts
+  - id: execution:run-006
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-view-content.representative-filter.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-knowledge-map.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts
+      - app/lib/__tests__/api-routes.test.ts
+      - app/api/gap-reports/__tests__/route.source-paper-ids.test.ts
+  - id: execution:run-007
+    kind: contract-check
+    target: gap-network-e2
+    subcase: report-shape
+  - id: execution:run-008
+    kind: contract-check
+    target: gap-network-e2
+    subcase: hypothesis-linkage
+  - id: execution:run-009
+    kind: vitest
+    files:
+      - app/server/services/__tests__/analyze-gap-network.test.ts
+  - id: execution:run-010
+    kind: vitest
+    files:
+      - app/server/services/__tests__/analyze-gap-network.test.ts
+      - app/server/services/__tests__/knowledge-map-cluster.test.ts
+  - id: execution:run-011
+    kind: vitest
+    files:
+      - app/server/services/__tests__/analyze-gap-network.graph-support.test.ts
+  - id: execution:run-012
+    kind: contract-check
+    target: gap-network-e2
+    subcase: reaction-preparation
+  - id: execution:run-013
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx
+  - id: execution:run-014
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/gap-network.presentation.test.ts
+  - id: execution:run-015
+    kind: vitest
+    files:
+      - app/server/services/__tests__/analyze-gap-network.test.ts
+      - app/components/research-route-renderers/knowledge-map/__tests__/gap-network.presentation.test.ts
+  - id: execution:run-016
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx
+  - id: execution:run-017
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx
+  - id: execution:run-018
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx
+  - id: execution:run-019
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx
+  - id: execution:run-020
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx
+  - id: execution:run-021
+    kind: vitest
+    files:
+      - app/server/services/__tests__/gap-network-reaction-preparation.test.ts
+  - id: execution:run-022
+    kind: vitest
+    files:
+      - app/server/services/knowledge-map/__tests__/gap-network-prompt-budget.test.ts
+      - app/server/ai-generation/__tests__/gateway.test.ts
+      - app/server/ai-generation/__tests__/judgment.test.ts
+  - id: execution:run-023
+    kind: vitest
+    files:
+      - app/server/services/__tests__/cluster-card-intent-qualitative.live.test.tsx
+  - id: execution:run-024
+    kind: vitest
+    files:
+      - app/server/services/__tests__/gap-card-intent-qualitative.live.test.tsx
+  - id: execution:run-025
+    kind: vitest
+    files:
+      - app/server/services/__tests__/gap-network-content-intent-qualitative.live.test.tsx
+  - id: execution:run-026
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx
+  - id: execution:run-027
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx
+  - id: execution:run-028
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx
+  - id: execution:run-029
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.gap-led-next-search.test.tsx
+    testNamePattern: renders the analysis input summary above the canvas
+  - id: execution:run-030
+    kind: vitest
+    files:
+      - app/lib/__tests__/graph-paper-snapshots.test.ts
+  - id: execution:run-031
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx
+  - id: execution:run-032
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/GapNetworkView.persistence.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.persistence-readback.test.tsx
+  - id: execution:run-033
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkContentReport.test.tsx
+    testNamePattern: renders domain label, overview, cluster paragraphs in cluster order, and gap inference paragraph
+  - id: execution:run-034
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx
+  - id: execution:run-035
+    kind: vitest
+    files:
+      - app/domain/__tests__/research-route-payload-schema.test.ts
+  - id: execution:run-036
+    kind: vitest
+    files:
+      - app/server/services/__tests__/gap-network-reaction-preparation.test.ts
+  - id: execution:run-037
+    kind: vitest
+    files:
+      - app/server/services/__tests__/gap-network-reaction-preparation.test.ts
+  - id: execution:run-038
+    kind: vitest
+    files:
+      - app/server/services/__tests__/gap-network-reaction-preparation.test.ts
+  - id: execution:run-039
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx
+  - id: execution:run-040
+    kind: vitest
+    files:
+      - app/server/services/__tests__/gap-network-reaction-preparation.test.ts
+  - id: execution:run-041
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx
+  - id: execution:run-042
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.insufficient-edge.test.tsx
+  - id: execution:run-043
+    kind: vitest
+    files:
+      - app/stores/__tests__/research-route-store.test.ts
+  - id: execution:run-044
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/relationship-view-ai-comment-actions.test.tsx
+      - app/components/research-route-renderers/__tests__/CitationLineageView.test.tsx
+      - app/components/research-route-renderers/__tests__/citation-lineage.helpers.test.ts
+      - app/server/services/__tests__/episteme-literature.test.ts
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.insufficient-edge.test.tsx
+  - id: execution:run-045
+    kind: vitest
+    files:
+      - app/server/services/__tests__/citation-lineage-gap-parity.test.ts
+      - app/server/services/__tests__/episteme-literature.test.ts
+      - app/server/services/__tests__/search-service.test.ts
+      - app/server/external-http-gateway/__tests__/literature-provider-fetch.test.ts
+  - id: execution:run-046
+    kind: vitest
+    files:
+      - app/server/domain-access/__tests__/gap-network-enrichment-retry.test.ts
+      - app/server/domain-access/__tests__/gap-network-view-access.runner.test.ts
+      - app/api/gap-reports/[id]/enrichment-retry/__tests__/route.test.ts
+      - app/components/research-route-renderers/__tests__/GapNetworkView.enrichment.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.retry-response.test.tsx
+      - app/lib/__tests__/track.test.ts
+      - app/lib/analytics/__tests__/event-router.gap-enrichment-retry.test.ts
+  - id: execution:run-047
+    kind: registered-script
+    script: gap-report-concurrency
+  - id: execution:run-048
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/gap-network.presentation.test.ts
+implementationContracts:
+  - The runtime computes the deterministic gap-network core (clusters, concept edges, gap pairs, metrics) before LLM narrative enrichment and persists that core on the `gap_network` ResearchRoutePayload metadata with `gapNetworkBuild.core = "ready"`.
+  - Gap Network presentation canonicalizes force nodes by concept id and force links by cluster, source, target, and weight before simulation. Equal two-cluster labels use cluster id as the anchor tie-breaker, so array permutation alone cannot change cluster anchors or concept coordinates.
+  - The core build records `gapNetworkBuild.coreEvidence = "citation-semantic-graph-v2"` when citation, semantic, and graph-support relationship evidence has been included. An enrichment-pending no-gap ResearchRoutePayload without that v2 marker is stale and must not be used for digest-based ready artifact reuse, status completion, route AI comment generation, or viewed analytics. Direct `/gap/:id` rendering remains observer-only and shows pending progress rather than terminal no-gap UI for stale no-gap ResearchRoutePayloads.
+  - 'A `gap_network` ResearchRoutePayload is not considered ready for existing-artifact reuse, completed open event, route AI comment generation command, or viewed analytics unless it is display-ready: the core report has settled and either the report is a terminal empty-state (`totalEdgeCount = 0` or no meaningful `gapPairs`) or `gapNetworkBuild.enrichment` is terminal (`"ready"` or `"failed"`). Blank report metadata with empty input/metrics is rebuilt or remains pending and must not be rendered as terminal insufficient evidence.'
+  - "Pending progress covers the whole normal creation wait: input/paper preparation, relation calculation, cluster/gap candidate calculation, persistence, and applying LLM interpretation to the same route payload. Relationship/gap-bearing core ResearchRoutePayloads keep the loading screen until enrichment reaches a terminal marker."
+  - "The independent runner owns execution after POST from the persisted share-safe snapshot: deterministic core build, persist, and stored-core enrichment. It consumes graph support only when the source snapshot already carries it and never opens a provider graph phase. Active attempts start at `core-build`; historical `graph-support` phase values remain read-compatible. The runner records `phase`, `attempt`, `leaseExpiresAt`, and phase durations on `metadata.gapNetworkBuild`; status polling and `/gap/:id` are read-only observers and must not start provider, LLM, or core calculations."
+  - Status polling은 active execution과 view id 수명에 묶이고, 인증된 현재 가입자의 shared artifact를 id로 관찰한다. Missing artifact, stored build-failed marker, failed status payload는 terminal failure로 닫고 provider·LLM·core 계산을 시작하지 않는다.
+  - 'LLM narrative enrichment is a same-ResearchRoutePayload upgrade that reuses the stored core payload: `gapNetworkBuild.enrichment` starts as `"pending"` on the core ResearchRoutePayload, becomes `"ready"` after domain label, cluster/gap prose, content narrative, and enriched prepared reactions are written back to the same route payload id/version stream, or becomes `"failed"` when the enrichment attempt is terminally degraded.'
+  - Terminal empty-state reports are not enrichment targets. Once the core report has settled with `totalEdgeCount = 0` or no meaningful `gapPairs`, the UI renders the terminal empty-state report without `해석 보강 중`, without lower content enrichment status, and without starting runner enrichment.
+  - The lower content report is gated by actual prose, not just by edge count. Enrichment-pending relationship/gap-bearing core ResearchRoutePayloads do not render the vertical stack yet; enrichment-failed ResearchRoutePayloads may render the graph but must show a degraded content state instead of empty `분석된 분야` / `클러스터 배경과 차이` sections.
+  - A failed enrichment is reopened only by the authenticated dedicated retry command. It uses report id plus artifact version CAS to move the same settled core from enrichment failed to pending, while the existing runner acquires a fresh attempt and lease. The first explicit retry is immediate; after a user-started retry fails, the same report has a 60-second cooldown derived from its persisted failed timestamp and retry count. Retry-pending UI keeps the core graph visible. Status reads and revisits do not reopen a terminal enrichment failure; the general gap POST preserves its pre-existing failed-core recovery only and does not reopen failed enrichment. Accepted pending work may still use the existing expired-lease recovery path.
+  - Overlay clicks never run analysis or enrichment. They only read the current `metadata.reactionPreparation` snapshot from the owning `gap_network` document after enrichment is ready. While enrichment is pending the route remains on loading; while enrichment is failed, graph selection can focus/zoom but does not show deterministic fallback text as a click explanation.
+  - Prepared overview/cluster/gap 선택은 active execution을 optimistic하게 갱신한다. Reaction route는 현재 가입자의 `(gap_report_id, viewer_principal_id)` preference를 reactionVersion CAS로 갱신하고 artifact version을 함께 고정한다. Bounded retry/read-back은 현재 viewer preference만 화해한다.
+  - The cluster reaction body stays within `aspect:visible-explanation-sufficiency` §3.2 limits (aspect:visible-explanation-sufficiency body cap of 200 chars on the cluster overlay surface; 400 chars on full AI-comment surfaces).
+  - Cluster and gap clicks dispatch to the owning AI reaction layer through forwarded callbacks. Gap nodes/links stay visible, are clickable, and drive the side-panel gap explanation card without re-running gap analysis.
+  - Overlay and AI reaction surfaces never re-run gap analysis; the runtime delivers the prepared payloads through the ResearchRoutePayload metadata channel.
+  - Citation-lineage follow-up analysis reuses the same `gap_network` runtime. It passes the union of 선행 연구(references) and 후속 연구(citations) from the lineage ResearchRoutePayload as the source set so the visible reference/citation papers and the gap-analysis input stay in sync. References are listed first, then citations; if one direction is empty, only the populated direction is used.
+  - Graph-neighbor follow-up analysis also reuses the same `gap_network` runtime. The source id remains provenance only. The build reads graph candidate papers and co-cited/coupled shared-count evidence from the persisted share-safe snapshot, not from the source ResearchRoutePayload.
+  - Search, citation-lineage, and graph-neighbor follow-up actions cross one bounded gap snapshot adapter. It keeps at most 40 unique papers, preserves citation/graph equality with compact local ids, removes output-inert author/PDF/DOI metadata, and truncates text at complete UTF-8 boundaries before enforcing the shared 1,000,000-byte serialized request ceiling. The route independently enforces the same byte ceiling and untrusted scalar/fan-out limits; schema preflight rejects unknown fields against the version+basis-specific graph-support root and the per-paper score, v2 candidate-count, and filtered-count objects before union diagnostics. Invalid 400 responses expose field paths and messages without echoing input values. Regression evidence is `app/lib/__tests__/gap-report-input-budget.test.ts`, `app/lib/__tests__/graph-paper-snapshots.test.ts`, `app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts`, `app/server/lib/__tests__/bounded-json-body.test.ts`, `app/api/gap-reports/__tests__/route.test.ts`, `app/api/gap-reports/__tests__/route-graph-support-variant.test.ts`, and `app/api/gap-reports/__tests__/route.source-paper-ids.test.ts`.
+  - Gap enrichment projects query, cluster, concept, representative-title, and abstract fields through one UTF-8 prompt budget before calling the shared structured-generation gateway. Every gap interpreter passes a 65,536-byte exact prompt ceiling and a response-shape-specific output token cap; the gateway rejects overflow before Gemini/OpenAI dispatch, and the interpreter's existing fallback keeps the deterministic core usable. `GAP_NETWORK_CLUSTER_LIMIT` and `GAP_NETWORK_GAP_PAIR_LIMIT` are shared by deterministic core production, enrichment consumers, and `app/server/services/knowledge-map/__tests__/gap-network-prompt-budget.test.ts`, so that test exercises the actual maximum five-cluster/ten-gap/forty-paper multibyte envelope. `app/server/ai-generation/__tests__/gateway.test.ts` is the overflow negative guard and `app/server/ai-generation/__tests__/judgment.test.ts` locks fallback propagation.
+  - 'Gap-network page/POST/status routes require the current authenticated member and do not accept `ownerPrincipalId` in client payloads. The browser-window entrypoint is `/gap/:id` after snapshot POST returns a gap report id; POST creates the persisted shared artifact in `lighthouse.gap_reports`, status/page routes observe it, and the domain boundary projects it as `ResearchRoutePayload(type: "gap_network", viewerPrincipalId)` with no owner alias. The versioned source-input digest scopes persisted artifacts and in-flight dedupe; the current principal scopes only runtime projection and viewer reaction preference. Type discrimination, strict schema parsing, repository mapping, renderer use, and store patch rejection make alias return a test failure.'
+  - "For `aspect:search-first-url-model`, this ledger covers the saved-artifact side of the model: search/citation/similar routes stay condition-addressed, while the completed gap report is an id-addressed `/gap/:id` artifact backed by `gap_reports`."
+verdict: met

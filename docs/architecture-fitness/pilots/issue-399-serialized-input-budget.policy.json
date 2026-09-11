@@ -1,0 +1,573 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-policy",
+  "service": {
+    "id": "lighthouse",
+    "repository": "https://github.com/corca-ai/lighthouse.git",
+    "adapterRef": "scripts/architecture-fitness/collect-search-condition-url-budget.mjs"
+  },
+  "policySet": {
+    "id": "issue-399-serialized-input-budget",
+    "version": "2026-08-27.v10",
+    "scope": "Search-first /search, /citation, and /similar condition URL serialization envelopes",
+    "owner": "Lighthouse search runtime and URL condition boundary",
+    "source": "https://github.com/corca-ai/lighthouse/issues/399",
+    "sourceRevision": "human:2026-07-30:issue-515-collector-authority-config+issue-683-direct-owner-import",
+    "collectorAuthority": {
+      "adapterRef": "scripts/architecture-fitness/collect-search-condition-url-budget.mjs",
+      "id": "lighthouse-issue-399-serialized-input-budget-collector",
+      "version": "12",
+      "scope": "Materialized exact-revision production URLSearchParams serialization with collector-authority config, setup, tests, and dependencies across target root-config and lock drift, UTF-8 request-target measurement, dimension and mode rejection, parser/provider/identity ordering, product feedback wiring, direct-builder bypass inventory, negative guard tests for the five Search-first condition URL envelopes, and the current route-renderer callsite harness refreshed for direct inline-analysis owner imports without changing URL budget semantics",
+      "definitionDigest": "0a459b5dc45ac3a3a8efb811a6df8bb2091b9fb5bb0c39fe3af848f876ac213e",
+      "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+      "attestationKeyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1"
+    }
+  },
+  "coverage": [
+    {
+      "id": "coverage:issue-399-search-first-condition-urls",
+      "lens": "Q3 serialized-input-budget",
+      "status": "included",
+      "owner": "Lighthouse search runtime and URL condition boundary",
+      "reason": "The production builders expose five stable mode-specific envelopes across the three condition routes and one shared reject guard.",
+      "reentryTrigger": "Re-collect when a URL field, mode, serializer, encoding, byte budget, parser, canonical identity order, or overflow action changes.",
+      "policyRefs": ["issue-399:search-first-condition-url-budget"]
+    },
+    {
+      "id": "coverage:issue-399-platform-pre-app-request-target",
+      "lens": "Q3 platform ingress before Next.js searchParams parsing",
+      "status": "unsupported",
+      "owner": "Lighthouse deployment and operational-readiness owner",
+      "reason": "Application code cannot observe or reject a request target that the deployment platform refuses before the route process receives it.",
+      "reentryTrigger": "Re-enter when the production edge exposes a documented and testable raw request-target limit or rejection signal.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-399-capacity-and-throughput",
+      "lens": "Q3 workload, concurrency, latency, and throughput",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "Serialized representability and rejection do not establish production throughput or latency.",
+      "reentryTrigger": "Use a separate workload-envelope policy when arrival, latency, or provider capacity changes.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-399-other-architecture-lenses",
+      "lens": "Q1 state authority, Q2 topology and critical path, Q4 technical grain, Q5 resilience, and process effectiveness",
+      "status": "unsupported",
+      "owner": "Lighthouse product, architecture, operational-readiness, and agent-process owners",
+      "reason": "This profile only measures the approved serialized-input boundary and cannot replace the separately owned Q1, Q2, Q4, Q5, or process judgments.",
+      "reentryTrigger": "Re-enter each lens through its active consumer-owned profile and exact evidence authority.",
+      "policyRefs": []
+    }
+  ],
+  "policies": [
+    {
+      "id": "issue-399:search-first-condition-url-budget",
+      "caseKind": "serialized-input-budget",
+      "question": "Do all product-generated Search-first condition URL envelopes serialize within 8192 UTF-8 bytes and reject overflow without truncation or omission?",
+      "capabilityRef": "capability:search-first-condition-url-serialization",
+      "owner": "Lighthouse search runtime and URL condition boundary",
+      "desired": "The supported keyword, term, seed fallback, citation, and similar envelopes retain every approved dimension through production URLSearchParams serialization within 8192 UTF-8 request-target bytes; every declared overflow is rejected before provider execution and canonical identity creation.",
+      "boundaries": [
+        {
+          "id": "boundary:search-keyword-condition-url",
+          "serializerRef": "serializer:build-search-route-page-route-keyword-v1",
+          "encodingRef": "encoding:utf8-urlsearchparams-percent-v1",
+          "budgetRef": "budget:condition-request-target-8192",
+          "maximumBytes": 8192,
+          "dimensions": [
+            {
+              "id": "dimension:keyword-query-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 1,
+              "maximum": 1024
+            },
+            {
+              "id": "dimension:field-count",
+              "unitRef": "unit:values",
+              "minimum": 0,
+              "maximum": 4
+            },
+            {
+              "id": "dimension:field-value-utf8-bytes",
+              "unitRef": "unit:utf8-bytes-per-value",
+              "minimum": 0,
+              "maximum": 128
+            },
+            {
+              "id": "dimension:author-count",
+              "unitRef": "unit:values",
+              "minimum": 0,
+              "maximum": 4
+            },
+            {
+              "id": "dimension:author-value-utf8-bytes",
+              "unitRef": "unit:utf8-bytes-per-value",
+              "minimum": 0,
+              "maximum": 128
+            },
+            {
+              "id": "dimension:venue-count",
+              "unitRef": "unit:values",
+              "minimum": 0,
+              "maximum": 4
+            },
+            {
+              "id": "dimension:venue-value-utf8-bytes",
+              "unitRef": "unit:utf8-bytes-per-value",
+              "minimum": 0,
+              "maximum": 128
+            },
+            {
+              "id": "dimension:year-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 0,
+              "maximum": 9
+            }
+          ],
+          "guard": {
+            "guardRef": "guard:search-condition-url-budget-reject",
+            "overflowAction": "reject"
+          },
+          "requiredEvidenceRoles": [
+            "serialization-static",
+            "serialization-measurement",
+            "serialization-guard-test"
+          ],
+          "scenarios": [
+            {
+              "id": "scenario:search-keyword-envelope-maximum",
+              "kind": "envelope-maximum",
+              "inputProfileRef": "input:utf8-percent-expansion-v1",
+              "cardinalities": [
+                { "dimensionRef": "dimension:keyword-query-utf8-bytes", "value": 1024 },
+                { "dimensionRef": "dimension:field-count", "value": 4 },
+                { "dimensionRef": "dimension:field-value-utf8-bytes", "value": 128 },
+                { "dimensionRef": "dimension:author-count", "value": 4 },
+                { "dimensionRef": "dimension:author-value-utf8-bytes", "value": 128 },
+                { "dimensionRef": "dimension:venue-count", "value": 4 },
+                { "dimensionRef": "dimension:venue-value-utf8-bytes", "value": 128 },
+                { "dimensionRef": "dimension:year-utf8-bytes", "value": 9 }
+              ],
+              "expectedResult": "serialized"
+            },
+            {
+              "id": "scenario:search-keyword-overflow",
+              "kind": "overflow",
+              "inputProfileRef": "input:utf8-one-byte-over-v1",
+              "cardinalities": [
+                { "dimensionRef": "dimension:keyword-query-utf8-bytes", "value": 1025 },
+                { "dimensionRef": "dimension:field-count", "value": 4 },
+                { "dimensionRef": "dimension:field-value-utf8-bytes", "value": 128 },
+                { "dimensionRef": "dimension:author-count", "value": 4 },
+                { "dimensionRef": "dimension:author-value-utf8-bytes", "value": 128 },
+                { "dimensionRef": "dimension:venue-count", "value": 4 },
+                { "dimensionRef": "dimension:venue-value-utf8-bytes", "value": 128 },
+                { "dimensionRef": "dimension:year-utf8-bytes", "value": 9 }
+              ],
+              "expectedResult": "rejected"
+            }
+          ]
+        },
+        {
+          "id": "boundary:search-term-condition-url",
+          "serializerRef": "serializer:build-search-route-page-route-term-v1",
+          "encodingRef": "encoding:utf8-urlsearchparams-percent-v1",
+          "budgetRef": "budget:condition-request-target-8192",
+          "maximumBytes": 8192,
+          "dimensions": [
+            {
+              "id": "dimension:term-followup-query-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 1,
+              "maximum": 192
+            },
+            {
+              "id": "dimension:term-source-query-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 1,
+              "maximum": 1024
+            },
+            {
+              "id": "dimension:term-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 1,
+              "maximum": 192
+            },
+            {
+              "id": "dimension:term-support-count",
+              "unitRef": "unit:count",
+              "minimum": 0,
+              "maximum": 40
+            }
+          ],
+          "guard": {
+            "guardRef": "guard:search-condition-url-budget-reject",
+            "overflowAction": "reject"
+          },
+          "requiredEvidenceRoles": [
+            "serialization-static",
+            "serialization-measurement",
+            "serialization-guard-test"
+          ],
+          "scenarios": [
+            {
+              "id": "scenario:search-term-envelope-maximum",
+              "kind": "envelope-maximum",
+              "inputProfileRef": "input:utf8-percent-expansion-v1",
+              "cardinalities": [
+                {
+                  "dimensionRef": "dimension:term-followup-query-utf8-bytes",
+                  "value": 192
+                },
+                {
+                  "dimensionRef": "dimension:term-source-query-utf8-bytes",
+                  "value": 1024
+                },
+                { "dimensionRef": "dimension:term-utf8-bytes", "value": 192 },
+                { "dimensionRef": "dimension:term-support-count", "value": 40 }
+              ],
+              "expectedResult": "serialized"
+            },
+            {
+              "id": "scenario:search-term-overflow",
+              "kind": "overflow",
+              "inputProfileRef": "input:utf8-one-byte-over-v1",
+              "cardinalities": [
+                {
+                  "dimensionRef": "dimension:term-followup-query-utf8-bytes",
+                  "value": 192
+                },
+                {
+                  "dimensionRef": "dimension:term-source-query-utf8-bytes",
+                  "value": 1024
+                },
+                { "dimensionRef": "dimension:term-utf8-bytes", "value": 193 },
+                { "dimensionRef": "dimension:term-support-count", "value": 40 }
+              ],
+              "expectedResult": "rejected"
+            }
+          ]
+        },
+        {
+          "id": "boundary:search-seed-condition-url",
+          "serializerRef": "serializer:build-search-route-page-route-seed-v1",
+          "encodingRef": "encoding:utf8-urlsearchparams-percent-v1",
+          "budgetRef": "budget:condition-request-target-8192",
+          "maximumBytes": 8192,
+          "dimensions": [
+            {
+              "id": "dimension:search-seed-followup-query-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 1,
+              "maximum": 192
+            },
+            {
+              "id": "dimension:search-seed-paper-id-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 1,
+              "maximum": 128
+            },
+            {
+              "id": "dimension:search-seed-paper-title-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 1,
+              "maximum": 768
+            },
+            {
+              "id": "dimension:search-seed-paper-url-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 0,
+              "maximum": 1024
+            },
+            {
+              "id": "dimension:search-seed-paper-year",
+              "unitRef": "unit:year",
+              "minimum": 0,
+              "maximum": 9999
+            },
+            {
+              "id": "dimension:search-seed-paper-citations",
+              "unitRef": "unit:count",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          ],
+          "guard": {
+            "guardRef": "guard:search-condition-url-budget-reject",
+            "overflowAction": "reject"
+          },
+          "requiredEvidenceRoles": [
+            "serialization-static",
+            "serialization-measurement",
+            "serialization-guard-test"
+          ],
+          "scenarios": [
+            {
+              "id": "scenario:search-seed-envelope-maximum",
+              "kind": "envelope-maximum",
+              "inputProfileRef": "input:utf8-percent-expansion-v1",
+              "cardinalities": [
+                {
+                  "dimensionRef": "dimension:search-seed-followup-query-utf8-bytes",
+                  "value": 192
+                },
+                {
+                  "dimensionRef": "dimension:search-seed-paper-id-utf8-bytes",
+                  "value": 128
+                },
+                {
+                  "dimensionRef": "dimension:search-seed-paper-title-utf8-bytes",
+                  "value": 768
+                },
+                {
+                  "dimensionRef": "dimension:search-seed-paper-url-utf8-bytes",
+                  "value": 1024
+                },
+                { "dimensionRef": "dimension:search-seed-paper-year", "value": 9999 },
+                {
+                  "dimensionRef": "dimension:search-seed-paper-citations",
+                  "value": 9007199254740991
+                }
+              ],
+              "expectedResult": "serialized"
+            },
+            {
+              "id": "scenario:search-seed-overflow",
+              "kind": "overflow",
+              "inputProfileRef": "input:utf8-one-byte-over-v1",
+              "cardinalities": [
+                {
+                  "dimensionRef": "dimension:search-seed-followup-query-utf8-bytes",
+                  "value": 192
+                },
+                {
+                  "dimensionRef": "dimension:search-seed-paper-id-utf8-bytes",
+                  "value": 128
+                },
+                {
+                  "dimensionRef": "dimension:search-seed-paper-title-utf8-bytes",
+                  "value": 769
+                },
+                {
+                  "dimensionRef": "dimension:search-seed-paper-url-utf8-bytes",
+                  "value": 1024
+                },
+                { "dimensionRef": "dimension:search-seed-paper-year", "value": 9999 },
+                {
+                  "dimensionRef": "dimension:search-seed-paper-citations",
+                  "value": 9007199254740991
+                }
+              ],
+              "expectedResult": "rejected"
+            }
+          ]
+        },
+        {
+          "id": "boundary:citation-seed-condition-url",
+          "serializerRef": "serializer:build-citation-seed-page-route-v1",
+          "encodingRef": "encoding:utf8-urlsearchparams-percent-v1",
+          "budgetRef": "budget:condition-request-target-8192",
+          "maximumBytes": 8192,
+          "dimensions": [
+            {
+              "id": "dimension:citation-seed-paper-id-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 1,
+              "maximum": 128
+            },
+            {
+              "id": "dimension:citation-seed-paper-title-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 1,
+              "maximum": 768
+            },
+            {
+              "id": "dimension:citation-seed-paper-url-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 0,
+              "maximum": 1024
+            },
+            {
+              "id": "dimension:citation-seed-paper-year",
+              "unitRef": "unit:year",
+              "minimum": 0,
+              "maximum": 9999
+            },
+            {
+              "id": "dimension:citation-seed-paper-citations",
+              "unitRef": "unit:count",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          ],
+          "guard": {
+            "guardRef": "guard:search-condition-url-budget-reject",
+            "overflowAction": "reject"
+          },
+          "requiredEvidenceRoles": [
+            "serialization-static",
+            "serialization-measurement",
+            "serialization-guard-test"
+          ],
+          "scenarios": [
+            {
+              "id": "scenario:citation-seed-envelope-maximum",
+              "kind": "envelope-maximum",
+              "inputProfileRef": "input:utf8-percent-expansion-v1",
+              "cardinalities": [
+                {
+                  "dimensionRef": "dimension:citation-seed-paper-id-utf8-bytes",
+                  "value": 128
+                },
+                {
+                  "dimensionRef": "dimension:citation-seed-paper-title-utf8-bytes",
+                  "value": 768
+                },
+                {
+                  "dimensionRef": "dimension:citation-seed-paper-url-utf8-bytes",
+                  "value": 1024
+                },
+                { "dimensionRef": "dimension:citation-seed-paper-year", "value": 9999 },
+                {
+                  "dimensionRef": "dimension:citation-seed-paper-citations",
+                  "value": 9007199254740991
+                }
+              ],
+              "expectedResult": "serialized"
+            },
+            {
+              "id": "scenario:citation-seed-overflow",
+              "kind": "overflow",
+              "inputProfileRef": "input:utf8-one-byte-over-v1",
+              "cardinalities": [
+                {
+                  "dimensionRef": "dimension:citation-seed-paper-id-utf8-bytes",
+                  "value": 128
+                },
+                {
+                  "dimensionRef": "dimension:citation-seed-paper-title-utf8-bytes",
+                  "value": 769
+                },
+                {
+                  "dimensionRef": "dimension:citation-seed-paper-url-utf8-bytes",
+                  "value": 1024
+                },
+                { "dimensionRef": "dimension:citation-seed-paper-year", "value": 9999 },
+                {
+                  "dimensionRef": "dimension:citation-seed-paper-citations",
+                  "value": 9007199254740991
+                }
+              ],
+              "expectedResult": "rejected"
+            }
+          ]
+        },
+        {
+          "id": "boundary:similar-seed-condition-url",
+          "serializerRef": "serializer:build-similar-seed-page-route-v1",
+          "encodingRef": "encoding:utf8-urlsearchparams-percent-v1",
+          "budgetRef": "budget:condition-request-target-8192",
+          "maximumBytes": 8192,
+          "dimensions": [
+            {
+              "id": "dimension:similar-seed-paper-id-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 1,
+              "maximum": 128
+            },
+            {
+              "id": "dimension:similar-seed-paper-title-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 1,
+              "maximum": 768
+            },
+            {
+              "id": "dimension:similar-seed-paper-url-utf8-bytes",
+              "unitRef": "unit:utf8-bytes",
+              "minimum": 0,
+              "maximum": 1024
+            },
+            {
+              "id": "dimension:similar-seed-paper-year",
+              "unitRef": "unit:year",
+              "minimum": 0,
+              "maximum": 9999
+            },
+            {
+              "id": "dimension:similar-seed-paper-citations",
+              "unitRef": "unit:count",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          ],
+          "guard": {
+            "guardRef": "guard:search-condition-url-budget-reject",
+            "overflowAction": "reject"
+          },
+          "requiredEvidenceRoles": [
+            "serialization-static",
+            "serialization-measurement",
+            "serialization-guard-test"
+          ],
+          "scenarios": [
+            {
+              "id": "scenario:similar-seed-envelope-maximum",
+              "kind": "envelope-maximum",
+              "inputProfileRef": "input:utf8-percent-expansion-v1",
+              "cardinalities": [
+                {
+                  "dimensionRef": "dimension:similar-seed-paper-id-utf8-bytes",
+                  "value": 128
+                },
+                {
+                  "dimensionRef": "dimension:similar-seed-paper-title-utf8-bytes",
+                  "value": 768
+                },
+                {
+                  "dimensionRef": "dimension:similar-seed-paper-url-utf8-bytes",
+                  "value": 1024
+                },
+                { "dimensionRef": "dimension:similar-seed-paper-year", "value": 9999 },
+                {
+                  "dimensionRef": "dimension:similar-seed-paper-citations",
+                  "value": 9007199254740991
+                }
+              ],
+              "expectedResult": "serialized"
+            },
+            {
+              "id": "scenario:similar-seed-overflow",
+              "kind": "overflow",
+              "inputProfileRef": "input:utf8-one-byte-over-v1",
+              "cardinalities": [
+                {
+                  "dimensionRef": "dimension:similar-seed-paper-id-utf8-bytes",
+                  "value": 128
+                },
+                {
+                  "dimensionRef": "dimension:similar-seed-paper-title-utf8-bytes",
+                  "value": 769
+                },
+                {
+                  "dimensionRef": "dimension:similar-seed-paper-url-utf8-bytes",
+                  "value": 1024
+                },
+                { "dimensionRef": "dimension:similar-seed-paper-year", "value": 9999 },
+                {
+                  "dimensionRef": "dimension:similar-seed-paper-citations",
+                  "value": 9007199254740991
+                }
+              ],
+              "expectedResult": "rejected"
+            }
+          ]
+        }
+      ],
+      "verificationPlan": [
+        "Materialize the exact revision, execute the five production builders with the declared UTF-8 and percent-expansion profiles, run overflow and bypass negative guards, then attest and evaluate the raw observation in the protected host gate."
+      ]
+    }
+  ]
+}

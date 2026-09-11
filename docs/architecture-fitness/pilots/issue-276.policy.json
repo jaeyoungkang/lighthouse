@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-policy",
+  "service": {
+    "id": "lighthouse",
+    "repository": "https://github.com/corca-ai/lighthouse.git",
+    "adapterRef": "scripts/architecture-fitness/collect-search-state-boundary.mjs"
+  },
+  "policySet": {
+    "id": "issue-276-search-state-boundary",
+    "version": "2026-08-15.v30",
+    "scope": "the executable keyword-search URL condition, route-owned result snapshot, and ephemeral view identity subcase of issue #276, with unsupported outcome, scalability, technical-grain, resilience, and process coverage declared separately",
+    "owner": "Lighthouse search route state boundaries",
+    "source": "https://github.com/corca-ai/lighthouse/issues/276",
+    "sourceRevision": "human:2026-08-15:issue-652-attestation-refresh",
+    "collectorAuthority": {
+      "adapterRef": "scripts/architecture-fitness/collect-search-state-boundary.mjs",
+      "id": "lighthouse-issue-276-search-state-collector",
+      "version": "31",
+      "scope": "materialized exact-revision keyword-search URL authority with standard Array/Set dependency binding, locale-independent facet normalization and exact query carrier, server input projection, fail-closed TypeScript/JavaScript-symbol production authority/carrier/identity owner inventory built from the shared state-boundary analysis engine and one invocation-local TypeScript Program, with production-to-test, non-static module acquisition, and CommonJS loader capability-escape rejection across every inventory-owned fact, route-owned current result snapshot with store-capability, dynamic reflection, and symbol-resolved reflection/Object.assign escape rejection, declared and live first-paint repository side-channel exceptions with accountable owner/review-trigger metadata including the exact identity-owned invited-access chain while wrong importer, helper-only, and mixed direct/helper paths fail, live and historical library-preflight marker vocabulary without mutation authority, absent future match paths remaining inapplicable to historical trees, a separately reported node:crypto SHA-256 canonical digest implementation, literal keyword-search prefix and identity ownership, collector-owned hostile-environment identity fixture plus production execution evidence executed with collector-authority config, setup, and dependencies and a bounded two-worker path-test command across target root-config and lock drift, and parallel-path/direct-write negative mutations",
+      "definitionDigest": "421dc58f4d57675814a3e4e83252deb873711b6170e1ca8a83a9c9081b2f247f",
+      "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+      "attestationKeyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1"
+    }
+  },
+  "coverage": [
+    {
+      "id": "coverage:issue-276-keyword-search-state-boundary",
+      "lens": "Q1 state boundary",
+      "status": "included",
+      "owner": "Lighthouse search route state boundaries",
+      "reason": "Architecture Fitness v0.5 supports the keyword-search state authority, carrier, and canonical-identity implementation subcase.",
+      "reentryTrigger": "Re-collect when URL search conditions, facet normalization, server execution input, route payload/store lifetime, ephemeral view identity or prefix, the collector, or its negative guard changes.",
+      "policyRefs": ["issue-276:keyword-search-state-boundary"]
+    },
+    {
+      "id": "coverage:issue-276-product-outcome",
+      "lens": "Q1 product outcome",
+      "status": "unsupported",
+      "owner": "Lighthouse product and architecture owner",
+      "reason": "The state-boundary case does not prove browser first-usable-result, user outcome, or that removing persistence caused a speed improvement.",
+      "reentryTrigger": "Re-enter only after a generic executable outcome contract and qualified browser/runtime evidence exist.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-276-scalability",
+      "lens": "Q3 sustained scalability",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "This collector has no sustained production capacity observation.",
+      "reentryTrigger": "Re-enter when an executable capacity contract binds observations to an exact deployment and run identity.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-276-technical-grain",
+      "lens": "Q4 technical grain and decision fitness",
+      "status": "unsupported",
+      "owner": "Lighthouse product and architecture owner",
+      "reason": "Issue #297 records a Human-review inventory, but Architecture Fitness v0.5 has a technical-grain rubric and no deterministic executable Q4 case or approved evidence authority for whole-capability understandability or decision fitness.",
+      "reentryTrigger": "Activate machine coverage only after the external core publishes a generic supported technical-grain case and Lighthouse approves its evidence authority.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-276-resilience",
+      "lens": "Q5 resilience and instance movement",
+      "status": "unsupported",
+      "owner": "Lighthouse operational-readiness owner",
+      "reason": "Issue #298 completed the bounded preset-title cache-lifecycle case in a separate active profile. Broader fleet, cleanup, and production evidence remains evidence-needed, and this keyword-search state collector does not observe cache, retry, or instance-movement behavior.",
+      "reentryTrigger": "Keep bounded lifecycle evidence in the issue-298 profile. Re-enter this unsupported slice only when exact deployment and failure-run evidence from the Q5 follow-ups is reproducible and belongs to the keyword-search state boundary.",
+      "policyRefs": []
+    },
+    {
+      "id": "coverage:issue-276-process-effectiveness",
+      "lens": "Architecture Fitness process effectiveness",
+      "status": "unsupported",
+      "owner": "Lighthouse agent-process owner",
+      "reason": "Tool execution cannot replace the Human cost-proportionality judgment; the approved process status remains separate from this machine coverage.",
+      "reentryTrigger": "Re-enter after another real architecture-impact change records authoring cost, run time, adjacent findings, false positives, and overlap with CAIR and Story Chain.",
+      "policyRefs": []
+    }
+  ],
+  "policies": [
+    {
+      "id": "issue-276:keyword-search-state-boundary",
+      "caseKind": "state-boundary",
+      "question": "Does keyword search keep URL conditions authoritative, keep the current result snapshot route-owned, and derive ephemeral view identity only from normalized execution conditions?",
+      "capabilityRef": "capability:keyword-search-route-state",
+      "owner": "Lighthouse keyword-search route state",
+      "desired": "URL conditions project into server execution input; the route-owned result snapshot is carried by the route payload and active client store only for that execution; changing the result snapshot cannot change the canonical ephemeral view identity.",
+      "stateRules": [
+        {
+          "id": "state:search-execution-condition",
+          "required": true,
+          "authorityRefs": ["authority:condition-url"],
+          "coordinationRefs": [],
+          "requiredCarrierRefs": ["carrier:condition-url", "carrier:server-execution-input"],
+          "allowedCarrierRefs": ["carrier:condition-url", "carrier:server-execution-input"],
+          "requiredEvidenceRoles": ["state-static", "state-test"]
+        },
+        {
+          "id": "state:current-result-snapshot",
+          "required": true,
+          "authorityRefs": ["authority:route-search-execution"],
+          "coordinationRefs": [],
+          "requiredCarrierRefs": ["carrier:route-payload", "carrier:client-current-view-store"],
+          "allowedCarrierRefs": ["carrier:route-payload", "carrier:client-current-view-store"],
+          "requiredEvidenceRoles": ["state-static", "state-test"]
+        }
+      ],
+      "canonicalIdentities": [
+        {
+          "id": "identity:ephemeral-search-view",
+          "requiredStateRefs": ["state:search-execution-condition"],
+          "forbiddenStateRefs": ["state:current-result-snapshot"],
+          "normalizationRefs": ["normalization:canonical-search-execution-v1"],
+          "requiredEvidenceRoles": ["identity-static", "identity-test"]
+        }
+      ],
+      "verificationPlan": [
+        "Collect the exact-revision URL/store state inventory, execute negative mutations for authority, identity, and route lifetime, run the current route/service tests, then attest and evaluate the normalized observation in the protected host gate."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+schemaVersion: 2
+slug: search-reaction
+review: reviews/search-reaction.reviews.md
+sourcePromises:
+  - promise:search-reaction-summarizes-terrain
+appliedAspects:
+  - aspect:visible-explanation-sufficiency
+  - aspect:route-view-ai-comment-generation-routing
+  - aspect:route-view-ai-reaction-rules
+  - aspect:library-grounded-research
+  - aspect:reaction-prefers-load-bearing-facts
+  - aspect:ai-comment-research-term-suggestions
+intent:
+  mode: explicit
+  checks:
+    - key: promise:search-reaction-summarizes-terrain#intent-check:result-set-terrain-is-not-query-repetition
+      evidence: live judge over the real route AI comment generation output at `app/server/services/__tests__/search-awareness-intent-qualitative.live.test.ts` ("search completion route AI comment generation answers the terrain Critical Intent Questions").
+    - key: promise:search-reaction-summarizes-terrain#intent-check:search-reaction-ux-writing-voice
+      evidence: live judge over the real route AI comment generation output at `app/server/services/__tests__/search-awareness-intent-qualitative.live.test.ts` ("search completion route AI comment generation answers the UX-writing voice·tone Critical Intent Questions") plus `app/server/agent/__tests__/route-ai-comment-generation.test.ts` ("adds next-path guidance only for search view snapshots").
+  delegations: []
+acceptanceChecks:
+  - key: promise:search-reaction-summarizes-terrain#acceptance-check:search-reaction-summarizes-terrain-host-gap-action
+    assertion: "`app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx` verifies the result-basis row contains the `상위 논문 40개의 관계를 분석하여 연구 공백 찾아보기 >` new-window action and explanatory clickable research-term text, while the primary filter/sort controls keep only compact search metadata. `'app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts'` verifies successful route-view generation returns a client-applied reaction and null generation results do not persist fallback comments. `app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx` verifies automatic generation exposes a named pending inline status before the first generated body arrives, including the dynamic route renderer loading window, while explicit regeneration preserves the settled card and shows regeneration pending. `app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx` (\"fires route AI comment generation at commit for a first-reveal-locked personalized search\"; \"fires at commit for a personalized pending search without waiting for card hydration\"), `app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx` (\"waits for a hydration-dependent search facet and generates once from the stable result set\"; \"clears pending when hydration settles with an empty facet projection\"), and `app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts` (\"waits for one-shot repair before generating from a ready faceted search\"; \"closes AI comment hydration waiting after a successful empty repair\") verify unfaceted provider generation starts from the committed first-payload basis while a hydration-owned facet keeps pending visible and starts one provider call only after card detail enrichment and any compatibility repair make its visible pool stable, or closes pending without a request when that terminal pool is empty. A compatibility payload labeled `ready` but still eligible for one-shot repair is not terminal for hydration-owned facets. `app/server/domain-access/__tests__/search-enrichment-access.test.ts` (\"marks a successful empty pending hydration as terminal without rebuilding cards\"; \"marks a successful empty ready-snapshot repair as terminal\") verifies both successful-empty entry states preserve the committed lightweight cards and record their terminal attempt in canonical metadata. `app/components/research/__tests__/background-search-tasks.api-error-contract.test.ts` (\"does not retry a correctable 400 with the same search payload\") and `app/components/research/__tests__/ResearchBackgroundTasks.hydration.test.tsx` (\"retries search enrichment before leaving a pending result in place\") verify terminal HTTP meaning closes immediately while transient failures use the bounded three-attempt budget; either path preserves the lightweight result and settles `ready + repairAttempted:true`. The bootstrap-events test verifies that terminal marker closes AI comment waiting and prevents another repair from being queued."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-006
+      - execution:run-007
+    scenarios: []
+  - key: promise:search-reaction-summarizes-terrain#acceptance-check:reaction-respond-format
+    assertion: vitest @ `'app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts'` ("generates a reaction from the supplied viewSnapshot without loading or persisting a route payload row"; "returns null generation results without persisting them") + `app/server/agent/__tests__/route-ai-comment-generation.test.ts` ("adds next-path guidance only for search view snapshots") + `app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx` ("shows a pending inline reaction for automatic generation before content arrives"; "shows a pending inline reaction for explicit regeneration while preserving the settled card"). Asserts route-view generation returns only bounded `RouteAiComment-or-null`, keeps title/body/chips inside the visible AI comment contract, rejects invalid/no-output as nullable output, and exposes pending UI without fabricating fallback comments.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-view-reaction-respond-format
+  - key: promise:search-reaction-summarizes-terrain#acceptance-check:search-reaction-summarizes-terrain-generation-boundary
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx` ("re-fires one route AI comment generation when a query transition clears the reaction and commits a new result"; "drops a queued route AI comment generation when a query transition advances the reaction generation before flush"; "fires route AI comment generation at commit for a first-reveal-locked personalized search"; "fires at commit for a personalized pending search without waiting for card hydration") + `app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx` ("keeps one generation when a lightweight search card hydrates after the comment settles"; "waits for a hydration-dependent search facet and generates once from the stable result set"; "rechecks hydration readiness when a queued command becomes gated before flush"; "reopens bootstrap when an active same-projection request becomes hydration-gated"; "resumes a settled-card regeneration after an active hydration gate closes"; "clears pending when hydration settles with an empty facet projection") + `app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts` ("waits for hydration when an active search facet depends on card details"; "waits for one-shot repair before generating from a ready faceted search"; "closes AI comment hydration waiting after a successful empty repair"; "keeps an unfaceted pending search on the first-commit generation path"; "skips empty search ResearchRoutePayloads when building generation commands") + `app/server/domain-access/__tests__/search-enrichment-access.test.ts` ("marks a successful empty pending hydration as terminal without rebuilding cards"; "marks a successful empty ready-snapshot repair as terminal"; "preserves the terminal repair marker when hydration returns no usable card details") + `app/components/research/__tests__/background-search-tasks.api-error-contract.test.ts` ("does not retry a correctable 400 with the same search payload") + `app/components/research/__tests__/ResearchBackgroundTasks.hydration.test.tsx` ("retries search enrichment before leaving a pending result in place"; "terminates abort-ignoring enrichment attempts and releases the runner") + `app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-queue.test.tsx` ("drops an active result and regenerates from the current ViewSnapshot projection after the basis changes"; "does not re-fire an active regeneration for a metadata-only freshness change") + `app/lib/__tests__/view-snapshot.test.ts` ("keeps background-hydrated card details outside the search reaction basis"; "builds the search reaction snapshot from the loaded facet projection") + `app/server/services/__tests__/search-hydration.test.ts` ("hydrates the committed corpus ids and preserves provider total when no library blend applies"). 새 query request가 반응을 비우고 새 result commit을 만들면 새 쿼리 기준 route AI comment generation이 1회 발화된다. dedup 경계는 reaction generation과 prompt-relevant `ViewSnapshot` projection이다. 검색 paper projection은 첫 commit의 id/title/year/citationCount만 담고, 서버 hydration은 이 terrain을 보존한 채 abstract/authors/PDF/venue/field만 보강한다. Facet result pool을 바꾸지 않는 lightweight→hydrated 카드 전이는 settled comment와 generation 0을 유지하고 provider call을 반복하지 않는다. hydration-owned facet은 background detail enrichment와 one-shot compatibility repair가 모두 끝날 때까지 pending UI만 유지한 뒤 shared visible projection에서 한 번 생성하고, 모든 enqueue/system-event/flush/active-completion 경계가 background queue와 같은 repair predicate를 포함한 readiness builder와 abort signal을 재확인한다. 초기 pending hydration이나 ready-snapshot repair에서 usable detail이 비어 있는 성공 200은 committed lightweight 카드를 보존하고 즉시 canonical `ready + repairAttempted:true`를 남긴다. `429`·`5xx`·timeout·transport loss는 terminal marker 없이 최대 3회 bounded retry하고, correctable/auth/conflict 응답은 같은 payload를 반복하지 않는다. 어느 실패 경로든 lightweight 근거를 보존한 degraded settlement가 같은 terminal state로 gate를 닫는다. 기존 comment 재생성도 gate가 닫혔다 열리면 settled card와 generation을 보존한 채 terminal-ready command를 이어간다. terminal empty facet projection은 provider call을 만들지 않고 pending을 닫는다. projection이 바뀌면 이전 active 응답을 폐기하고 현재 projection에서 다시 생성하며, 큐에 남아 있던 오래된 command도 flush 시점에 버린다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-004
+      - execution:run-005
+      - execution:run-007
+    scenarios:
+      - scenario:search-query-route-transition-reaction-hygiene
+  - key: promise:search-reaction-summarizes-terrain#acceptance-check:search-reaction-summarizes-terrain-representative-badges
+    assertion: vitest @ `app/components/research/__tests__/representative-paper-selection.test.ts` ("uses graph support after the fit gate and before citation tie-breaks"; "keeps off-field high-citation papers out of representative badges") + `app/components/research-route-renderers/__tests__/search-result-item.test.tsx` ("marks representative papers inside the result list") + `app/components/research-route-renderers/__tests__/search-view-content.representative-filter.test.tsx` ("filters the visible list but opens gap analysis from the current top-result pool"). 대표 논문은 검색 결과 리스트 카드의 `대표` 배지와 대표 필터로 표시되며, 검색어·field fit을 먼저 적용한 뒤 첫 payload의 라이브러리 anchor graph support를 보조 정렬 신호로 사용한다. graph support가 없으면 citation metadata로 degrade한다.
+    executionRefs:
+      - execution:run-003
+    scenarios:
+      - scenario:search-representative-paper-cards
+  - key: promise:search-reaction-summarizes-terrain#acceptance-check:search-reaction-structured-generation-boundary
+    assertion: contract-check @ `scripts/evidence-ledger/helpers/contract-check.ts runtime-contract route-ai-comment-generation-boundary` plus vitest @ `app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx` ("bootstraps search route AI comment generation for a hydrated result ResearchRoutePayload with no reaction block"). route AI comment generation imports `executeStructuredGeneration`, does not import reaction/agent stream tooling (`streamRespondGeneration`, `createMainTools`, `ResponseTraceContext`, `toolChoice`, `stopWhen`), and automatic generation is owned by the route-view bootstrap path.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-008
+    scenarios: []
+  - key: promise:search-reaction-summarizes-terrain#acceptance-check:search-reaction-summarizes-terrain-library-grounding
+    assertion: vitest @ `app/lib/__tests__/view-snapshot.test.ts` ("includes library-grounded context in the search snapshot prompt only when a signal is present"). 라이브러리 신호가 있으면 current route-view `viewSnapshot` prompt context가 독자의 컬렉션을 호명하는 라이브러리 grounding 줄을 주입하고, 신호가 없으면 그 줄을 넣지 않아 반응이 기존과 같게 결과 지형만 설명함을 잠근다(라이브러리 grounded 동작 정본은 library-grounded-research.ledger.yaml). 검색 반응은 첫 payload에 이미 붙은 grounding만 입력으로 사용하고 background card hydration이 library grounding을 뒤늦게 붙이기를 기다리지 않는다.
+    executionRefs:
+      - execution:run-002
+      - execution:run-004
+      - execution:run-005
+    scenarios:
+      - scenario:search-no-library-signal-degraded
+  - key: promise:search-reaction-summarizes-terrain#acceptance-check:search-reaction-summarizes-terrain-input-paper-cap
+    assertion: vitest @ `app/lib/__tests__/view-snapshot.test.ts` ("sorts search snapshot results by interest before the reaction input cap"; "formats search snapshot result counts without provider totals") + negative test `app/lib/__tests__/constants.contract.test.ts` ("SEARCH_REACTION_INPUT_PAPER_LIMIT is literally 20"). Current route-view 반응 입력 맥락(`viewSnapshot` → `buildViewSnapshotPromptContext`)이 정렬된 풀 중 최대 상위 `SEARCH_REACTION_INPUT_PAPER_LIMIT`(20)편만 논문 상세로 포함하고, 코호트 키워드 후보/anchor-blend로 커진 풀 전체를 반응 프롬프트에 싣지 않으며, provider total이나 candidate-window size를 corpus 사실로 전달하지 않음을 단언한다. 리터럴 값과 `@check-removes-fails` marker도 잠근다.
+    executionRefs:
+      - execution:run-005
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/server/services/__tests__/search-awareness-intent-qualitative.live.test.ts
+      - app/server/agent/__tests__/route-ai-comment-generation.test.ts
+      - app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts
+      - app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx
+      - app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts
+      - app/server/domain-access/__tests__/search-enrichment-access.test.ts
+      - app/components/research/__tests__/ResearchBackgroundTasks.hydration.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-queue.test.tsx
+      - app/lib/__tests__/view-snapshot.test.ts
+      - app/server/services/__tests__/search-hydration.test.ts
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/components/research/__tests__/representative-paper-selection.test.ts
+      - app/components/research-route-renderers/__tests__/search-result-item.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.representative-filter.test.tsx
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/lib/__tests__/view-snapshot.test.ts
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/lib/__tests__/view-snapshot.test.ts
+      - app/lib/__tests__/constants.contract.test.ts
+  - id: execution:run-006
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item-spatial-stability.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item.test.tsx
+  - id: execution:run-007
+    kind: vitest
+    files:
+      - app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx
+      - app/components/research/__tests__/background-search-tasks.api-error-contract.test.ts
+  - id: execution:run-008
+    kind: contract-check
+    target: runtime-contract
+    subcase: route-ai-comment-generation-boundary
+implementationContracts:
+  - The listed Promise(s) are verified by the Acceptance Check entries and structured executions on this ledger.
+  - Prompt context remains runtime-owned code, not markdown loaded from Story Chain. `app/lib/view-snapshot.ts` builds the bounded visible snapshot, and `app/domain/view-snapshot.ts` formats the prompt context that the structured generation route receives.
+  - Reaction runtime fallback is not terrain evidence. Search route AI comment generation no longer runs through `respond` tool-calls; it uses structured JSON generation and returns `null` rather than a fallback success or failure comment when no valid title/body arrives.
+  - Visible loading is not gated by provider generation start. The result ResearchRoutePayload marks pending AI comment state at result commit when a reaction is planned. Unfaceted searches generate from the committed snapshot without waiting for background card hydration; hydration-owned loaded-result facets keep that pending state through card detail enrichment and compatibility repair, then start one provider generation after their visible pool is stable.
+  - "`aspect:library-grounded-research`: 라이브러리 신호가 있는 검색의 current route-view `viewSnapshot` prompt context에 어느 컬렉션의 관심사로 결과가 모였는지를 짚는 라이브러리 grounding 줄을 주입하고, 신호가 없으면 그 줄을 넣지 않아 반응은 기존 결과 지형 설명만 유지한다. 정렬·풀·근거 등 result-window 쪽 동작은 `library-grounded-research.ledger.yaml`에서 닫는다."
+  - "`aspect:visible-explanation-sufficiency`: 판단에 필요한 current state와 limitation, fallback·근거 부족 신호는 접힌 화면에 남는다. 긴 generated body나 summary는 명시적 disclosure가 있는 bounded preview를 사용할 수 있다. 반복 논문 카드는 접힌 `요약`과 분석 상태를 유지하면서 정확한 생성 근거 라벨과 source/input scope 상세를 열린 inspection에 둘 수 있고, 초록 없음·pending·error 상태는 접힌 화면에서 숨기지 않는다."
+verdict: met

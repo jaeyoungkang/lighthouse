@@ -1,0 +1,114 @@
+{
+  "adapterVersion": "1",
+  "service": {
+    "id": "lighthouse",
+    "repository": "https://github.com/corca-ai/lighthouse.git",
+    "framework": "Next.js 16 App Router",
+    "entrypoints": [
+      "app/(research)/research-route-pages.tsx",
+      "app/api/**/route.ts",
+      "app/components/research/ResearchRouteRuntime.tsx"
+    ]
+  },
+  "sourceOwners": {
+    "capabilityAndPromise": [
+      "docs/product-identity.md",
+      "docs/contracts/story-chain/promises/"
+    ],
+    "architecturePolicy": [
+      "shared-skills/mission-control/references/contract-architecture-impact-review.md",
+      "docs/runtime-flows/",
+      "docs/principles.md",
+      "docs/conventions.md"
+    ],
+    "runtimeEvidence": [
+      "docs/operational-readiness.md",
+      "docs/operational-readiness-records.md",
+      "docs/runbooks",
+      "scripts/load-smoke/"
+    ]
+  },
+  "detection": {
+    "dependencyCommands": [
+      "npm run deps:boundaries",
+      "rg -n \"from \\\"@/app/server|from \\\"@/app/stores\" app -g '*.ts' -g '*.tsx'"
+    ],
+    "repositories": [
+      "app/server/repository/"
+    ],
+    "gateways": [
+      "app/server/ai-generation/gateway.ts",
+      "app/server/external-http-gateway/literature-provider-fetch.ts"
+    ],
+    "backgroundTasks": [
+      "app/components/research/ResearchBackgroundTasks.tsx",
+      "app/server/domain-access/gap-network-build-state.ts"
+    ],
+    "stateAndCache": [
+      "app/stores/",
+      "app/server/repository/",
+      "docs/infrastructure.md"
+    ]
+  },
+  "deployment": {
+    "application": "Vercel serverless Next.js runtime",
+    "durableStore": "Supabase Postgres",
+    "providers": [
+      "Episteme literature API",
+      "Moonlight",
+      "configured AI generation providers"
+    ],
+    "constraintSource": "docs/operational-readiness.md"
+  },
+  "privacy": {
+    "recordPolicy": "Review records contain stable ids, repo-relative paths, hashes, and bounded summaries. They do not contain raw research queries, paper content, auth tokens, email addresses, or principal ids.",
+    "redactionOwner": "Lighthouse Architecture Fitness adapter",
+    "runtimeEvidenceRule": "Runtime evidence must use aggregated or hashed identifiers and link to an access-controlled source rather than embed sensitive payloads."
+  },
+  "evidenceFreshness": {
+    "staticAndTest": "Bind every code and test source to the exact target revision.",
+    "runtime": "Include observation window and deployment identity; otherwise mark freshness unknown.",
+    "external": "Use an immutable revision or a dated issue/PR reference."
+  },
+  "sensitivePathHints": [
+    {
+      "id": "authority-and-data-boundary",
+      "prefixes": [
+        "app/server/domain-access",
+        "app/server/repository",
+        "app/domain",
+        "supabase/migrations"
+      ]
+    },
+    {
+      "id": "runtime-and-provider-boundary",
+      "prefixes": [
+        "app/api",
+        "app/server/ai-generation",
+        "app/server/services",
+        "docs/runtime-flows"
+      ]
+    },
+    {
+      "id": "state-cache-and-critical-path",
+      "prefixes": [
+        "app/stores",
+        "app/components/research",
+        "scripts/load-smoke",
+        "docs/operational-readiness.md",
+        "docs/operational-readiness-records.md",
+        "docs/runbooks"
+      ]
+    },
+    {
+      "id": "dependency-and-gate-policy",
+      "prefixes": [
+        "package.json",
+        "package-lock.json",
+        ".dependency-cruiser.cjs",
+        ".github/workflows",
+        "scripts/quality"
+      ]
+    }
+  ]
+}

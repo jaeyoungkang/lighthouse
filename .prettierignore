@@ -1,0 +1,11 @@
+.next
+coverage
+charness-artifacts/debug/*.md
+docs
+node_modules
+packages/*/dist
+specs/**/*.md
+specs/report.json
+specs/report
+storage
+shared-skills/architecture-fitness-review

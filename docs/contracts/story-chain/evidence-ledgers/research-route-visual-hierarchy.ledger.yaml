@@ -1,0 +1,90 @@
+schemaVersion: 2
+slug: research-route-visual-hierarchy
+review: reviews/research-route-visual-hierarchy.reviews.md
+sourcePromises:
+  - promise:research-route-cap-feedback
+  - promise:search-results-fast-window
+  - promise:citation-lineage
+  - promise:graph-neighbor-papers
+  - promise:route-view-ai-comment-inline-surface
+  - promise:gap-report-prepared-reaction
+  - promise:inline-analysis-auto-run
+appliedAspects:
+  - aspect:research-route-visual-hierarchy
+intent:
+  mode: delegated
+  checks: []
+  delegations:
+    - key: promise:citation-lineage#intent-check:body-explains-citation-flow-not-counts
+      ledger: citation-lineage
+    - key: promise:gap-report-prepared-reaction#intent-check:title-and-intro-name-the-discipline
+      ledger: gap-network-e2
+    - key: promise:gap-report-prepared-reaction#intent-check:cluster-background-and-comparison
+      ledger: gap-network-e2
+    - key: promise:gap-report-prepared-reaction#intent-check:gap-inference-method-traceable
+      ledger: gap-network-e2
+    - key: promise:inline-analysis-auto-run#intent-check:semantic-profile-is-phrase-not-keyword
+      ledger: inline-analysis
+acceptanceChecks:
+  - key: promise:research-route-cap-feedback#acceptance-check:research-route-cap-feedback-route-search-visible
+    assertion: 빈 검색의 primary input과 콘텐츠 위 route search rail은 같은 control-label 역할을 사용한다. 입력, submit action과 라이브러리 trigger·count·paper·remove child는 content heading이나 micro label로 밀리지 않으며 좁은 화면 popup도 viewport 안에 남는다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios: []
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-card-triage-metadata
+    assertion: 검색 결과의 basis, filter와 option, paper title, metadata/status, author·spelling·load-more·card action, 공통 activation/loading 상태와 inline reading body는 semantic role class로 서로 다른 상대 위계를 사용한다. 반복 카드의 보조 action은 compact-control role과 낮은 frame 강도를 사용하고, 펼친 주제·방법·결과는 reading-body role과 primary tone으로 읽힌다. Kicker와 bare chip도 11px legacy alias 대신 micro role을 기본으로 사용한다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-layout-separates-seed-from-directions
+    assertion: 인용 계보의 출발 논문 context, 선행·후속 section heading과 반복 paper title이 검색 결과와 같은 semantic role vocabulary를 사용한다. Surface-specific seed context는 route/section/paper 역할 순서를 뒤집지 않는다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-two-axes-separated
+    assertion: 비슷한 논문의 출발 논문 context와 두 관계 section은 인용 계보와 같은 heading, metadata와 paper-title 역할을 사용한다. 근접도 signal chip은 micro/metadata 역할로 남고 후보 paper title보다 강해지지 않는다. SVG node와 edge의 기하 label은 graph visualization owner가 소유한다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-inline-frame-treatment
+    assertion: 검색, 인용 계보와 비슷한 논문의 inline AI comment 본문은 reading-body 역할을 사용하고 disclosure·regenerate action은 control-label 역할을 사용한다. Frame의 위치와 surface 문법은 기존 route-view AI reaction Aspect evidence가 계속 소유한다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios: []
+  - key: promise:gap-report-prepared-reaction#acceptance-check:gap-report-prepared-reaction-vertical-stack-edge-fallback
+    assertion: 연구 공백의 분야 title, report·fallback section heading, cluster heading, 본문·선택 요약·pending/degraded 상태·seed action과 metadata는 같은 semantic role vocabulary를 사용한다. SVG node와 edge label은 graph visualization owner의 기하 규칙을 유지한다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-003
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/research-route-visual-hierarchy.contract.test.ts
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+      - app/components/research/__tests__/AgentPanel.test.tsx
+      - app/components/research-route-renderers/__tests__/CitationLineageView.test.tsx
+      - app/components/research-route-renderers/__tests__/graph-neighbors-view.test.tsx
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkContentReport.test.tsx
+    testNamePattern: renders domain label|falls back gracefully
+implementationContracts:
+  - "`docs/design-standards.md` owns the semantic role definitions and value judgment; `app/globals.css` owns their executable typography and color values."
+  - Research route surfaces consume the shared semantic role classes instead of inventing route-local font-size or undefined color aliases for the same role.
+  - The Aspect does not replace paper-card hierarchy, AI comment frame, content-width, or progressive spatial-stability ownership.
+  - Desktop and narrow rendered review checks relative hierarchy and computed styles; exact pixel values remain design-system implementation values rather than Story Chain thresholds.
+verdict: met

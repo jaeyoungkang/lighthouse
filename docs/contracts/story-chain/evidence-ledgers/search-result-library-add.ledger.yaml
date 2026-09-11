@@ -1,0 +1,68 @@
+schemaVersion: 2
+slug: search-result-library-add
+review: reviews/search-result-library-add.reviews.md
+sourcePromises:
+  - promise:search-result-library-add
+appliedAspects:
+  - aspect:user-facing-language-governance
+  - aspect:paper-card-presentation-consistency
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:search-result-library-add#acceptance-check:search-result-library-add-card-action
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-result-item-library-action.test.tsx` ("renders a title-row library state toggle outside the research action row"; "does not render a read-only library status badge without a toggle handler"; "disables the library action while a toggle is pending") + `app/components/research-route-renderers/__tests__/SearchView.library-action.test.tsx` ("adds an unsaved paper through reviewed POST and updates the card action"; "keeps the saved card state when stale search metadata rerenders after add"; "deletes a saved paper through reviewed DELETE and updates the card action"; "keeps the updated card state when stale search metadata rerenders after remove"; "rolls back the card state when reviewed DELETE fails"; "rolls back the card state when reviewed POST fails"; "ignores repeated clicks while the reviewed mutation is pending") + `app/components/research-route-renderers/__tests__/search-view.helpers.test.ts` ("toggles reviewed paper ids"; "builds reviewed payloads and system messages") + `app/server/domain-access/__tests__/reviewed-paper-access.auth-boundary.test.ts` ("writes and deletes reviewed paper state through owner-principal auth") + `app/server/repository/__tests__/reviewed-papers.test.ts` ("throws when marking a paper as reviewed fails"; "throws when deleting a reviewed paper fails"). Locks the compact icon-only title-row library toggle outside the PDF/citation/similar navigation action row, outline/accent unsaved and filled/success saved states, add/remove accessibility labels and title, removal of visible command text and separate read-only status chrome, pending-state duplicate-click guard, failure rollback, reviewed-paper payload/system event helper, current-user reviewed_papers write/remove boundary, successful card mutation sync into the internal library list store, and stale search-view metadata protection.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-result-library-add
+  - key: promise:search-result-library-add#acceptance-check:search-result-library-add-reviewed-papers-basis
+    assertion: vitest @ `app/server/services/__tests__/library-context-source.test.ts` ("uses internal reviewed_papers as the default library context when external grounding is disabled") + `app/server/domain-access/__tests__/reviewed-paper-access.auth-boundary.test.ts` ("builds a current library context source through the owner principal"; "writes and deletes reviewed paper state through owner-principal auth"; "reads the latest owner rows after a mutation instead of reusing an empty source") + `app/components/research/__tests__/ResearchRouteSearchBar.test.tsx` ("shows and edits the reviewed papers library list without route search transport"; "keeps the authenticated library list entry visible when no papers are saved"; "keeps the route command row as a search-and-account layout"; "drops retired basis state before library availability is known") + `app/components/research/__tests__/ResearchRouteSearchBar.library-refresh.test.tsx` ("ignores stale reviewed papers list refreshes after newer library mutations"; "syncs fresh reviewed papers list refreshes to visible card state") + `app/components/research/__tests__/InitialSearchScreen.test.tsx` ("renders the initial search as a condition URL input") + `app/components/research/__tests__/research-route-shell.library-context.test.tsx` ("updates empty search submits after the client library availability changes") + `app/components/research/__tests__/research-route-shell.test.tsx` ("seeds the library availability store from the compatibility initial prop"; "seeds internal reviewed_papers while the initial search route hides the top bar"; "keeps internal reviewed_papers on query routes as the current basis") + `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx` ("carries known library availability without a result-basis preference"; "drops retired basis state on keyword routes") + `app/(research)/__tests__/research-routes.test.tsx` ("executes the search from the /search?q= URL without reserving a ResearchRoutePayload"; "carries sort, year, and facet conditions from the URL into the search execution") + `app/server/services/__tests__/search-execution.test.ts` ("builds the search execution from URL params with live library preflight eligibility"; "starts keyword retrieval beside the live library read, then starts graph retrieval when ids arrive"). Locks that card save/remove and list remove change the internal reviewed_papers source, the next owner-scoped execution reads it without reusing a prior empty result, stale list refreshes cannot overwrite newer local mutations, fresh list refreshes including E3-only `paper_uid` identities keep the client availability carrier enabled and sync visible card saved-state events, and first-search, route command, direct URL, and keyword follow-up paths automatically derive library proximity from reviewed_papers without a basis preference. Legacy selected-anchor and `personalize=false` inputs normalize as compatibility no-ops.
+    executionRefs:
+      - execution:run-002
+    scenarios:
+      - scenario:search-result-library-add
+  - key: promise:search-result-library-add#acceptance-check:search-result-library-add-analytics
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/SearchView.library-action.test.tsx` (successful POST emits `paper_saved`; successful DELETE emits `paper_unsaved`; failed POST/DELETE emits neither) + `app/components/research/__tests__/ResearchRouteSearchBar.test.tsx` (the global library list removal does not impersonate a search-journey unsave) + `app/lib/__tests__/track.test.ts` ("emits save and unsave only through committed-state events") + `scripts/mission-control/__tests__/mc-validate-events.test.ts` ("accepts the canonical event contract") + `app/lib/analytics/__tests__/event-router.test.ts` (the real contract accepts the shared journey/search/paper context and rejects raw query fields). Locks the post-commit boundary, shared `journey_context_id`/`search_context_id`, `paper_id`/rank/surface/PDF/evidence context, no dual legacy write, and the raw-query/query-hash/title/token prohibition.
+    executionRefs:
+      - execution:run-003
+    scenarios:
+      - scenario:search-result-library-add
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item-library-action.test.tsx
+      - app/components/research-route-renderers/__tests__/SearchView.library-action.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view.helpers.test.ts
+      - app/server/domain-access/__tests__/reviewed-paper-access.auth-boundary.test.ts
+      - app/server/repository/__tests__/reviewed-papers.test.ts
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/server/services/__tests__/library-context-source.test.ts
+      - app/server/domain-access/__tests__/reviewed-paper-access.auth-boundary.test.ts
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+      - app/components/research/__tests__/ResearchRouteSearchBar.library-refresh.test.tsx
+      - app/components/research/__tests__/InitialSearchScreen.test.tsx
+      - app/components/research/__tests__/research-route-shell.library-context.test.tsx
+      - app/components/research/__tests__/research-route-shell.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx
+      - app/(research)/__tests__/research-routes.test.tsx
+      - app/server/services/__tests__/search-execution.test.ts
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/SearchView.library-action.test.tsx
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+      - app/lib/__tests__/track.test.ts
+      - scripts/mission-control/__tests__/mc-validate-events.test.ts
+      - app/lib/analytics/__tests__/event-router.test.ts
+implementationContracts:
+  - Search result cards expose one title-row library state toggle only as state management on the paper card, visually separated from PDF/citation/similar navigation actions. The compact square control uses an outline bookmark with an accent border when unsaved and a filled bookmark with success treatment when saved. It does not repeat a visible command label; its accessibility label/title carries `라이브러리에 추가` or the current remove action `라이브러리에서 해제`. Cards without a library toggle handler do not render a separate read-only saved-state badge. The control calls the existing reviewed-paper route/domain-access/repository path and then renders from a current reviewed id set composed from search metadata, the internal library list store, and successful local/list mutation overrides. Successful card mutations also update the internal library list store so a visible route-level list reflects the same source. Stale search ResearchRoutePayload metadata must not clear a just-saved card or resurrect a just-removed card while the current reviewed_papers state says otherwise.
+  - The save action writes the internal `reviewed_papers` state that library-grounded search automatically reads as its library-proximity source. The remove action deletes the same row. Search and bootstrap read the owner-scoped source for each new execution, so a previous empty result is not reused after either committed mutation.
+  - Search entry and follow-up paths use the current `reviewed_papers` source without a selectable personalization preference.
+  - Internal reviewed_papers list UI may read the same saved state for display or management. A list refresh applies only if no newer local save/remove mutation has changed the list-store revision, and a fresh refresh emits reviewed-state diffs so visible cards keep the same saved/unsaved state as the list.
+  - "`paper_saved` and `paper_unsaved` emit only after the reviewed-papers mutation succeeds. They carry `journey_context_id`, `search_context_id`, `paper_id`, rank, surface, PDF availability, and evidence availability. Raw query, query hash, paper title, token, and AI output are forbidden. The global library list does not emit a search-journey event because it has no originating rank or search context."
+verdict: met

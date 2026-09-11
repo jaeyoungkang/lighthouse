@@ -1,0 +1,46 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "include": [
+    "files",
+    "dependencies",
+    "devDependencies",
+    "optionalPeerDependencies",
+    "unlisted",
+    "binaries",
+    "unresolved",
+    "catalog"
+  ],
+  "entry": [
+    "app/domain/glossary-terms.generated.ts",
+    "app/domain/reference.ts",
+    "app/domain/working-context.ts",
+    "app/i18n/glossary-term-refs.generated.ts",
+    "app/server/repository/__tests__/access-allowlist.postgres.integration.ts",
+    "app/server/repository/__tests__/gap-build-principal-admissions.postgres.integration.ts",
+    "app/server/repository/__tests__/gap-reports.postgres.integration.ts",
+    "app/server/repository/__tests__/reviewed-papers.postgres.integration.ts",
+    "app/server/reference/working-context.ts",
+    "scripts/architecture-fitness/path-vitest.config.mts",
+    "scripts/architecture-fitness/path-vitest.setup.ts",
+    "scripts/architecture-fitness/q2-process-isolation-probe.ts",
+    "scripts/architecture-fitness/q2-vitest.config.mts",
+    "scripts/architecture-fitness/q4-vitest.config.mts",
+    "scripts/architecture-fitness/q5-vitest.config.mts",
+    "scripts/architecture-fitness/search-condition-url-budget-probe.ts",
+    "scripts/evidence-ledger/helpers/contract-check.ts",
+    "scripts/project-knowledge/post-commit-reminder.ts",
+    "scripts/agent-hooks/post-merge-cleanup.ts",
+    "next.config.ts",
+    "postcss.config.mjs",
+    "eslint.config.mjs",
+    "vitest.config.mts",
+    "stryker*.config.mjs"
+  ],
+  "project": [
+    "app/**/*.{ts,tsx,css}",
+    "scripts/**/*.{ts,mts}",
+    "scripts/evidence-ledger/helpers/**/*.{ts,mjs}",
+    "*.config.{js,mjs,ts,mts}"
+  ],
+  "ignoreBinaries": ["python3"]
+}

@@ -1,0 +1,56 @@
+name: Mutation
+
+# Mutation testing for the expanded runtime contract slices.
+# Runs on manual dispatch only — never on schedule/PR/push, so the PR gate time
+# budget is not affected. See
+# `docs/contracts/story-chain/hardening-tier-policy.md` §2 and
+# `promise:respond-contract-mutation-pilot`.
+#
+# Slices run as a matrix so wall-clock is bounded by the slowest single slice
+# instead of the sequential sum (which previously sat right at the 120m job cap
+# and got cancelled mid-upload).
+
+on:
+  workflow_dispatch:
+
+# No job in this workflow pushes; keep the GITHUB_TOKEN read-only.
+permissions:
+  contents: read
+
+jobs:
+  mutation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+
+    strategy:
+      fail-fast: false
+      matrix:
+        slice: [agent, contracts, domain, research-route]
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run Stryker mutation slice (${{ matrix.slice }})
+        run: npm run mutation:${{ matrix.slice }}
+
+      - name: Upload mutation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutation-report-${{ matrix.slice }}
+          path: reports/mutation/${{ matrix.slice }}/
+          if-no-files-found: warn
+          retention-days: 30

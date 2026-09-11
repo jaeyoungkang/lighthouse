@@ -1,0 +1,75 @@
+schemaVersion: 2
+slug: alignment-coherence-gate
+review: reviews/alignment-coherence-gate.reviews.md
+sourcePromises:
+  - promise:alignment-coherence-gate
+appliedAspects: []
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:alignment-coherence-gate#acceptance-check:alignment-coherence-gate-ac-revision-field
+    assertion: 'vitest @ `app/server/services/story-chain/__tests__/parser-ac-slug-revision.test.ts` ("parses an AC with revision and a valid meaning slug") + ("rejects an AC without revision when the promise sets acRulesEnforced: true") + ("rejects revision < 1") + ("rejects non-integer revision") + ("grandfathers an AC without revision when the promise omits acRulesEnforced"). Asserts the parser reads positive-integer `revision`, rejects 0/non-integer, enforces presence under `acRulesEnforced: true`, and grandfathers ACs without the field when the promise has not opted in.'
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:alignment-coherence-gate#acceptance-check:alignment-coherence-gate-revision-drift-soft
+    assertion: "(detection) vitest @ `app/server/services/story-chain/__tests__/revision-drift.test.ts` (\"returns a signal when reviewedRevision lags currentRevision\") + (\"uses the most recent review entry per AC\") + (\"breaks same-day review ties by file order\") + (\"aligns acReviewedRevision with acceptance-check refs even when intent-check refs are interleaved\") + (\"ignores grandfathered review entries\") + (\"ignores ACs without a declared revision\"). (snapshot wiring) vitest @ `scripts/mission-control/lib/__tests__/intent-traceability-snapshot-drift.test.ts` (\"emits a signal for the promise whose AC outpaces the latest review's acReviewedRevision\") + (\"emits no signal when the latest review's acReviewedRevision matches the current AC revision\") + (\"does not bleed review entries from one promise's AC ids into a different promise\") + (\"ignores review entries entirely\") — locks `buildRevisionDriftIndex` per-Promise grouping. (snapshot stage drop) vitest @ `scripts/mission-control/lib/__tests__/intent-traceability-snapshot.test.ts` (\"does not surface staleRevisions on rows with no revision drift\") — pins the wiring path against a chain with no current drift. Together: helper detects, snapshot groups + drops stage to `verify`, and Mission Control CLI exposes the row for review."
+    executionRefs:
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+    scenarios: []
+  - key: promise:alignment-coherence-gate#acceptance-check:alignment-coherence-gate-review-yaml-schema
+    assertion: 'vitest @ `app/server/services/story-chain/__tests__/review-parser.test.ts` ("parses a fully valid post-cutoff yaml entry") + ("rejects observedOutput shorter than 80 chars") + ("rejects mismatched acs and acReviewedRevision lengths") + ("rejects an unknown verdict value") + ("rejects a malformed gap entry") + ("rejects an AC ref that is neither acceptance-check: nor intent-check:") + ("rejects a post-cutoff entry whose yaml block omits the date field") + ("rejects a yaml date that does not match the entry heading date") + ("does not require acReviewedRevision for intent-check refs") + ("rejects yaml blocks using multi-line scalars") + ("rejects yaml blocks using quoted scalars"). Asserts yaml block schema (date + heading-match, acs, acReviewedRevision parallel to acceptance-check refs only, fixtureRef, runCommitSha, observedOutput≥80, gaps, verdict) plus parser subset boundaries.'
+    executionRefs:
+      - execution:run-002
+    scenarios: []
+  - key: promise:alignment-coherence-gate#acceptance-check:alignment-coherence-gate-review-cutoff-migration
+    assertion: vitest @ `app/server/services/story-chain/__tests__/review-parser.test.ts` ("grandfathers a pre-cutoff prose entry") + ("rejects a post-cutoff entry without a yaml block") + ("rejects unsupported yaml fields") + ("parses explicit pre-cutoff yaml entries") + ("splits multiple entries cleanly"). Asserts cutoff (2026-05-06) date-based grandfathering for prose-only entries, that yaml blocks are parsed even before the cutoff, and unsupported yaml fields are rejected.
+    executionRefs:
+      - execution:run-002
+    scenarios: []
+  - key: promise:alignment-coherence-gate#acceptance-check:alignment-coherence-gate-ac-slug-rule
+    assertion: vitest @ `app/server/services/story-chain/__tests__/parser-ac-slug-revision.test.ts` ("rejects ^ac\\d+$ slug when revision is declared") + ("rejects a slug suffix longer than 30 characters") + ("rejects a slug suffix with more than 4 dash-separated words") + ("rejects a non-kebab-case slug suffix") + ("rejects duplicate AcceptanceCheck headings within the same promise"). Asserts the parser rejects `^ac\\d+$`, >30 chars, >4 words, non-kebab-case, and duplicate AC headings when an AC declares `revision`.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:alignment-coherence-gate#acceptance-check:alignment-coherence-gate-review-section-promise-match
+    assertion: vitest @ `app/server/services/story-chain/__tests__/review-parser.test.ts` ("rejects acs whose promise prefix does not match a single-promise section header") + ("allows acs that belong to the single-promise section header") + ("skips the header-promise check when the section header lists multiple promises (cross-promise absorption)"). Asserts the parser rejects acs entries whose promise prefix disagrees with a single-promise section header, allows matching prefixes, and exempts multi-promise headers so cross-promise absorption pointers stay valid.
+    executionRefs:
+      - execution:run-002
+    scenarios: []
+  - key: promise:alignment-coherence-gate#acceptance-check:alignment-coherence-gate-review-observed-count-match
+    assertion: vitest @ `app/server/services/story-chain/__tests__/review-parser.test.ts` ("rejects observedOutput "all N Acceptance Checks" claim that does not match yaml.acs length") + ("counts only acceptance-check entries when comparing against "all N Acceptance Checks"") + ("tolerates non-"all" "N ACs" counts that may refer to upstream / total scope"). Asserts the parser enforces explicit "all N" quantifier counts against the acceptance-check entry count in yaml.acs (intent-check entries excluded) and tolerates non-quantified upstream references.
+    executionRefs:
+      - execution:run-002
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/server/services/story-chain/__tests__/parser-ac-slug-revision.test.ts
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/server/services/story-chain/__tests__/review-parser.test.ts
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/server/services/story-chain/__tests__/revision-drift.test.ts
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/intent-traceability-snapshot-drift.test.ts
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/intent-traceability-snapshot.test.ts
+implementationContracts:
+  - "Promise frontmatter supports `acRulesEnforced: true` to opt the entire Promise into the new AC slug rules. ACs in such Promises must declare `revision`. ACs in Promises without the flag are grandfathered."
+  - "Sufficiency Review yaml block subset: single-line scalars only. Multi-line block scalars (`|`/`>`) and quoted scalars are rejected so the existing flat parser does not silently drop data."
+  - Pre-cutoff (date < 2026-05-06) prose-only review entries are grandfathered. If a review entry carries a yaml block, the parser reads it regardless of date. Explicit yaml overrides are rejected; converted entries use the full review schema.
+  - "`acReviewedRevision[]` parallels only the acceptance-check refs in `yaml.acs`; intent-check refs do not require a paired revision and the drift helper filters before indexing."
+verdict: met

@@ -1,0 +1,122 @@
+schemaVersion: 2
+slug: provider-failure-degraded-mode
+review: reviews/provider-failure-degraded-mode.reviews.md
+sourcePromises:
+  - promise:search-failure-degraded-at-url
+  - promise:search-reaction-summarizes-terrain
+  - promise:inline-analysis-auto-run
+  - promise:gap-network-detection-from-search
+  - promise:gap-report-prepared-reaction
+  - promise:gap-overlay-decision-evidence
+  - promise:citation-lineage
+  - promise:graph-neighbor-papers
+  - promise:route-view-ai-comment-inline-surface
+appliedAspects:
+  - aspect:provider-failure-degraded-mode
+intent:
+  mode: delegated
+  checks: []
+  delegations:
+    - key: promise:search-reaction-summarizes-terrain#intent-check:result-set-terrain-is-not-query-repetition
+      ledger: search-reaction
+    - key: promise:search-reaction-summarizes-terrain#intent-check:search-reaction-ux-writing-voice
+      ledger: search-reaction
+    - key: promise:inline-analysis-auto-run#intent-check:semantic-profile-is-phrase-not-keyword
+      ledger: immediate-navigation
+    - key: promise:gap-network-detection-from-search#intent-check:cluster-narrative-describes-research-work
+      ledger: gap-network-e2
+    - key: promise:gap-network-detection-from-search#intent-check:representative-papers-show-cluster-grain
+      ledger: gap-network-e2
+    - key: promise:gap-network-detection-from-search#intent-check:adjacency-shows-network-position
+      ledger: gap-network-e2
+    - key: promise:gap-report-prepared-reaction#intent-check:title-and-intro-name-the-discipline
+      ledger: gap-network-e2
+    - key: promise:gap-report-prepared-reaction#intent-check:cluster-background-and-comparison
+      ledger: gap-network-e2
+    - key: promise:gap-report-prepared-reaction#intent-check:gap-inference-method-traceable
+      ledger: gap-network-e2
+    - key: promise:gap-overlay-decision-evidence#intent-check:hypothesis-proposals-have-depth
+      ledger: gap-network-e2
+    - key: promise:gap-overlay-decision-evidence#intent-check:proposals-grounded-in-system-resources
+      ledger: gap-network-e2
+    - key: promise:gap-overlay-decision-evidence#intent-check:meta-is-qualitative-not-numeric
+      ledger: gap-network-e2
+    - key: promise:citation-lineage#intent-check:body-explains-citation-flow-not-counts
+      ledger: citation-lineage
+acceptanceChecks:
+  - key: promise:search-reaction-summarizes-terrain#acceptance-check:reaction-respond-format
+    assertion: "vitest @ `'app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts'` (\"returns null generation results without persisting them\") verifies automatic route AI comment generation returns `reaction: null` instead of fabricating fallback comments when structured output is absent or invalid. `'app/api/gap-reports/[id]/reaction/__tests__/route.test.ts'` verifies degraded notices are rejected from the current viewer's reaction-preference persistence boundary."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+    scenarios:
+      - scenario:search-provider-failure-degraded
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-status-badge-distinguishes-states
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view.helpers.test.ts` ("formats authors, badges, truncation, and progress summaries"). Verifies inline analysis badges render four distinct queued/running/done/error labels, more than one status-specific className family, and exactly one spinner state, with the spinner unique to `running`; the error badge remains visible instead of blocking the search result ResearchRoutePayload when analysis work cannot complete.
+    executionRefs:
+      - execution:run-003
+    scenarios:
+      - scenario:search-inline-analysis-visible-first
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-provider-failover-bounded
+    assertion: vitest @ `app/server/ai-generation/__tests__/gateway.test.ts` ("fails over once from a transient Gemini failure to the pinned OpenAI model"; "returns one exhausted error after both transient attempts without a third provider call"; "bypasses Gemini only after the process-local circuit opens").
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+    scenarios:
+      - scenario:search-provider-failure-degraded
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-explicit-failure-retry
+    assertion: vitest @ `app/server/domain-access/__tests__/inline-analysis-access-timing.test.ts` ("fences the owner deadline instead of releasing it for automatic retry") + `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-owner-recovery.test.tsx` ("settles provider failure without an automatic retry"; "sends a second request only after the explicit retry command").
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-005
+    scenarios:
+      - scenario:search-provider-failure-degraded
+  - key: promise:gap-report-prepared-reaction#acceptance-check:gap-report-prepared-reaction-explicit-enrichment-retry
+    assertion: vitest @ `app/server/domain-access/__tests__/gap-network-enrichment-retry.test.ts` + `app/api/gap-reports/[id]/enrichment-retry/__tests__/route.test.ts` + `app/components/research-route-renderers/__tests__/GapNetworkView.enrichment.test.tsx` + `app/components/research-route-renderers/__tests__/GapNetworkView.retry-response.test.tsx`. A provider-failed enrichment leaves the deterministic core graph usable. Only the explicit authenticated command reopens enrichment, retry progress keeps the core visible, no read/revisit starts work, and another failure returns to the same degraded surface with the report-scoped cooldown instead of fabricated narrative or automatic retry.
+    executionRefs:
+      - execution:run-006
+    scenarios:
+      - scenario:search-gap-analysis-entry
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/api/route-ai-comments/generate/[id]/__tests__/route.test.ts
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/api/gap-reports/[id]/reaction/__tests__/route.test.ts
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-view.helpers.test.ts
+    testNamePattern: formats authors, badges, truncation, and progress summaries
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/server/ai-generation/__tests__/gateway.test.ts
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/server/domain-access/__tests__/inline-analysis-access-timing.test.ts
+      - app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-owner-recovery.test.tsx
+  - id: execution:run-006
+    kind: vitest
+    files:
+      - app/server/domain-access/__tests__/gap-network-enrichment-retry.test.ts
+      - app/api/gap-reports/[id]/enrichment-retry/__tests__/route.test.ts
+      - app/components/research-route-renderers/__tests__/GapNetworkView.enrichment.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.retry-response.test.tsx
+implementationContracts:
+  - "Automatic route AI comment generation does not use `respond` or a tool-call fallback. It performs one structured generation call; invalid, empty, provider-failed, aborted, or timed-out output returns `reaction: null`, clears pending UI state, and surfaces the null result to the current route view."
+  - When a deterministic product surface renders degraded failure copy instead of nullable generation output, that copy is short Korean plain text and includes no raw provider error, API key, stack trace, HTTP status, exception class, or follow-up surface.
+  - Deterministic research surfaces remain usable; degraded AI output does not claim to summarize or interpret content that the provider failed to generate.
+  - Degraded AI comment notices are not persisted route AI comment state. New write boundaries reject or strip those notices, migration `supabase/migrations/00008_drop_degraded_document_reactions.sql` removes older stored rows, and repository hydration filters any older stored degraded notices that remain.
+  - Automatic route AI comment provider failures log best-effort `api_error` metadata but return nullable reaction output to the route caller.
+  - A provider-failed gap enrichment keeps the persisted core graph usable. Only the explicit authenticated retry command reopens enrichment; retry progress does not hide the core, and another failure returns to the same degraded surface without a fabricated narrative or automatic revisit retry.
+verdict: met

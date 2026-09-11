@@ -1,0 +1,1125 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-observation",
+  "serviceId": "lighthouse",
+  "policySetRef": "issue-399-serialized-input-budget",
+  "policySetVersion": "2026-08-27.v10",
+  "policyDigest": "59213244a937602f473b2232ebd62df9652e1ad3f0f7b313904a5285ef49c2fc",
+  "revision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+  "collector": {
+    "adapterRef": "scripts/architecture-fitness/collect-search-condition-url-budget.mjs",
+    "id": "lighthouse-issue-399-serialized-input-budget-collector",
+    "version": "12",
+    "scope": "Materialized exact-revision production URLSearchParams serialization with collector-authority config, setup, tests, and dependencies across target root-config and lock drift, UTF-8 request-target measurement, dimension and mode rejection, parser/provider/identity ordering, product feedback wiring, direct-builder bypass inventory, negative guard tests for the five Search-first condition URL envelopes, and the current route-renderer callsite harness refreshed for direct inline-analysis owner imports without changing URL budget semantics",
+    "definitionDigest": "0a459b5dc45ac3a3a8efb811a6df8bb2091b9fb5bb0c39fe3af848f876ac213e",
+    "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+    "runRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+    "command": "node scripts/architecture-fitness/collect-search-condition-url-budget.mjs --policy docs/architecture-fitness/pilots/issue-399-serialized-input-budget.policy.json --revision 3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa --run-ref fixture-run:issue-683-direct-owner-import:3f6cf311 --output docs/architecture-fitness/pilots/issue-399-serialized-input-budget.observation.json",
+    "attestation": {
+      "algorithm": "hmac-sha256",
+      "keyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1",
+      "payloadDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "evidence": [
+    {
+      "id": "budget-coverage-static:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "static",
+      "role": "budget-coverage-static",
+      "source": "scripts/architecture-fitness/check-search-condition-url-budget.mjs,scripts/architecture-fitness/search-condition-url-budget-probe.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The exact-revision inventory covers the five mode-specific Search-first condition URL serializers, their shared UTF-8 request-target guard, parser/provider ordering, and direct-builder bypass scan.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-search-condition-url-budget.mjs --policy docs/architecture-fitness/pilots/issue-399-serialized-input-budget.policy.json --revision 3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa --run-ref fixture-run:issue-683-direct-owner-import:3f6cf311 --output docs/architecture-fitness/pilots/issue-399-serialized-input-budget.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "651883bba44215b37a16900b03f809705da8f386b7169983de8c4c00cc01f09f",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:search-keyword-condition-url",
+          "boundary:search-term-condition-url",
+          "boundary:search-seed-condition-url",
+          "boundary:citation-seed-condition-url",
+          "boundary:similar-seed-condition-url"
+        ],
+        "scenarioRefs": [
+          "scenario:search-keyword-envelope-maximum",
+          "scenario:search-keyword-overflow",
+          "scenario:search-term-envelope-maximum",
+          "scenario:search-term-overflow",
+          "scenario:search-seed-envelope-maximum",
+          "scenario:search-seed-overflow",
+          "scenario:citation-seed-envelope-maximum",
+          "scenario:citation-seed-overflow",
+          "scenario:similar-seed-envelope-maximum",
+          "scenario:similar-seed-overflow"
+        ],
+        "factRefs": [
+          "coverage:all-serialization-boundaries",
+          "dependency-source:collector-authority"
+        ]
+      }
+    },
+    {
+      "id": "budget-coverage-negative-guard:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "test",
+      "role": "budget-coverage-negative-guard",
+      "source": "scripts/architecture-fitness/__tests__/search-condition-url-budget.test.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The exact-revision negative tests remove the 8192-byte declaration, replace UTF-8 measurement with code-unit length, bypass parser and provider ordering, and add a strict production builder import; every mutation must be rejected.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/search-condition-url-budget.test.ts app/lib/__tests__/search-condition-url-budget.test.ts app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research-route-renderers/__tests__/search-view-empty-state-route-selection.test.tsx app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "b34fe64dbc405886a112b7d9dd7508b3d2be769f6f2314404c3d93124f2f89e2",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:search-keyword-condition-url",
+          "boundary:search-term-condition-url",
+          "boundary:search-seed-condition-url",
+          "boundary:citation-seed-condition-url",
+          "boundary:similar-seed-condition-url"
+        ],
+        "scenarioRefs": [
+          "scenario:search-keyword-envelope-maximum",
+          "scenario:search-keyword-overflow",
+          "scenario:search-term-envelope-maximum",
+          "scenario:search-term-overflow",
+          "scenario:search-seed-envelope-maximum",
+          "scenario:search-seed-overflow",
+          "scenario:citation-seed-envelope-maximum",
+          "scenario:citation-seed-overflow",
+          "scenario:similar-seed-envelope-maximum",
+          "scenario:similar-seed-overflow"
+        ],
+        "factRefs": [
+          "coverage:unguarded-overflow-rejected"
+        ]
+      }
+    },
+    {
+      "id": "serialization-static:boundary:search-keyword-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "static",
+      "role": "serialization-static",
+      "source": "scripts/architecture-fitness/check-search-condition-url-budget.mjs,app/lib/api-routes.ts,app/lib/search-condition-url-budget.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The production builder serializes with URLSearchParams, measures the UTF-8 path plus query, and shares the reject-only overflow owner before canonical execution identity.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-search-condition-url-budget.mjs --policy docs/architecture-fitness/pilots/issue-399-serialized-input-budget.policy.json --revision 3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa --run-ref fixture-run:issue-683-direct-owner-import:3f6cf311 --output docs/architecture-fitness/pilots/issue-399-serialized-input-budget.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "a0f8333f5e4e0c9a53ea0e1d854173ce00424b221adcd425fc6bb63a91e7284a",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:search-keyword-condition-url"
+        ],
+        "scenarioRefs": [],
+        "factRefs": [
+          "serializer:build-search-route-page-route-keyword-v1",
+          "encoding:utf8-urlsearchparams-percent-v1",
+          "guard:search-condition-url-budget-reject"
+        ]
+      }
+    },
+    {
+      "id": "serialization-static:boundary:search-term-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "static",
+      "role": "serialization-static",
+      "source": "scripts/architecture-fitness/check-search-condition-url-budget.mjs,app/lib/api-routes.ts,app/lib/search-condition-url-budget.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The production builder serializes with URLSearchParams, measures the UTF-8 path plus query, and shares the reject-only overflow owner before canonical execution identity.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-search-condition-url-budget.mjs --policy docs/architecture-fitness/pilots/issue-399-serialized-input-budget.policy.json --revision 3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa --run-ref fixture-run:issue-683-direct-owner-import:3f6cf311 --output docs/architecture-fitness/pilots/issue-399-serialized-input-budget.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "a0f8333f5e4e0c9a53ea0e1d854173ce00424b221adcd425fc6bb63a91e7284a",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:search-term-condition-url"
+        ],
+        "scenarioRefs": [],
+        "factRefs": [
+          "serializer:build-search-route-page-route-term-v1",
+          "encoding:utf8-urlsearchparams-percent-v1",
+          "guard:search-condition-url-budget-reject"
+        ]
+      }
+    },
+    {
+      "id": "serialization-static:boundary:search-seed-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "static",
+      "role": "serialization-static",
+      "source": "scripts/architecture-fitness/check-search-condition-url-budget.mjs,app/lib/api-routes.ts,app/lib/search-condition-url-budget.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The production builder serializes with URLSearchParams, measures the UTF-8 path plus query, and shares the reject-only overflow owner before canonical execution identity.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-search-condition-url-budget.mjs --policy docs/architecture-fitness/pilots/issue-399-serialized-input-budget.policy.json --revision 3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa --run-ref fixture-run:issue-683-direct-owner-import:3f6cf311 --output docs/architecture-fitness/pilots/issue-399-serialized-input-budget.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "a0f8333f5e4e0c9a53ea0e1d854173ce00424b221adcd425fc6bb63a91e7284a",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:search-seed-condition-url"
+        ],
+        "scenarioRefs": [],
+        "factRefs": [
+          "serializer:build-search-route-page-route-seed-v1",
+          "encoding:utf8-urlsearchparams-percent-v1",
+          "guard:search-condition-url-budget-reject"
+        ]
+      }
+    },
+    {
+      "id": "serialization-static:boundary:citation-seed-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "static",
+      "role": "serialization-static",
+      "source": "scripts/architecture-fitness/check-search-condition-url-budget.mjs,app/lib/api-routes.ts,app/lib/search-condition-url-budget.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The production builder serializes with URLSearchParams, measures the UTF-8 path plus query, and shares the reject-only overflow owner before canonical execution identity.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-search-condition-url-budget.mjs --policy docs/architecture-fitness/pilots/issue-399-serialized-input-budget.policy.json --revision 3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa --run-ref fixture-run:issue-683-direct-owner-import:3f6cf311 --output docs/architecture-fitness/pilots/issue-399-serialized-input-budget.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "a0f8333f5e4e0c9a53ea0e1d854173ce00424b221adcd425fc6bb63a91e7284a",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:citation-seed-condition-url"
+        ],
+        "scenarioRefs": [],
+        "factRefs": [
+          "serializer:build-citation-seed-page-route-v1",
+          "encoding:utf8-urlsearchparams-percent-v1",
+          "guard:search-condition-url-budget-reject"
+        ]
+      }
+    },
+    {
+      "id": "serialization-static:boundary:similar-seed-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "static",
+      "role": "serialization-static",
+      "source": "scripts/architecture-fitness/check-search-condition-url-budget.mjs,app/lib/api-routes.ts,app/lib/search-condition-url-budget.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The production builder serializes with URLSearchParams, measures the UTF-8 path plus query, and shares the reject-only overflow owner before canonical execution identity.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-search-condition-url-budget.mjs --policy docs/architecture-fitness/pilots/issue-399-serialized-input-budget.policy.json --revision 3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa --run-ref fixture-run:issue-683-direct-owner-import:3f6cf311 --output docs/architecture-fitness/pilots/issue-399-serialized-input-budget.observation.json",
+      "commandExitCode": 0,
+      "artifactDigest": "a0f8333f5e4e0c9a53ea0e1d854173ce00424b221adcd425fc6bb63a91e7284a",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:similar-seed-condition-url"
+        ],
+        "scenarioRefs": [],
+        "factRefs": [
+          "serializer:build-similar-seed-page-route-v1",
+          "encoding:utf8-urlsearchparams-percent-v1",
+          "guard:search-condition-url-budget-reject"
+        ]
+      }
+    },
+    {
+      "id": "serialization-measurement:scenario:search-keyword-envelope-maximum:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "test",
+      "role": "serialization-measurement",
+      "source": "scripts/architecture-fitness/search-condition-url-budget-probe.ts,app/lib/__tests__/search-condition-url-budget.test.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The exact-revision production serializer measured the declared non-ASCII and percent-expansion envelope without dropping any supported dimension.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/tsx scripts/architecture-fitness/search-condition-url-budget-probe.ts && node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/search-condition-url-budget.test.ts app/lib/__tests__/search-condition-url-budget.test.ts app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research-route-renderers/__tests__/search-view-empty-state-route-selection.test.tsx app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "3e2959a0dc4f05a3fdd6fa61a538cc747871c36c2d41f4bc412d2498929370a2",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:search-keyword-condition-url"
+        ],
+        "scenarioRefs": [
+          "scenario:search-keyword-envelope-maximum"
+        ],
+        "factRefs": [
+          "budget:condition-request-target-8192",
+          "expected-result:serialized",
+          "measurement-sha256:fd390e8584689f199cd0d5399ef3c2cd63a8113109a0b44e4867e7fb890f30a2",
+          "observed-result:serialized",
+          "input:utf8-percent-expansion-v1"
+        ]
+      }
+    },
+    {
+      "id": "serialization-guard-test:scenario:search-keyword-overflow:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "test",
+      "role": "serialization-guard-test",
+      "source": "scripts/architecture-fitness/search-condition-url-budget-probe.ts,app/lib/__tests__/search-condition-url-budget.test.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The exact-revision production serializer rejected the declared one-byte dimension overflow without truncation or omission.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/tsx scripts/architecture-fitness/search-condition-url-budget-probe.ts && node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/search-condition-url-budget.test.ts app/lib/__tests__/search-condition-url-budget.test.ts app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research-route-renderers/__tests__/search-view-empty-state-route-selection.test.tsx app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "2bbba77561d60c8a8689bc938bc1008c7ecc51615ca143153e4fbfd4d2a15b42",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:search-keyword-condition-url"
+        ],
+        "scenarioRefs": [
+          "scenario:search-keyword-overflow"
+        ],
+        "factRefs": [
+          "budget:condition-request-target-8192",
+          "expected-result:rejected",
+          "measurement-sha256:18b866e0b9b295ddaa7a6aa3f7af1631e79ae967d7ab857eadebef73fc809929",
+          "observed-result:rejected",
+          "input:utf8-one-byte-over-v1",
+          "guard:search-condition-url-budget-reject"
+        ]
+      }
+    },
+    {
+      "id": "serialization-measurement:scenario:search-term-envelope-maximum:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "test",
+      "role": "serialization-measurement",
+      "source": "scripts/architecture-fitness/search-condition-url-budget-probe.ts,app/lib/__tests__/search-condition-url-budget.test.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The exact-revision production serializer measured the declared non-ASCII and percent-expansion envelope without dropping any supported dimension.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/tsx scripts/architecture-fitness/search-condition-url-budget-probe.ts && node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/search-condition-url-budget.test.ts app/lib/__tests__/search-condition-url-budget.test.ts app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research-route-renderers/__tests__/search-view-empty-state-route-selection.test.tsx app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "98644941b6cc1dbe710042373ed818ccd28fb336d71f1b4e50b953a5dbfddf17",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:search-term-condition-url"
+        ],
+        "scenarioRefs": [
+          "scenario:search-term-envelope-maximum"
+        ],
+        "factRefs": [
+          "budget:condition-request-target-8192",
+          "expected-result:serialized",
+          "measurement-sha256:58dca76cb1f4562e99b764fbd6da579b0c599d238a079bc12bdea85440b23cb7",
+          "observed-result:serialized",
+          "input:utf8-percent-expansion-v1"
+        ]
+      }
+    },
+    {
+      "id": "serialization-guard-test:scenario:search-term-overflow:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "test",
+      "role": "serialization-guard-test",
+      "source": "scripts/architecture-fitness/search-condition-url-budget-probe.ts,app/lib/__tests__/search-condition-url-budget.test.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The exact-revision production serializer rejected the declared one-byte dimension overflow without truncation or omission.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/tsx scripts/architecture-fitness/search-condition-url-budget-probe.ts && node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/search-condition-url-budget.test.ts app/lib/__tests__/search-condition-url-budget.test.ts app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research-route-renderers/__tests__/search-view-empty-state-route-selection.test.tsx app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "3f8fcc25650c1582f730c6b240d82fa2a0a428d76a5a299eaf74f631b2ca1ee4",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:search-term-condition-url"
+        ],
+        "scenarioRefs": [
+          "scenario:search-term-overflow"
+        ],
+        "factRefs": [
+          "budget:condition-request-target-8192",
+          "expected-result:rejected",
+          "measurement-sha256:037508429c88aef825c40360a832d208a6d8071a17b08ac2520b2b126fafabbb",
+          "observed-result:rejected",
+          "input:utf8-one-byte-over-v1",
+          "guard:search-condition-url-budget-reject"
+        ]
+      }
+    },
+    {
+      "id": "serialization-measurement:scenario:search-seed-envelope-maximum:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "test",
+      "role": "serialization-measurement",
+      "source": "scripts/architecture-fitness/search-condition-url-budget-probe.ts,app/lib/__tests__/search-condition-url-budget.test.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The exact-revision production serializer measured the declared non-ASCII and percent-expansion envelope without dropping any supported dimension.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/tsx scripts/architecture-fitness/search-condition-url-budget-probe.ts && node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/search-condition-url-budget.test.ts app/lib/__tests__/search-condition-url-budget.test.ts app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research-route-renderers/__tests__/search-view-empty-state-route-selection.test.tsx app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "4180dabe063b2cea37d431d95bf2316d9a86fad0128c5581106561c478db5a4c",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:search-seed-condition-url"
+        ],
+        "scenarioRefs": [
+          "scenario:search-seed-envelope-maximum"
+        ],
+        "factRefs": [
+          "budget:condition-request-target-8192",
+          "expected-result:serialized",
+          "measurement-sha256:eb1bf41c54fd0929ae49d2f428ea53978e0cfab354ae3fe83d62f3db618ce4e9",
+          "observed-result:serialized",
+          "input:utf8-percent-expansion-v1"
+        ]
+      }
+    },
+    {
+      "id": "serialization-guard-test:scenario:search-seed-overflow:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "test",
+      "role": "serialization-guard-test",
+      "source": "scripts/architecture-fitness/search-condition-url-budget-probe.ts,app/lib/__tests__/search-condition-url-budget.test.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The exact-revision production serializer rejected the declared one-byte dimension overflow without truncation or omission.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/tsx scripts/architecture-fitness/search-condition-url-budget-probe.ts && node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/search-condition-url-budget.test.ts app/lib/__tests__/search-condition-url-budget.test.ts app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research-route-renderers/__tests__/search-view-empty-state-route-selection.test.tsx app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "76c12383defc977205c4e0bdf46622a8edd8619016c478859165e0baca25b221",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:search-seed-condition-url"
+        ],
+        "scenarioRefs": [
+          "scenario:search-seed-overflow"
+        ],
+        "factRefs": [
+          "budget:condition-request-target-8192",
+          "expected-result:rejected",
+          "measurement-sha256:e170015dbcb67aaea8183570a37ab0eb44f83a4a8ac7b136efe0ecb1febb409c",
+          "observed-result:rejected",
+          "input:utf8-one-byte-over-v1",
+          "guard:search-condition-url-budget-reject"
+        ]
+      }
+    },
+    {
+      "id": "serialization-measurement:scenario:citation-seed-envelope-maximum:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "test",
+      "role": "serialization-measurement",
+      "source": "scripts/architecture-fitness/search-condition-url-budget-probe.ts,app/lib/__tests__/search-condition-url-budget.test.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The exact-revision production serializer measured the declared non-ASCII and percent-expansion envelope without dropping any supported dimension.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/tsx scripts/architecture-fitness/search-condition-url-budget-probe.ts && node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/search-condition-url-budget.test.ts app/lib/__tests__/search-condition-url-budget.test.ts app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research-route-renderers/__tests__/search-view-empty-state-route-selection.test.tsx app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "24cc0a61611dee3193c992dac6c41370a6b8116854879cf06cc29618b8040f4e",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:citation-seed-condition-url"
+        ],
+        "scenarioRefs": [
+          "scenario:citation-seed-envelope-maximum"
+        ],
+        "factRefs": [
+          "budget:condition-request-target-8192",
+          "expected-result:serialized",
+          "measurement-sha256:b6f53eb1c9a8eeef19affe2f78fc03f07b8a4f5fe53dfc2e2693f70f8dca9199",
+          "observed-result:serialized",
+          "input:utf8-percent-expansion-v1"
+        ]
+      }
+    },
+    {
+      "id": "serialization-guard-test:scenario:citation-seed-overflow:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "test",
+      "role": "serialization-guard-test",
+      "source": "scripts/architecture-fitness/search-condition-url-budget-probe.ts,app/lib/__tests__/search-condition-url-budget.test.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The exact-revision production serializer rejected the declared one-byte dimension overflow without truncation or omission.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/tsx scripts/architecture-fitness/search-condition-url-budget-probe.ts && node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/search-condition-url-budget.test.ts app/lib/__tests__/search-condition-url-budget.test.ts app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research-route-renderers/__tests__/search-view-empty-state-route-selection.test.tsx app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "99d9cf956370bd684bac5afbdac6bb300d53f4f5d822afd59591fe63db190dbc",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:citation-seed-condition-url"
+        ],
+        "scenarioRefs": [
+          "scenario:citation-seed-overflow"
+        ],
+        "factRefs": [
+          "budget:condition-request-target-8192",
+          "expected-result:rejected",
+          "measurement-sha256:ce8006a7827ea55d590e3754d07265a1036dffbda1ba3ec9cad42beb264e4ef0",
+          "observed-result:rejected",
+          "input:utf8-one-byte-over-v1",
+          "guard:search-condition-url-budget-reject"
+        ]
+      }
+    },
+    {
+      "id": "serialization-measurement:scenario:similar-seed-envelope-maximum:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "test",
+      "role": "serialization-measurement",
+      "source": "scripts/architecture-fitness/search-condition-url-budget-probe.ts,app/lib/__tests__/search-condition-url-budget.test.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The exact-revision production serializer measured the declared non-ASCII and percent-expansion envelope without dropping any supported dimension.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/tsx scripts/architecture-fitness/search-condition-url-budget-probe.ts && node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/search-condition-url-budget.test.ts app/lib/__tests__/search-condition-url-budget.test.ts app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research-route-renderers/__tests__/search-view-empty-state-route-selection.test.tsx app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "7760304d3054b57adeea214cf51db055b6d6f201719a7bd323b0bf43f259cd96",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:similar-seed-condition-url"
+        ],
+        "scenarioRefs": [
+          "scenario:similar-seed-envelope-maximum"
+        ],
+        "factRefs": [
+          "budget:condition-request-target-8192",
+          "expected-result:serialized",
+          "measurement-sha256:3e5255acd2b52c12fff0047680e5ea2166b4c81dd31621e5b9c2819ceef7a012",
+          "observed-result:serialized",
+          "input:utf8-percent-expansion-v1"
+        ]
+      }
+    },
+    {
+      "id": "serialization-guard-test:scenario:similar-seed-overflow:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "kind": "test",
+      "role": "serialization-guard-test",
+      "source": "scripts/architecture-fitness/search-condition-url-budget-probe.ts,app/lib/__tests__/search-condition-url-budget.test.ts",
+      "sourceRevision": "3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "summary": "The exact-revision production serializer rejected the declared one-byte dimension overflow without truncation or omission.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/tsx scripts/architecture-fitness/search-condition-url-budget-probe.ts && node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/search-condition-url-budget.test.ts app/lib/__tests__/search-condition-url-budget.test.ts app/components/research/__tests__/ResearchRouteSearchBar.test.tsx app/components/research-route-renderers/__tests__/search-view-empty-state-route-selection.test.tsx app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "b998ed9aedb8a132ce000fb596f56322da7554103a4cce207b4abb66c80a02cd",
+      "collectorRunRef": "fixture-run:issue-683-direct-owner-import:3f6cf311",
+      "target": {
+        "policyRef": "issue-399:search-first-condition-url-budget",
+        "capabilityRef": "capability:search-first-condition-url-serialization",
+        "boundaryRefs": [
+          "boundary:similar-seed-condition-url"
+        ],
+        "scenarioRefs": [
+          "scenario:similar-seed-overflow"
+        ],
+        "factRefs": [
+          "budget:condition-request-target-8192",
+          "expected-result:rejected",
+          "measurement-sha256:e010d41443af4f6ec3570a1061030ec88982ed84c7dbf87ed7072148da071c59",
+          "observed-result:rejected",
+          "input:utf8-one-byte-over-v1",
+          "guard:search-condition-url-budget-reject"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation:issue-399-search-first-condition-url-budget:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+      "policyRef": "issue-399:search-first-condition-url-budget",
+      "capabilityRef": "capability:search-first-condition-url-serialization",
+      "completeness": "complete",
+      "coverageEvidenceRefs": [
+        "budget-coverage-static:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+        "budget-coverage-negative-guard:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+      ],
+      "boundaries": [
+        {
+          "id": "observed-boundary:search-keyword-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+          "boundaryRef": "boundary:search-keyword-condition-url",
+          "serializerRef": "serializer:build-search-route-page-route-keyword-v1",
+          "encodingRef": "encoding:utf8-urlsearchparams-percent-v1",
+          "guardRefs": [
+            "guard:search-condition-url-budget-reject"
+          ],
+          "evidenceRefs": [
+            "serialization-static:boundary:search-keyword-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        },
+        {
+          "id": "observed-boundary:search-term-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+          "boundaryRef": "boundary:search-term-condition-url",
+          "serializerRef": "serializer:build-search-route-page-route-term-v1",
+          "encodingRef": "encoding:utf8-urlsearchparams-percent-v1",
+          "guardRefs": [
+            "guard:search-condition-url-budget-reject"
+          ],
+          "evidenceRefs": [
+            "serialization-static:boundary:search-term-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        },
+        {
+          "id": "observed-boundary:search-seed-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+          "boundaryRef": "boundary:search-seed-condition-url",
+          "serializerRef": "serializer:build-search-route-page-route-seed-v1",
+          "encodingRef": "encoding:utf8-urlsearchparams-percent-v1",
+          "guardRefs": [
+            "guard:search-condition-url-budget-reject"
+          ],
+          "evidenceRefs": [
+            "serialization-static:boundary:search-seed-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        },
+        {
+          "id": "observed-boundary:citation-seed-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+          "boundaryRef": "boundary:citation-seed-condition-url",
+          "serializerRef": "serializer:build-citation-seed-page-route-v1",
+          "encodingRef": "encoding:utf8-urlsearchparams-percent-v1",
+          "guardRefs": [
+            "guard:search-condition-url-budget-reject"
+          ],
+          "evidenceRefs": [
+            "serialization-static:boundary:citation-seed-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        },
+        {
+          "id": "observed-boundary:similar-seed-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa",
+          "boundaryRef": "boundary:similar-seed-condition-url",
+          "serializerRef": "serializer:build-similar-seed-page-route-v1",
+          "encodingRef": "encoding:utf8-urlsearchparams-percent-v1",
+          "guardRefs": [
+            "guard:search-condition-url-budget-reject"
+          ],
+          "evidenceRefs": [
+            "serialization-static:boundary:similar-seed-condition-url:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        }
+      ],
+      "measurements": [
+        {
+          "id": "measurement:search-keyword-envelope-maximum",
+          "scenarioRef": "scenario:search-keyword-envelope-maximum",
+          "boundaryRef": "boundary:search-keyword-condition-url",
+          "inputProfileRef": "input:utf8-percent-expansion-v1",
+          "cardinalities": [
+            {
+              "dimensionRef": "dimension:keyword-query-utf8-bytes",
+              "value": 1024
+            },
+            {
+              "dimensionRef": "dimension:field-count",
+              "value": 4
+            },
+            {
+              "dimensionRef": "dimension:field-value-utf8-bytes",
+              "value": 128
+            },
+            {
+              "dimensionRef": "dimension:author-count",
+              "value": 4
+            },
+            {
+              "dimensionRef": "dimension:author-value-utf8-bytes",
+              "value": 128
+            },
+            {
+              "dimensionRef": "dimension:venue-count",
+              "value": 4
+            },
+            {
+              "dimensionRef": "dimension:venue-value-utf8-bytes",
+              "value": 128
+            },
+            {
+              "dimensionRef": "dimension:year-utf8-bytes",
+              "value": 9
+            }
+          ],
+          "result": {
+            "kind": "serialized",
+            "serializedBytes": 7652,
+            "effectiveCardinalities": [
+              {
+                "dimensionRef": "dimension:keyword-query-utf8-bytes",
+                "value": 1024
+              },
+              {
+                "dimensionRef": "dimension:field-count",
+                "value": 4
+              },
+              {
+                "dimensionRef": "dimension:field-value-utf8-bytes",
+                "value": 128
+              },
+              {
+                "dimensionRef": "dimension:author-count",
+                "value": 4
+              },
+              {
+                "dimensionRef": "dimension:author-value-utf8-bytes",
+                "value": 128
+              },
+              {
+                "dimensionRef": "dimension:venue-count",
+                "value": 4
+              },
+              {
+                "dimensionRef": "dimension:venue-value-utf8-bytes",
+                "value": 128
+              },
+              {
+                "dimensionRef": "dimension:year-utf8-bytes",
+                "value": 9
+              }
+            ]
+          },
+          "evidenceRefs": [
+            "serialization-measurement:scenario:search-keyword-envelope-maximum:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        },
+        {
+          "id": "measurement:search-keyword-overflow",
+          "scenarioRef": "scenario:search-keyword-overflow",
+          "boundaryRef": "boundary:search-keyword-condition-url",
+          "inputProfileRef": "input:utf8-one-byte-over-v1",
+          "cardinalities": [
+            {
+              "dimensionRef": "dimension:keyword-query-utf8-bytes",
+              "value": 1025
+            },
+            {
+              "dimensionRef": "dimension:field-count",
+              "value": 4
+            },
+            {
+              "dimensionRef": "dimension:field-value-utf8-bytes",
+              "value": 128
+            },
+            {
+              "dimensionRef": "dimension:author-count",
+              "value": 4
+            },
+            {
+              "dimensionRef": "dimension:author-value-utf8-bytes",
+              "value": 128
+            },
+            {
+              "dimensionRef": "dimension:venue-count",
+              "value": 4
+            },
+            {
+              "dimensionRef": "dimension:venue-value-utf8-bytes",
+              "value": 128
+            },
+            {
+              "dimensionRef": "dimension:year-utf8-bytes",
+              "value": 9
+            }
+          ],
+          "result": {
+            "kind": "rejected"
+          },
+          "evidenceRefs": [
+            "serialization-guard-test:scenario:search-keyword-overflow:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        },
+        {
+          "id": "measurement:search-term-envelope-maximum",
+          "scenarioRef": "scenario:search-term-envelope-maximum",
+          "boundaryRef": "boundary:search-term-condition-url",
+          "inputProfileRef": "input:utf8-percent-expansion-v1",
+          "cardinalities": [
+            {
+              "dimensionRef": "dimension:term-followup-query-utf8-bytes",
+              "value": 192
+            },
+            {
+              "dimensionRef": "dimension:term-source-query-utf8-bytes",
+              "value": 1024
+            },
+            {
+              "dimensionRef": "dimension:term-utf8-bytes",
+              "value": 192
+            },
+            {
+              "dimensionRef": "dimension:term-support-count",
+              "value": 40
+            }
+          ],
+          "result": {
+            "kind": "serialized",
+            "serializedBytes": 4307,
+            "effectiveCardinalities": [
+              {
+                "dimensionRef": "dimension:term-followup-query-utf8-bytes",
+                "value": 192
+              },
+              {
+                "dimensionRef": "dimension:term-source-query-utf8-bytes",
+                "value": 1024
+              },
+              {
+                "dimensionRef": "dimension:term-utf8-bytes",
+                "value": 192
+              },
+              {
+                "dimensionRef": "dimension:term-support-count",
+                "value": 40
+              }
+            ]
+          },
+          "evidenceRefs": [
+            "serialization-measurement:scenario:search-term-envelope-maximum:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        },
+        {
+          "id": "measurement:search-term-overflow",
+          "scenarioRef": "scenario:search-term-overflow",
+          "boundaryRef": "boundary:search-term-condition-url",
+          "inputProfileRef": "input:utf8-one-byte-over-v1",
+          "cardinalities": [
+            {
+              "dimensionRef": "dimension:term-followup-query-utf8-bytes",
+              "value": 192
+            },
+            {
+              "dimensionRef": "dimension:term-source-query-utf8-bytes",
+              "value": 1024
+            },
+            {
+              "dimensionRef": "dimension:term-utf8-bytes",
+              "value": 193
+            },
+            {
+              "dimensionRef": "dimension:term-support-count",
+              "value": 40
+            }
+          ],
+          "result": {
+            "kind": "rejected"
+          },
+          "evidenceRefs": [
+            "serialization-guard-test:scenario:search-term-overflow:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        },
+        {
+          "id": "measurement:search-seed-envelope-maximum",
+          "scenarioRef": "scenario:search-seed-envelope-maximum",
+          "boundaryRef": "boundary:search-seed-condition-url",
+          "inputProfileRef": "input:utf8-percent-expansion-v1",
+          "cardinalities": [
+            {
+              "dimensionRef": "dimension:search-seed-followup-query-utf8-bytes",
+              "value": 192
+            },
+            {
+              "dimensionRef": "dimension:search-seed-paper-id-utf8-bytes",
+              "value": 128
+            },
+            {
+              "dimensionRef": "dimension:search-seed-paper-title-utf8-bytes",
+              "value": 768
+            },
+            {
+              "dimensionRef": "dimension:search-seed-paper-url-utf8-bytes",
+              "value": 1024
+            },
+            {
+              "dimensionRef": "dimension:search-seed-paper-year",
+              "value": 9999
+            },
+            {
+              "dimensionRef": "dimension:search-seed-paper-citations",
+              "value": 9007199254740991
+            }
+          ],
+          "result": {
+            "kind": "serialized",
+            "serializedBytes": 6458,
+            "effectiveCardinalities": [
+              {
+                "dimensionRef": "dimension:search-seed-followup-query-utf8-bytes",
+                "value": 192
+              },
+              {
+                "dimensionRef": "dimension:search-seed-paper-id-utf8-bytes",
+                "value": 128
+              },
+              {
+                "dimensionRef": "dimension:search-seed-paper-title-utf8-bytes",
+                "value": 768
+              },
+              {
+                "dimensionRef": "dimension:search-seed-paper-url-utf8-bytes",
+                "value": 1024
+              },
+              {
+                "dimensionRef": "dimension:search-seed-paper-year",
+                "value": 9999
+              },
+              {
+                "dimensionRef": "dimension:search-seed-paper-citations",
+                "value": 9007199254740991
+              }
+            ]
+          },
+          "evidenceRefs": [
+            "serialization-measurement:scenario:search-seed-envelope-maximum:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        },
+        {
+          "id": "measurement:search-seed-overflow",
+          "scenarioRef": "scenario:search-seed-overflow",
+          "boundaryRef": "boundary:search-seed-condition-url",
+          "inputProfileRef": "input:utf8-one-byte-over-v1",
+          "cardinalities": [
+            {
+              "dimensionRef": "dimension:search-seed-followup-query-utf8-bytes",
+              "value": 192
+            },
+            {
+              "dimensionRef": "dimension:search-seed-paper-id-utf8-bytes",
+              "value": 128
+            },
+            {
+              "dimensionRef": "dimension:search-seed-paper-title-utf8-bytes",
+              "value": 769
+            },
+            {
+              "dimensionRef": "dimension:search-seed-paper-url-utf8-bytes",
+              "value": 1024
+            },
+            {
+              "dimensionRef": "dimension:search-seed-paper-year",
+              "value": 9999
+            },
+            {
+              "dimensionRef": "dimension:search-seed-paper-citations",
+              "value": 9007199254740991
+            }
+          ],
+          "result": {
+            "kind": "rejected"
+          },
+          "evidenceRefs": [
+            "serialization-guard-test:scenario:search-seed-overflow:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        },
+        {
+          "id": "measurement:citation-seed-envelope-maximum",
+          "scenarioRef": "scenario:citation-seed-envelope-maximum",
+          "boundaryRef": "boundary:citation-seed-condition-url",
+          "inputProfileRef": "input:utf8-percent-expansion-v1",
+          "cardinalities": [
+            {
+              "dimensionRef": "dimension:citation-seed-paper-id-utf8-bytes",
+              "value": 128
+            },
+            {
+              "dimensionRef": "dimension:citation-seed-paper-title-utf8-bytes",
+              "value": 768
+            },
+            {
+              "dimensionRef": "dimension:citation-seed-paper-url-utf8-bytes",
+              "value": 1024
+            },
+            {
+              "dimensionRef": "dimension:citation-seed-paper-year",
+              "value": 9999
+            },
+            {
+              "dimensionRef": "dimension:citation-seed-paper-citations",
+              "value": 9007199254740991
+            }
+          ],
+          "result": {
+            "kind": "serialized",
+            "serializedBytes": 5867,
+            "effectiveCardinalities": [
+              {
+                "dimensionRef": "dimension:citation-seed-paper-id-utf8-bytes",
+                "value": 128
+              },
+              {
+                "dimensionRef": "dimension:citation-seed-paper-title-utf8-bytes",
+                "value": 768
+              },
+              {
+                "dimensionRef": "dimension:citation-seed-paper-url-utf8-bytes",
+                "value": 1024
+              },
+              {
+                "dimensionRef": "dimension:citation-seed-paper-year",
+                "value": 9999
+              },
+              {
+                "dimensionRef": "dimension:citation-seed-paper-citations",
+                "value": 9007199254740991
+              }
+            ]
+          },
+          "evidenceRefs": [
+            "serialization-measurement:scenario:citation-seed-envelope-maximum:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        },
+        {
+          "id": "measurement:citation-seed-overflow",
+          "scenarioRef": "scenario:citation-seed-overflow",
+          "boundaryRef": "boundary:citation-seed-condition-url",
+          "inputProfileRef": "input:utf8-one-byte-over-v1",
+          "cardinalities": [
+            {
+              "dimensionRef": "dimension:citation-seed-paper-id-utf8-bytes",
+              "value": 128
+            },
+            {
+              "dimensionRef": "dimension:citation-seed-paper-title-utf8-bytes",
+              "value": 769
+            },
+            {
+              "dimensionRef": "dimension:citation-seed-paper-url-utf8-bytes",
+              "value": 1024
+            },
+            {
+              "dimensionRef": "dimension:citation-seed-paper-year",
+              "value": 9999
+            },
+            {
+              "dimensionRef": "dimension:citation-seed-paper-citations",
+              "value": 9007199254740991
+            }
+          ],
+          "result": {
+            "kind": "rejected"
+          },
+          "evidenceRefs": [
+            "serialization-guard-test:scenario:citation-seed-overflow:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        },
+        {
+          "id": "measurement:similar-seed-envelope-maximum",
+          "scenarioRef": "scenario:similar-seed-envelope-maximum",
+          "boundaryRef": "boundary:similar-seed-condition-url",
+          "inputProfileRef": "input:utf8-percent-expansion-v1",
+          "cardinalities": [
+            {
+              "dimensionRef": "dimension:similar-seed-paper-id-utf8-bytes",
+              "value": 128
+            },
+            {
+              "dimensionRef": "dimension:similar-seed-paper-title-utf8-bytes",
+              "value": 768
+            },
+            {
+              "dimensionRef": "dimension:similar-seed-paper-url-utf8-bytes",
+              "value": 1024
+            },
+            {
+              "dimensionRef": "dimension:similar-seed-paper-year",
+              "value": 9999
+            },
+            {
+              "dimensionRef": "dimension:similar-seed-paper-citations",
+              "value": 9007199254740991
+            }
+          ],
+          "result": {
+            "kind": "serialized",
+            "serializedBytes": 5866,
+            "effectiveCardinalities": [
+              {
+                "dimensionRef": "dimension:similar-seed-paper-id-utf8-bytes",
+                "value": 128
+              },
+              {
+                "dimensionRef": "dimension:similar-seed-paper-title-utf8-bytes",
+                "value": 768
+              },
+              {
+                "dimensionRef": "dimension:similar-seed-paper-url-utf8-bytes",
+                "value": 1024
+              },
+              {
+                "dimensionRef": "dimension:similar-seed-paper-year",
+                "value": 9999
+              },
+              {
+                "dimensionRef": "dimension:similar-seed-paper-citations",
+                "value": 9007199254740991
+              }
+            ]
+          },
+          "evidenceRefs": [
+            "serialization-measurement:scenario:similar-seed-envelope-maximum:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        },
+        {
+          "id": "measurement:similar-seed-overflow",
+          "scenarioRef": "scenario:similar-seed-overflow",
+          "boundaryRef": "boundary:similar-seed-condition-url",
+          "inputProfileRef": "input:utf8-one-byte-over-v1",
+          "cardinalities": [
+            {
+              "dimensionRef": "dimension:similar-seed-paper-id-utf8-bytes",
+              "value": 128
+            },
+            {
+              "dimensionRef": "dimension:similar-seed-paper-title-utf8-bytes",
+              "value": 769
+            },
+            {
+              "dimensionRef": "dimension:similar-seed-paper-url-utf8-bytes",
+              "value": 1024
+            },
+            {
+              "dimensionRef": "dimension:similar-seed-paper-year",
+              "value": 9999
+            },
+            {
+              "dimensionRef": "dimension:similar-seed-paper-citations",
+              "value": 9007199254740991
+            }
+          ],
+          "result": {
+            "kind": "rejected"
+          },
+          "evidenceRefs": [
+            "serialization-guard-test:scenario:similar-seed-overflow:3f6cf3115dfe0be6e4d99262e1f9043c4d8367fa"
+          ]
+        }
+      ]
+    }
+  ]
+}

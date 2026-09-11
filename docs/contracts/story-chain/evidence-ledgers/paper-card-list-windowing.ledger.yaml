@@ -1,0 +1,57 @@
+schemaVersion: 2
+slug: paper-card-list-windowing
+review: reviews/paper-card-list-windowing.reviews.md
+sourcePromises:
+  - promise:search-results-fast-window
+  - promise:citation-lineage
+  - promise:graph-neighbor-papers
+appliedAspects:
+  - aspect:paper-card-list-windowing
+intent:
+  mode: delegated
+  checks: []
+  delegations:
+    - key: promise:citation-lineage#intent-check:body-explains-citation-flow-not-counts
+      ledger: citation-lineage
+acceptanceChecks:
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-initial-dom-window
+    assertion: "`SEARCH_RESULTS_INITIAL_VISIBLE_COUNT` is literal 10 and the search result controller/store renders only the first 10 cards before 더보기."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-load-more-shows-progress-counts
+    assertion: Search result 더보기 expands by +10 and labels the window as `더보기 (N/M)`.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-load-more-window
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-card-list-window
+    assertion: Citation-lineage references/citations sections render 10 cards initially and expand the same direction by +10 with `더보기 (N/M)`.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-paginated-window
+    assertion: Graph-neighbor co-cited/coupled axes render 10 cards initially and expand the same axis by +10 with `더보기 (N/M)`.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx
+      - app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx
+      - app/lib/__tests__/constants.contract.test.ts
+  - id: execution:run-002
+    kind: contract-check
+    target: search-result-window
+    subcase: visible-window
+implementationContracts:
+  - "`SEARCH_RESULTS_INITIAL_VISIBLE_COUNT` is the shared paper-card list window size and remains value-pinned to 10."
+  - Search result lists, citation-lineage direction lists, and graph-neighbor axes all use the same +10 expansion label grammar.
+  - Multi-section documents keep window state local to each section or axis.
+verdict: met

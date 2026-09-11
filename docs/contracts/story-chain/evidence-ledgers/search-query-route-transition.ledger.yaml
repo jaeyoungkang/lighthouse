@@ -1,0 +1,102 @@
+schemaVersion: 2
+slug: search-query-route-transition
+review: reviews/search-query-route-transition.reviews.md
+sourcePromises:
+  - promise:search-query-route-transition
+appliedAspects:
+  - aspect:context-preserving-transitions
+  - aspect:route-view-ai-comment-generation-routing
+  - aspect:reaction-prefers-load-bearing-facts
+  - aspect:route-view-ai-reaction-rules
+  - aspect:immediate-navigation
+  - aspect:search-first-url-model
+  - aspect:first-paint-persistence-independence
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:search-query-route-transition#acceptance-check:search-query-route-transition-immediate-submit
+    assertion: 'vitest @ `app/components/research/__tests__/ResearchRouteSearchBar.test.tsx` ("navigates immediately to the search entry route on submit"; "does not activate when submitting the exact current entry URL"; "pushes a new query route while keeping provider processing destination-owned") + `app/(research)/__tests__/research-routes.test.tsx` ("streams a route-owned processing view at the same /search?q= address"; "leaves an unauthenticated query unresolved for the shared shell auth challenge"; "renders the /search?q= destination pending view through the real layout without auth") + `app/(research)/__tests__/layout.test.tsx` ("renders the search-first research shell without server auth gating"; "does not put user resolution on the layout first-paint path") + `app/components/research-route-renderers/__tests__/search-view-states.test.tsx` ("renders a query pending route as processing instead of zero-result search output"). 결과가 있는 검색 route의 상단 route 입력창에서 새 query를 제출하면 확인 배너 없이, 서버 왕복도 기다리지 않고 즉시 `/search?q=` entry route로 전환한다. origin shell은 클릭 receipt activation만 가질 수 있고 provider 진행·성공·실패를 소유하지 않는다. shared research layout은 auth를 기다리지 않고 shell/children을 먼저 반환하며, destination route는 current-user 해석과 provider 검색보다 먼저 route-owned pending 검색 상태를 같은 조건 주소에서 스트리밍한다. 인증되지 않은 resolved query child는 실행하지 않고 비워 두며 post-mount bootstrap 401 뒤 공용 shell이 auth challenge를 소유한다(aspect:immediate-navigation). Pending 검색 payload가 `total: 0`과 빈 `papers`를 들고 있어도 SearchView는 완료된 0건 결과 header/list나 빈 첫 검색 화면을 렌더하지 않고 `role="status"` processing surface를 렌더한다. Layout composition test는 auth promise가 끝나지 않아도 실제 layout → shell → page fallback tree가 pending view를 렌더함을 잠근다. 같은 route로 다시 제출하면 activation도 만들지 않는다.'
+    executionRefs:
+      - execution:run-002
+      - execution:run-003
+    scenarios:
+      - scenario:search-query-route-transition-recovery
+  - key: promise:search-query-route-transition#acceptance-check:search-query-route-transition-submit-feedback
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteSearchBar.test.tsx` ("navigates immediately to the search entry route on submit"; "does not activate when submitting the exact current entry URL"; "clears the route-bar button activation when navigation throws synchronously") + `app/components/research-route-renderers/__tests__/search-view-content.test.tsx` ("submits the initial search without a result-basis parameter"; "clears the first-search button activation when navigation throws synchronously") + `app/components/research/__tests__/research-route-shell.test.tsx` ("clears keyword activation feedback after the destination route arrives") + `app/components/research/__tests__/search-followup-activation.test.tsx` (activation identity, bounded timeout, and unmount cleanup). 첫 검색 화면과 연구 화면 상단의 `논문검색` 버튼은 새 조건 route로 이동을 시작한 직후 회전 표시, `aria-busy`, 비활성 상태를 함께 보여 준다. 버튼 상태는 shell-scoped activation에서 파생하며 목적지 처리 상태를 소유하지 않는다. 같은 route 재제출은 버튼 상태를 만들지 않고, 목적지 도착·동기 호출 실패·bounded timeout은 현재 activation만 정리한다.
+    executionRefs:
+      - execution:run-003
+    scenarios:
+      - scenario:search-query-route-transition-recovery
+  - key: promise:search-query-route-transition#acceptance-check:search-query-route-transition-clears-stale-reaction
+    assertion: 'vitest @ `app/api/search/__tests__/route.helpers.test.ts` ("clears the route AI comment so fresh route AI comment generation can describe the new query") + `app/stores/__tests__/research-route-store.ai-comment-cards.test.ts` ("clears stale local reaction history when hydration returns no persisted reaction"). 새 query 실행 payload는 이전 결과의 반응을 새 결과 문서로 따라오게 하지 않고, transition patch가 `reaction: null`·`reactionHistory: []`를 쓰며, strict server-truth hydration이 예전 AI 반응 history를 되살리지 않음을 단언한다.'
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-query-route-transition-reaction-hygiene
+  - key: promise:search-query-route-transition#acceptance-check:search-query-route-transition-empty-results-immediate
+    assertion: 현재 결과 컨텍스트가 비어 있으면 전환 확인 단계나 보류 없이 새 search request를 바로 실행한다
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+    scenarios:
+      - scenario:search-query-route-transition-recovery
+  - key: promise:search-query-route-transition#acceptance-check:search-query-route-transition-browser-route-owned
+    assertion: 새 query 제출은 현재 브라우저 창의 search route에서 처리되고 브라우저 history가 직전 결과 복귀를 제공한다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+    scenarios:
+      - scenario:search-query-route-transition-recovery
+  - key: promise:search-query-route-transition#acceptance-check:search-query-route-transition-inline-analysis-exposure-cycle
+    assertion: vitest @ `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-window.test.tsx` ("runs inline analysis only for task visible paper ids"; "runs inline analysis for rendered expanded-window cards without queueing hidden cards"; "ignores stale in-flight inline-analysis results after the same document id moves to a new cycle"). 새 result commit은 이전 결과 batch의 인라인 분석 작업을 새 결과 전체로 선제 대체하지 않고, 새 결과 카드 노출과 cycle key가 새 batch 갱신을 소유함을 잠근다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+    scenarios: []
+  - key: promise:search-query-route-transition#acceptance-check:search-query-route-transition-route-owned-render
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx` ("never renders another route's store document, including the first frame"; "renders the route-owned initial search entry instead of a foreign store document"; "clears the store view when the route unmounts") + `app/components/research/__tests__/ResearchBackgroundTasks.test.tsx` ("aborts and discards a running inline analysis when the view leaves the route"; "aborts an in-flight search enrichment when the view leaves the route"). route 전환 첫 프레임부터 active route-owned view가 renderer/reaction 앵커를 소유하고, route unmount 이후 떠난 뷰의 인라인 분석은 중단·폐기된다.
+    executionRefs:
+      - execution:run-004
+    scenarios:
+      - scenario:search-query-route-transition-recovery
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/api/search/__tests__/route.helpers.test.ts
+      - app/stores/__tests__/research-route-store.ai-comment-cards.test.ts
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+      - app/(research)/__tests__/research-routes.test.tsx
+      - app/(research)/__tests__/layout.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-states.test.tsx
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+      - app/components/research/__tests__/research-route-shell.test.tsx
+      - app/components/research/__tests__/search-followup-activation.test.tsx
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteRuntime.route-owned-render.test.tsx
+      - app/components/research/__tests__/ResearchBackgroundTasks.test.tsx
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-window.test.tsx
+implementationContracts:
+  - The listed Promise(s) are verified by the Acceptance Check entries and structured executions on this ledger.
+verdict: met

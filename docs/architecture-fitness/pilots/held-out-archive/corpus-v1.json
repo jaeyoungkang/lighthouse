@@ -1,0 +1,204 @@
+{
+  "$comment": "FROZEN held-out mutation corpus (issue #318). Runner: scripts/architecture-fitness/run-held-out-corpus.mjs (npm run architecture-fitness:held-out). The runner pins this file's sha256; edits require a corpus rotation — see docs/architecture-fitness/README.md § Held-out mutation corpus.",
+  "corpusVersion": 1,
+  "frozenAt": "2026-07-15",
+  "issue": 318,
+  "boundPolicies": {
+    "issue-278-least-authority": "docs/architecture-fitness/pilots/issue-278.policy.json",
+    "issue-276-search-state-boundary": "docs/architecture-fitness/pilots/issue-276.policy.json"
+  },
+  "escapeClasses": {
+    "inventory-bypass": "canonical identity/authority/carrier에 참여하는 state·writer·acquisition이 owner inventory를 우회한다 (PR #308 r3576698153)",
+    "unresolvable-acquisition-fail-open": "statically 해석할 수 없는 import/require acquisition이 protected inventory에서 fail-open한다 (PR #308 r3576698200)",
+    "failure-propagation-inconsistency": "collection 실패가 모든 decision-bearing fact에 동일하게 전파되지 않는다 (PR #308 r3576698210)",
+    "factrefs-binding": "measurement evidence의 factRefs가 실제 fact와 정확히 결속되지 않는다 (PR #308 r3576698149)",
+    "mismatch-downgrade": "신뢰 가능한 static mismatch가 실패한 보조 evidence 때문에 unknown으로만 낮아진다 (PR #308 r3576698171)"
+  },
+  "mutationCases": [
+    {
+      "id": "heldout-276-01-parallel-snapshot-writer-with-valid-execution-id",
+      "profile": "issue-276-search-state-boundary",
+      "escapeClass": "inventory-bypass",
+      "rule": "route-owned-result-snapshot",
+      "relative": "app/components/research/background-search-tasks.ts",
+      "before": "function settleSearchEnrichmentFailure(task: SearchEnrichmentTask): ResearchRoutePayload | null {\n  const documentStore = useResearchRouteStore.getState();",
+      "after": "function settleSearchEnrichmentFailure(task: SearchEnrichmentTask): ResearchRoutePayload | null {\n  const documentStore = useResearchRouteStore.getState();\n  if (documentStore.activeExecutionId === task.executionId && documentStore.currentView) {\n    documentStore.setCurrentView(documentStore.currentView, task.executionId);\n  }",
+      "expected": "guard rejects with rule route-owned-result-snapshot: a polite writer passing a VALID execution id evades invalid-write checks; only the access-owner inventory catches it"
+    },
+    {
+      "id": "heldout-276-02-second-identity-mint-owner",
+      "profile": "issue-276-search-state-boundary",
+      "escapeClass": "inventory-bypass",
+      "rule": "canonical-ephemeral-view-identity",
+      "relative": "app/(research)/search-route-page.tsx",
+      "before": "import type { CurrentUser } from \"@/app/server/auth/identity\";",
+      "after": "import type { CurrentUser } from \"@/app/server/auth/identity\";\nimport { buildEphemeralSearchViewId } from \"@/app/server/services/ephemeral-view-id\";\n\nconst PARALLEL_PENDING_SEARCH_VIEW_ID = buildEphemeralSearchViewId(\"q=parallel-pending\");\nvoid PARALLEL_PENDING_SEARCH_VIEW_ID;",
+      "expected": "guard rejects with rule canonical-ephemeral-view-identity: buildEphemeralSearchViewId must keep one named production owner (static-import second call site, unlike built-in dynamic-loader mutations)"
+    },
+    {
+      "id": "heldout-276-03-env-selected-hash-provider-module",
+      "profile": "issue-276-search-state-boundary",
+      "escapeClass": "unresolvable-acquisition-fail-open",
+      "rule": "canonical-ephemeral-view-identity",
+      "relative": "app/server/services/ephemeral-view-id.ts",
+      "before": "export function buildEphemeralSearchViewId(canonicalKey: string): string {",
+      "after": "const RUNTIME_HASH_PROVIDER_MODULE =\n  process.env.SEARCH_HASH_PROVIDER_MODULE ?? \"node:crypto\";\n\nasync function loadRuntimeHashProvider() {\n  return import(RUNTIME_HASH_PROVIDER_MODULE);\n}\nvoid loadRuntimeHashProvider;\n\nexport function buildEphemeralSearchViewId(canonicalKey: string): string {",
+      "expected": "guard fails CLOSED: the ??-fallback specifier is not statically resolvable, so non-static acquisition propagates into the inventory-owned rules (asserted on canonical-ephemeral-view-identity)"
+    },
+    {
+      "id": "heldout-276-04-global-query-carrier-fallback",
+      "profile": "issue-276-search-state-boundary",
+      "escapeClass": "inventory-bypass",
+      "rule": "url-to-execution-projection",
+      "relative": "app/server/services/search-execution.ts",
+      "before": "  const query = (firstParam(params.q) ?? \"\").trim();",
+      "after": "  const query = (\n    (firstParam(params.q) ?? \"\") ||\n    (globalThis as { __lastSearchQuery?: string }).__lastSearchQuery ||\n    \"\"\n  ).trim();",
+      "expected": "guard rejects with rule url-to-execution-projection: a competing globalThis carrier feeds the search condition"
+    },
+    {
+      "id": "heldout-276-05-nondeterministic-canonical-key-suffix",
+      "profile": "issue-276-search-state-boundary",
+      "escapeClass": "inventory-bypass",
+      "rule": "url-to-execution-projection",
+      "relative": "app/server/services/search-execution.ts",
+      "before": "  return {\n    ...input,\n    canonicalKey: buildCanonicalSearchExecutionKey(input),\n  };",
+      "after": "  return {\n    ...input,\n    canonicalKey: `${buildCanonicalSearchExecutionKey(input)}&exec=${Date.now().toString(36)}`,\n  };",
+      "expected": "guard rejects with rule url-to-execution-projection: canonicalKey is minted with a nondeterministic suffix"
+    },
+    {
+      "id": "heldout-278-01-repository-side-raw-unwrap-acquisition",
+      "profile": "issue-278-least-authority",
+      "escapeClass": "inventory-bypass",
+      "rule": "repository-db-capability-caller",
+      "relative": "app/server/repository/reviewed-papers.ts",
+      "before": "import { getLighthouseDbFor } from \"./db\";",
+      "after": "import { getLighthouseDbFor } from \"./db\";\nimport { unwrapRepositoryDbHandle } from \"@/app/lib/supabase/repository-db-handle\";\nvoid unwrapRepositoryDbHandle;",
+      "expected": "guard rejects with rule repository-db-capability-caller: only app/server/repository/db.ts may acquire unwrapRepositoryDbHandle"
+    },
+    {
+      "id": "heldout-278-02-service-role-env-key-in-repository-db",
+      "profile": "issue-278-least-authority",
+      "escapeClass": "inventory-bypass",
+      "rule": "service-role-environment-owner",
+      "relative": "app/server/repository/db.ts",
+      "before": "export function getRepositoryDbFor(handle: RepositoryDbHandle): SupabaseClient {",
+      "after": "const REPOSITORY_FALLBACK_SERVICE_ROLE_ENV = \"SUPABASE_SERVICE_ROLE_KEY\";\nvoid REPOSITORY_FALLBACK_SERVICE_ROLE_ENV;\n\nexport function getRepositoryDbFor(handle: RepositoryDbHandle): SupabaseClient {",
+      "expected": "guard rejects with rule service-role-environment-owner: the service-role env key literal is duplicated outside the Supabase server factory"
+    },
+    {
+      "id": "heldout-278-03-env-selected-repository-module-import",
+      "profile": "issue-278-least-authority",
+      "escapeClass": "unresolvable-acquisition-fail-open",
+      "rule": "non-static-module-acquisition",
+      "relative": "app/server/domain-access/reviewed-paper-access.ts",
+      "before": "export async function listMyReviewedPapers(): Promise<ReviewedPaper[]> {",
+      "after": "const REVIEWED_REPOSITORY_MODULE =\n  process.env.REVIEWED_REPOSITORY_MODULE ?? \"@/app/server/repository/reviewed-papers\";\n\nasync function loadReviewedPaperRepositoryModule() {\n  return import(REVIEWED_REPOSITORY_MODULE);\n}\nvoid loadReviewedPaperRepositoryModule;\n\nexport async function listMyReviewedPapers(): Promise<ReviewedPaper[]> {",
+      "expected": "guard fails CLOSED with rule non-static-module-acquisition: the built-in suite only injects resolvable computed specifiers; this is the unresolvable variant"
+    },
+    {
+      "id": "heldout-278-04-non-inline-admin-client-wrap-window",
+      "profile": "issue-278-least-authority",
+      "escapeClass": "inventory-bypass",
+      "rule": "raw-service-role-client-exposure",
+      "relative": "app/server/auth/identity.ts",
+      "before": "    db: createRepositoryDbHandle(createAdminClient()),",
+      "after": "    db: (() => {\n      const rawAdminDb = createAdminClient();\n      return createRepositoryDbHandle(rawAdminDb);\n    })(),",
+      "expected": "guard rejects with rule raw-service-role-client-exposure: a semantically identical refactor reopens a raw-client variable window inside an allowed caller"
+    },
+    {
+      "id": "heldout-278-05-widened-repository-symbol-import",
+      "profile": "issue-278-least-authority",
+      "escapeClass": "inventory-bypass",
+      "rule": "reviewed-paper-repository-caller",
+      "relative": "app/server/domain-access/search-enrichment-access.ts",
+      "before": "import { getReviewedStatus } from \"@/app/server/repository/reviewed-papers\";",
+      "after": "import { getReviewedStatus, markAsReviewed } from \"@/app/server/repository/reviewed-papers\";\nvoid markAsReviewed;",
+      "expected": "guard rejects with rule reviewed-paper-repository-caller: an existing allowed import is widened with a non-whitelisted symbol"
+    }
+  ],
+  "negativeControls": [
+    {
+      "id": "nc-3a-malformed-tsconfig-inventory-fail-closed",
+      "escapeClass": "failure-propagation-inconsistency",
+      "kind": "malformed-tsconfig",
+      "expected": "runSearchStateBoundaryGuard resolves without throwing; ok=false; inventory-owned facts url-to-execution-projection, canonical-ephemeral-view-identity, route-owned-result-snapshot all false with a shared 'production inventory failed' error; non-inventory fact url-condition-authority stays true"
+    },
+    {
+      "id": "nc-3b-missing-target-file",
+      "escapeClass": "failure-propagation-inconsistency",
+      "kind": "missing-target-file",
+      "target": "app/lib/ephemeral-search-view.ts",
+      "expected": "no throw; ok=false; missing includes the deleted file; canonical-ephemeral-view-identity carries 'identity constant source missing'"
+    },
+    {
+      "id": "nc-3c-tampered-policy-digest",
+      "escapeClass": "failure-propagation-inconsistency",
+      "kind": "tampered-policy-digest",
+      "collector": "scripts/architecture-fitness/collect-search-state-boundary.mjs",
+      "policy": "docs/architecture-fitness/pilots/issue-276.policy.json",
+      "expected": "collector CLI exits 1 with 'collector definition digest mismatch' before any evidence; no observation file is written"
+    },
+    {
+      "id": "nc-3e-malformed-policy-json",
+      "escapeClass": "failure-propagation-inconsistency",
+      "kind": "malformed-policy-json",
+      "collector": "scripts/architecture-fitness/collect-search-state-boundary.mjs",
+      "expected": "collector CLI exits non-zero and writes no observation (fail-closed; error-message quality is not asserted)"
+    },
+    {
+      "id": "nc-4a-undeclared-fact-ref",
+      "escapeClass": "factrefs-binding",
+      "kind": "observation-validate",
+      "fixture": "nc4a.tampered-factrefs.observation.json",
+      "policy": "docs/architecture-fitness/pilots/issue-276.policy.json",
+      "expectExit": 1,
+      "expectMessage": "has undeclared fact refs: normalization:canonical-search-execution-v1"
+    },
+    {
+      "id": "nc-4b-cross-kind-target-binding",
+      "escapeClass": "factrefs-binding",
+      "kind": "observation-validate",
+      "fixture": "nc4b.tampered-stateref.observation.json",
+      "policy": "docs/architecture-fitness/pilots/issue-276.policy.json",
+      "expectExit": 1,
+      "expectMessage": "must not target states."
+    },
+    {
+      "id": "nc-4c-coverage-fact-unbinding",
+      "escapeClass": "factrefs-binding",
+      "kind": "observation-validate",
+      "fixture": "nc4c.tampered-coverage-fact.observation.json",
+      "policy": "docs/architecture-fitness/pilots/issue-276.policy.json",
+      "expectExit": 1,
+      "expectMessage": "must target coverage:all-state-boundaries."
+    },
+    {
+      "id": "nc-5a-mismatch-survives-auxiliary-failure",
+      "escapeClass": "mismatch-downgrade",
+      "kind": "frozen-observation-evaluate",
+      "fixture": "nc5a.observation.json",
+      "policy": "docs/architecture-fitness/pilots/issue-276.policy.json",
+      "expectExit": 2,
+      "expectFinding": "authorities:mismatch",
+      "expected": "a trustworthy static mismatch (commandExitCode 0) stays degraded even though the auxiliary test evidence failed; the auxiliary failure must not suppress the mismatch"
+    },
+    {
+      "id": "nc-5b-unreliable-mismatch-downgrades-to-unknown",
+      "escapeClass": "mismatch-downgrade",
+      "kind": "frozen-observation-evaluate",
+      "fixture": "nc5b.observation.json",
+      "policy": "docs/architecture-fitness/pilots/issue-276.policy.json",
+      "expectExit": 3,
+      "expectFinding": "authorities:unverified",
+      "expected": "when the mismatch-carrying static evidence itself is unreliable (commandExitCode 1), the verdict downgrades to unknown only; this pins the exact downgrade boundary"
+    }
+  ],
+  "deferred": [
+    {
+      "id": "nc-3d-dependency-lock-mismatch-partial",
+      "escapeClass": "failure-propagation-inconsistency",
+      "reason": "needs a throwaway commit with a tampered package-lock blob via git plumbing; documented for a later corpus rotation",
+      "expected": "collector exit 0 with observations[0].completeness = partial, path-test evidence commandExitCode 1 and dependencyLockMatches false, static evidence unaffected"
+    }
+  ]
+}

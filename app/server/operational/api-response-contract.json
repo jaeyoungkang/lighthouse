@@ -1,0 +1,808 @@
+{
+  "version": 1,
+  "defaultUnexpectedFailure": {
+    "status": 500,
+    "code": "API_INTERNAL_ERROR",
+    "action": "retry",
+    "retryable": true
+  },
+  "routes": [
+    {
+      "path": "app/api/analytics-events/route.ts",
+      "methods": ["POST"],
+      "successStatuses": [204],
+      "degradedSuccess": ["invalid, over-budget, or sink-failed telemetry is absorbed as 204"],
+      "correctableFailures": [],
+      "authFailures": [],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [],
+      "unexpectedFailure": "absorbed-204"
+    },
+    {
+      "path": "app/api/auth/identify/route.ts",
+      "methods": ["GET", "POST", "DELETE"],
+      "successStatuses": [],
+      "degradedSuccess": [],
+      "correctableFailures": [
+        {
+          "statuses": [410],
+          "codes": ["AUTH_IDENTIFY_RETIRED"],
+          "action": "clear-missing-state",
+          "retryable": false
+        }
+      ],
+      "authFailures": [],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [],
+      "unexpectedFailure": "not-applicable"
+    },
+    {
+      "path": "app/api/auth/magic-link/route.ts",
+      "methods": ["POST"],
+      "successStatuses": [200],
+      "degradedSuccess": [],
+      "correctableFailures": [
+        {
+          "statuses": [400],
+          "codes": ["API_INVALID_JSON", "AUTH_EMAIL_INVALID"],
+          "action": "correct-request",
+          "retryable": false
+        },
+        {
+          "statuses": [413],
+          "codes": ["API_REQUEST_BODY_TOO_LARGE"],
+          "action": "reduce-request",
+          "retryable": false
+        }
+      ],
+      "authFailures": [
+        {
+          "statuses": [403],
+          "codes": ["AUTH_EMAIL_RESTRICTED"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [],
+      "overloadFailures": [
+        {
+          "statuses": [429],
+          "codes": ["AUTH_MAGIC_LINK_RATE_LIMITED"],
+          "action": "wait-and-retry",
+          "retryable": true,
+          "backoff": "retry-after"
+        }
+      ],
+      "transientFailures": [
+        {
+          "statuses": [500, 502, 503],
+          "codes": [
+            "API_INTERNAL_ERROR",
+            "AUTH_MAGIC_LINK_FAILED",
+            "AUTH_ACCESS_DECISION_UNAVAILABLE"
+          ],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/auth/moonlight-scholar/me/route.ts",
+      "methods": ["GET"],
+      "successStatuses": [200],
+      "degradedSuccess": [],
+      "correctableFailures": [],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": [
+            "MOONLIGHT_SCHOLAR_TOKEN_MISSING",
+            "MOONLIGHT_SCHOLAR_TOKEN_INVALID",
+            "MOONLIGHT_SCHOLAR_TOKEN_EXPIRED"
+          ],
+          "action": "authenticate",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [
+        {
+          "statuses": [500, 503],
+          "codes": ["API_INTERNAL_ERROR", "MOONLIGHT_SCHOLAR_AUTH_NOT_CONFIGURED"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/auth/moonlight-scholar/session/route.ts",
+      "methods": ["POST", "DELETE"],
+      "successStatuses": [200],
+      "degradedSuccess": [],
+      "correctableFailures": [
+        {
+          "statuses": [400],
+          "codes": ["API_INVALID_JSON", "MOONLIGHT_SCHOLAR_TOKEN_INVALID"],
+          "action": "correct-request",
+          "retryable": false
+        },
+        {
+          "statuses": [413],
+          "codes": ["API_REQUEST_BODY_TOO_LARGE"],
+          "action": "reduce-request",
+          "retryable": false
+        }
+      ],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": [
+            "MOONLIGHT_SCHOLAR_TOKEN_MISSING",
+            "MOONLIGHT_SCHOLAR_TOKEN_INVALID",
+            "MOONLIGHT_SCHOLAR_TOKEN_EXPIRED"
+          ],
+          "action": "authenticate",
+          "retryable": false
+        },
+        {
+          "statuses": [403],
+          "codes": ["MOONLIGHT_SCHOLAR_ORIGIN_INVALID"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [
+        {
+          "statuses": [500, 503],
+          "codes": ["API_INTERNAL_ERROR", "MOONLIGHT_SCHOLAR_AUTH_NOT_CONFIGURED"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/auth/session-touch/route.ts",
+      "methods": ["POST"],
+      "successStatuses": [204],
+      "degradedSuccess": ["unauthenticated touch is intentionally absorbed as 204"],
+      "correctableFailures": [],
+      "authFailures": [],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [
+        {
+          "statuses": [500],
+          "codes": ["API_INTERNAL_ERROR"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/errors/route.ts",
+      "methods": ["POST"],
+      "successStatuses": [204],
+      "degradedSuccess": ["invalid, over-budget, or sink-failed error reports are absorbed as 204"],
+      "correctableFailures": [],
+      "authFailures": [],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [],
+      "unexpectedFailure": "absorbed-204"
+    },
+    {
+      "path": "app/api/gap-reports/[id]/enrichment-retry/route.ts",
+      "methods": ["POST"],
+      "successStatuses": [200, 202],
+      "degradedSuccess": [
+        "202 means one accepted or already-pending enrichment attempt remains runner-owned"
+      ],
+      "correctableFailures": [
+        {
+          "statuses": [400],
+          "codes": ["GAP_ENRICHMENT_RETRY_REPORT_ID_INVALID"],
+          "action": "correct-request",
+          "retryable": false
+        },
+        {
+          "statuses": [404],
+          "codes": ["GAP_REPORT_NOT_FOUND"],
+          "action": "clear-missing-state",
+          "retryable": false
+        }
+      ],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": ["AUTH_UNAUTHENTICATED"],
+          "action": "authenticate",
+          "retryable": false
+        },
+        {
+          "statuses": [403],
+          "codes": ["AUTH_FORBIDDEN"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [
+        {
+          "statuses": [409],
+          "codes": ["GAP_ENRICHMENT_RETRY_NOT_AVAILABLE"],
+          "action": "refresh-and-rebase",
+          "retryable": false
+        }
+      ],
+      "overloadFailures": [
+        {
+          "statuses": [429],
+          "codes": ["GAP_ENRICHMENT_RETRY_COOLDOWN", "GAP_BUILD_PRINCIPAL_ADMISSION_LIMIT"],
+          "action": "wait-and-retry",
+          "retryable": true,
+          "backoff": "retry-after"
+        }
+      ],
+      "transientFailures": [
+        {
+          "statuses": [500],
+          "codes": ["API_INTERNAL_ERROR"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/gap-reports/[id]/reaction/route.ts",
+      "methods": ["GET", "PUT", "DELETE"],
+      "successStatuses": [200],
+      "degradedSuccess": [],
+      "correctableFailures": [
+        {
+          "statuses": [400, 422],
+          "codes": [
+            "GAP_REACTION_REPORT_ID_INVALID",
+            "GAP_REACTION_PAYLOAD_INVALID",
+            "GAP_REACTION_DELETE_INVALID",
+            "GAP_REACTION_DEGRADED_NOTICE_REJECTED",
+            "GAP_REACTION_TIMESTAMP_REJECTED",
+            "GAP_REACTION_NOT_PREPARED"
+          ],
+          "action": "correct-request",
+          "retryable": false
+        },
+        {
+          "statuses": [404],
+          "codes": ["AUTH_NOT_FOUND"],
+          "action": "clear-missing-state",
+          "retryable": false
+        },
+        {
+          "statuses": [413],
+          "codes": ["GAP_REACTION_REQUEST_TOO_LARGE"],
+          "action": "reduce-request",
+          "retryable": false
+        }
+      ],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": ["AUTH_UNAUTHENTICATED"],
+          "action": "authenticate",
+          "retryable": false
+        },
+        {
+          "statuses": [403],
+          "codes": ["AUTH_FORBIDDEN"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [
+        {
+          "statuses": [409],
+          "codes": ["GAP_REACTION_VERSION_CONFLICT", "GAP_REACTION_WRITE_CONFLICT"],
+          "action": "refresh-and-rebase",
+          "retryable": false
+        }
+      ],
+      "overloadFailures": [],
+      "transientFailures": [
+        {
+          "statuses": [500],
+          "codes": ["API_INTERNAL_ERROR"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/gap-reports/route.ts",
+      "methods": ["POST"],
+      "successStatuses": [201, 202],
+      "degradedSuccess": ["202 means a durable report exists and background build remains pending"],
+      "correctableFailures": [
+        {
+          "statuses": [400],
+          "codes": ["GAP_REPORT_COLLECTION_LIMIT_INVALID", "GAP_REPORT_PAYLOAD_INVALID"],
+          "action": "correct-request",
+          "retryable": false
+        },
+        {
+          "statuses": [404],
+          "codes": ["GAP_REPORT_NOT_FOUND"],
+          "action": "clear-missing-state",
+          "retryable": false
+        },
+        {
+          "statuses": [413],
+          "codes": ["GAP_REPORT_REQUEST_TOO_LARGE"],
+          "action": "reduce-request",
+          "retryable": false
+        }
+      ],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": ["AUTH_UNAUTHENTICATED"],
+          "action": "authenticate",
+          "retryable": false
+        },
+        {
+          "statuses": [403],
+          "codes": ["AUTH_FORBIDDEN"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [],
+      "overloadFailures": [
+        {
+          "statuses": [429],
+          "codes": ["GAP_BUILD_PRINCIPAL_ADMISSION_LIMIT"],
+          "action": "wait-and-retry",
+          "retryable": true,
+          "backoff": "retry-after"
+        }
+      ],
+      "transientFailures": [
+        {
+          "statuses": [500],
+          "codes": ["API_INTERNAL_ERROR"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/gap-reports/status/route.ts",
+      "methods": ["GET"],
+      "successStatuses": [200],
+      "degradedSuccess": [
+        "200 payload status explicitly distinguishes pending and failed build state"
+      ],
+      "correctableFailures": [
+        {
+          "statuses": [400],
+          "codes": ["GAP_REPORT_STATUS_QUERY_INVALID"],
+          "action": "correct-request",
+          "retryable": false
+        },
+        {
+          "statuses": [404],
+          "codes": ["GAP_REPORT_NOT_FOUND"],
+          "action": "clear-missing-state",
+          "retryable": false
+        }
+      ],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": ["AUTH_UNAUTHENTICATED"],
+          "action": "authenticate",
+          "retryable": false
+        },
+        {
+          "statuses": [403],
+          "codes": ["AUTH_FORBIDDEN"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [
+        {
+          "statuses": [500],
+          "codes": ["API_INTERNAL_ERROR"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/graph-neighbors/hydrate/route.ts",
+      "methods": ["POST"],
+      "successStatuses": [200],
+      "degradedSuccess": [],
+      "correctableFailures": [
+        {
+          "statuses": [400],
+          "codes": ["API_INVALID_JSON", "GRAPH_NEIGHBOR_HYDRATION_INVALID"],
+          "action": "correct-request",
+          "retryable": false
+        },
+        {
+          "statuses": [413],
+          "codes": ["API_REQUEST_BODY_TOO_LARGE"],
+          "action": "reduce-request",
+          "retryable": false
+        }
+      ],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": ["AUTH_UNAUTHENTICATED"],
+          "action": "authenticate",
+          "retryable": false
+        },
+        {
+          "statuses": [403],
+          "codes": ["AUTH_FORBIDDEN"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [
+        {
+          "statuses": [500],
+          "codes": ["API_INTERNAL_ERROR"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/library-context/bootstrap/route.ts",
+      "methods": ["GET"],
+      "successStatuses": [200],
+      "degradedSuccess": [
+        "provider, DB, timeout, abort, or shape failure returns explicit unavailable 200"
+      ],
+      "correctableFailures": [],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": ["AUTH_UNAUTHENTICATED"],
+          "action": "authenticate",
+          "retryable": false
+        },
+        {
+          "statuses": [403],
+          "codes": ["AUTH_FORBIDDEN"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [
+        {
+          "statuses": [500],
+          "codes": ["API_INTERNAL_ERROR"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/papers/analyze-inline/route.ts",
+      "methods": ["POST"],
+      "successStatuses": [200],
+      "degradedSuccess": [
+        "200 may contain per-paper unavailable fallback while preserving bounded result shape"
+      ],
+      "correctableFailures": [
+        {
+          "statuses": [400],
+          "codes": ["INLINE_ANALYSIS_INVALID"],
+          "action": "correct-request",
+          "retryable": false
+        },
+        {
+          "statuses": [413],
+          "codes": ["INLINE_ANALYSIS_REQUEST_TOO_LARGE"],
+          "action": "reduce-request",
+          "retryable": false
+        }
+      ],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": ["AUTH_UNAUTHENTICATED"],
+          "action": "authenticate",
+          "retryable": false
+        },
+        {
+          "statuses": [403],
+          "codes": ["AUTH_FORBIDDEN"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [
+        {
+          "statuses": [500, 502, 503],
+          "codes": ["API_INTERNAL_ERROR"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/papers/reviewed/route.ts",
+      "methods": ["GET", "POST", "DELETE"],
+      "successStatuses": [200],
+      "degradedSuccess": [],
+      "correctableFailures": [
+        {
+          "statuses": [400],
+          "codes": ["API_INVALID_JSON", "REVIEWED_PAPER_INVALID", "REVIEWED_PAPER_DELETE_INVALID"],
+          "action": "correct-request",
+          "retryable": false
+        },
+        {
+          "statuses": [413],
+          "codes": ["API_REQUEST_BODY_TOO_LARGE"],
+          "action": "reduce-request",
+          "retryable": false
+        }
+      ],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": ["AUTH_UNAUTHENTICATED"],
+          "action": "authenticate",
+          "retryable": false
+        },
+        {
+          "statuses": [403],
+          "codes": ["AUTH_FORBIDDEN"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [
+        {
+          "statuses": [500],
+          "codes": ["API_INTERNAL_ERROR"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/route-ai-comments/generate/[id]/route.ts",
+      "methods": ["POST"],
+      "successStatuses": [200],
+      "degradedSuccess": [
+        "provider, timeout, abort, parse, or empty generation returns reaction:null in 200"
+      ],
+      "correctableFailures": [
+        {
+          "statuses": [400, 422],
+          "codes": [
+            "API_INVALID_JSON",
+            "ROUTE_AI_COMMENT_GENERATION_INVALID",
+            "ROUTE_AI_COMMENT_TARGET_MISMATCH",
+            "ROUTE_AI_COMMENT_UNSUPPORTED"
+          ],
+          "action": "correct-request",
+          "retryable": false
+        },
+        {
+          "statuses": [413],
+          "codes": ["API_REQUEST_BODY_TOO_LARGE"],
+          "action": "reduce-request",
+          "retryable": false
+        }
+      ],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": ["AUTH_UNAUTHENTICATED"],
+          "action": "authenticate",
+          "retryable": false
+        },
+        {
+          "statuses": [403],
+          "codes": ["AUTH_FORBIDDEN"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [
+        {
+          "statuses": [500],
+          "codes": ["API_INTERNAL_ERROR"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/search/enrichment/route.ts",
+      "methods": ["POST"],
+      "successStatuses": [200],
+      "degradedSuccess": [
+        "v1 successful empty hydration returns a terminal hydration delta in 200; legacy request returns terminal metadata during one-release dual-read"
+      ],
+      "correctableFailures": [
+        {
+          "statuses": [400],
+          "codes": ["API_INVALID_JSON", "SEARCH_ENRICHMENT_INVALID"],
+          "action": "correct-request",
+          "retryable": false
+        },
+        {
+          "statuses": [413],
+          "codes": ["API_REQUEST_BODY_TOO_LARGE"],
+          "action": "reduce-request",
+          "retryable": false
+        }
+      ],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": ["AUTH_UNAUTHENTICATED"],
+          "action": "authenticate",
+          "retryable": false
+        },
+        {
+          "statuses": [403],
+          "codes": ["AUTH_FORBIDDEN"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [
+        {
+          "statuses": [500],
+          "codes": ["API_INTERNAL_ERROR"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/search/spelling-correction/route.ts",
+      "methods": ["POST"],
+      "successStatuses": [200],
+      "degradedSuccess": [
+        "v1 no confident correction or provider fallback returns spellingCorrection:null delta in 200; legacy request returns correctedQuery:null during one-release dual-read"
+      ],
+      "correctableFailures": [
+        {
+          "statuses": [400],
+          "codes": ["API_INVALID_JSON", "SEARCH_SPELLING_CORRECTION_INVALID"],
+          "action": "correct-request",
+          "retryable": false
+        },
+        {
+          "statuses": [413],
+          "codes": ["API_REQUEST_BODY_TOO_LARGE"],
+          "action": "reduce-request",
+          "retryable": false
+        }
+      ],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": ["AUTH_UNAUTHENTICATED"],
+          "action": "authenticate",
+          "retryable": false
+        },
+        {
+          "statuses": [403],
+          "codes": ["AUTH_FORBIDDEN"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [],
+      "overloadFailures": [
+        {
+          "statuses": [429],
+          "codes": ["SEARCH_SPELLING_CORRECTION_RATE_LIMITED"],
+          "action": "wait-and-retry",
+          "retryable": true,
+          "backoff": "retry-after"
+        }
+      ],
+      "transientFailures": [
+        {
+          "statuses": [500],
+          "codes": ["API_INTERNAL_ERROR"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    },
+    {
+      "path": "app/api/search/term-discovery/route.ts",
+      "methods": ["POST"],
+      "successStatuses": [200],
+      "degradedSuccess": [
+        "v1 fallback term discovery returns an empty ready term delta in 200; legacy request preserves current metadata during one-release dual-read"
+      ],
+      "correctableFailures": [
+        {
+          "statuses": [400],
+          "codes": ["API_INVALID_JSON", "SEARCH_TERM_DISCOVERY_INVALID"],
+          "action": "correct-request",
+          "retryable": false
+        },
+        {
+          "statuses": [413],
+          "codes": ["API_REQUEST_BODY_TOO_LARGE"],
+          "action": "reduce-request",
+          "retryable": false
+        }
+      ],
+      "authFailures": [
+        {
+          "statuses": [401],
+          "codes": ["AUTH_UNAUTHENTICATED"],
+          "action": "authenticate",
+          "retryable": false
+        },
+        {
+          "statuses": [403],
+          "codes": ["AUTH_FORBIDDEN"],
+          "action": "request-permission",
+          "retryable": false
+        }
+      ],
+      "conflictFailures": [],
+      "overloadFailures": [],
+      "transientFailures": [
+        {
+          "statuses": [500],
+          "codes": ["API_INTERNAL_ERROR"],
+          "action": "retry",
+          "retryable": true
+        }
+      ],
+      "unexpectedFailure": "stable-envelope"
+    }
+  ]
+}

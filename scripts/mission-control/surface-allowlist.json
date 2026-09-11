@@ -1,0 +1,19 @@
+{
+  "$comment": "Surface allowlist for mc:audit-surface. Two layers: 'infrastructure' (no user-visible promise — never need a tag) and 'backfillBacklog' (existing user-facing surfaces still awaiting a tag — grandfathered until backfilled). New files default to neither and must carry at least one of `// @promise promise:<slug>` / `// @aspect aspect:<slug>` / `// @check intent-check:<slug>` / `// @check acceptance-check:<slug>` within the first 24 lines. Multi-promise surfaces may declare multiple tags.",
+  "infrastructure": [
+    "app/layout.tsx",
+    "app/(research)/layout.tsx",
+    "app/(admin)/layout.tsx",
+    "app/components/CitationLink.tsx",
+    "app/components/DisclosureChevron.tsx",
+    "app/components/error-reporter.tsx",
+    "app/components/EmailGate.tsx",
+    "app/components/research-route-renderers/knowledge-map/GapNetworkConceptNodesLayer.tsx",
+    "app/components/research-route-renderers/knowledge-map/GapNetworkFocusedSelectionSummary.tsx",
+    "app/components/research-route-renderers/knowledge-map/GapNetworkSections.tsx",
+    "app/components/research-route-renderers/citation-lineage-view.tsx",
+    "app/components/research-route-renderers/search-result-item.tsx",
+    "app/components/research-route-renderers/search-view-content.tsx"
+  ],
+  "backfillBacklog": []
+}

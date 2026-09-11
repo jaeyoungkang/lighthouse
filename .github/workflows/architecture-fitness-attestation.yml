@@ -1,0 +1,659 @@
+name: Architecture Fitness Attestation
+
+on:
+  workflow_dispatch: {}
+
+concurrency:
+  group: architecture-fitness-protected-main-rebind
+  cancel-in-progress: true
+
+# The protected main workflow owns collection and attestation. Operator-requested
+# rebind runs execute the exact protected main implementation. Q4 executes only
+# trusted collectors, guards, and
+# source-policy tests; it treats the compared tree as read-only source and seals
+# its raw artifact before profiles that run exact-target behavior. Q5 target
+# behavior runs in its own no-secret job and receives only the collector's
+# allowlisted child-process environment; its raw artifact never shares a
+# writable lane with Q1-Q4. Collection jobs have only read permission and do
+# not persist checkout credentials. The protected job never checks out or executes
+# unmerged pull-request code; it
+# validates and signs strict artifacts with the pinned Architecture Fitness core.
+permissions:
+  contents: read
+
+jobs:
+  resolve:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      base-revision: ${{ steps.rebind-revisions.outputs.base-revision }}
+      target-revision: ${{ steps.rebind-revisions.outputs.target-revision }}
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Resolve exact protected-main rebind revisions
+        id: rebind-revisions
+        env:
+          TARGET_REVISION: ${{ github.sha }}
+          WORKFLOW_REVISION: ${{ github.workflow_sha }}
+        run: |
+          if [[ ! "$TARGET_REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "invalid protected main target revision" >&2
+            exit 1
+          fi
+          if [[ "$WORKFLOW_REVISION" != "$TARGET_REVISION" ]]; then
+            echo "protected workflow revision must equal the exact main target" >&2
+            exit 1
+          fi
+          BASE_REVISION="$(git rev-parse "${TARGET_REVISION}^")"
+          git merge-base --is-ancestor "$BASE_REVISION" "$TARGET_REVISION"
+          echo "base-revision=$BASE_REVISION" >> "$GITHUB_OUTPUT"
+          echo "target-revision=$TARGET_REVISION" >> "$GITHUB_OUTPUT"
+
+      - name: Publish protected-main authority summary
+        env:
+          BASE_REVISION: ${{ steps.rebind-revisions.outputs.base-revision }}
+          TARGET_REVISION: ${{ steps.rebind-revisions.outputs.target-revision }}
+        run: |
+          {
+            echo "## Architecture Fitness protected-main rebind"
+            echo
+            echo "- Base revision: \`$BASE_REVISION\`"
+            echo "- Target revision: \`$TARGET_REVISION\`"
+            echo "- Authority: the exact protected-main target workflow and collectors"
+            echo "- Previous-main collector identity is not a bootstrap prerequisite."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  collect_profiles:
+    needs: resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      # Preserve every profile's diagnostic artifact. The aggregate job still
+      # requires the complete matrix, so a failed profile cannot be attested.
+      fail-fast: false
+      matrix:
+        include:
+          - id: issue-278
+            collector: scripts/architecture-fitness/collect-least-authority.mjs
+            policy: docs/architecture-fitness/pilots/issue-278.policy.json
+            output-directory: architecture-fitness-raw
+          - id: issue-276
+            collector: scripts/architecture-fitness/collect-search-state-boundary.mjs
+            policy: docs/architecture-fitness/pilots/issue-276.policy.json
+            output-directory: architecture-fitness-raw/issue-276
+          - id: issue-276-relationship
+            collector: scripts/architecture-fitness/collect-relationship-state-boundary.mjs
+            policy: docs/architecture-fitness/pilots/issue-276-relationship.policy.json
+            output-directory: architecture-fitness-raw/issue-276-relationship
+          - id: issue-280-281
+            collector: scripts/architecture-fitness/collect-q2-macro.mjs
+            policy: docs/architecture-fitness/pilots/issue-280-281.policy.json
+            output-directory: architecture-fitness-raw/issue-280-281
+          - id: issue-399
+            collector: scripts/architecture-fitness/collect-search-condition-url-budget.mjs
+            policy: docs/architecture-fitness/pilots/issue-399-serialized-input-budget.policy.json
+            output-directory: architecture-fitness-raw/issue-399
+          - id: issue-401-gap-shared-state
+            collector: scripts/architecture-fitness/collect-gap-shared-state-boundary.mjs
+            policy: docs/architecture-fitness/pilots/issue-401-gap-shared-state.policy.json
+            output-directory: architecture-fitness-raw/issue-401-gap-shared-state
+          - id: issue-401-inline-analysis-cache
+            collector: scripts/architecture-fitness/collect-inline-analysis-cache-lifecycle.mjs
+            policy: docs/architecture-fitness/pilots/issue-401-inline-analysis-cache-lifecycle.policy.json
+            output-directory: architecture-fitness-raw/issue-401-inline-analysis-cache
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          ref: ${{ needs.resolve.outputs.target-revision }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Collect exact base and target profile observations
+        env:
+          BASE_REVISION: ${{ needs.resolve.outputs.base-revision }}
+          TARGET_REVISION: ${{ needs.resolve.outputs.target-revision }}
+          COLLECTOR: ${{ matrix.collector }}
+          POLICY: ${{ matrix.policy }}
+          OUTPUT_DIRECTORY: ${{ matrix.output-directory }}
+        run: |
+          mkdir -p "$OUTPUT_DIRECTORY"
+          node "$COLLECTOR" \
+            --policy "$POLICY" \
+            --revision "$BASE_REVISION" \
+            --run-ref "github-actions:${GITHUB_REPOSITORY}:${GITHUB_RUN_ID}:${GITHUB_RUN_ATTEMPT}:base:${BASE_REVISION}" \
+            --output "$OUTPUT_DIRECTORY/base.observation.json"
+          node "$COLLECTOR" \
+            --policy "$POLICY" \
+            --revision "$TARGET_REVISION" \
+            --run-ref "github-actions:${GITHUB_REPOSITORY}:${GITHUB_RUN_ID}:${GITHUB_RUN_ATTEMPT}:target:${TARGET_REVISION}" \
+            --output "$OUTPUT_DIRECTORY/target.observation.json"
+
+      - name: Refuse partial or failed profile publication
+        env:
+          POLICY: ${{ matrix.policy }}
+          OUTPUT_DIRECTORY: ${{ matrix.output-directory }}
+        run: |
+          npm run architecture-fitness:check-publication -- \
+            --observation "$OUTPUT_DIRECTORY/base.observation.json" \
+            --observation "$OUTPUT_DIRECTORY/target.observation.json"
+          for observation in \
+            "$OUTPUT_DIRECTORY/base.observation.json" \
+            "$OUTPUT_DIRECTORY/target.observation.json"; do
+            python3 -B .agents/skills/architecture-fitness-review/scripts/evaluate.py \
+              --policy "$POLICY" \
+              --observation "$observation" \
+              --validate-only
+          done
+
+      - name: Preserve non-authoritative profile diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: architecture-fitness-profile-diagnostic-${{ matrix.id }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ matrix.output-directory }}/
+          if-no-files-found: warn
+          retention-days: 3
+
+      - name: Seal profile observations
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: architecture-fitness-profile-${{ matrix.id }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: architecture-fitness-raw/
+          if-no-files-found: error
+          retention-days: 14
+
+  collect:
+    needs: [resolve, collect_profiles]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      artifact-id: ${{ steps.raw-artifact.outputs.artifact-id }}
+      artifact-digest: ${{ steps.raw-artifact.outputs.artifact-digest }}
+      q4-artifact-id: ${{ steps.q4-raw-artifact.outputs.artifact-id }}
+      q4-artifact-digest: ${{ steps.q4-raw-artifact.outputs.artifact-digest }}
+      q5-base-artifact-id: ${{ steps.q5-base-raw-artifact.outputs.artifact-id }}
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          ref: ${{ needs.resolve.outputs.target-revision }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Verify pinned Architecture Fitness package
+        run: npm run guard:skills
+
+      - name: Verify service coverage projection
+        run: node scripts/architecture-fitness/coverage-projection.mjs
+
+      - name: Verify exact base-target revision pair is present
+        env:
+          BASE_REVISION: ${{ needs.resolve.outputs.base-revision }}
+          TARGET_REVISION: ${{ needs.resolve.outputs.target-revision }}
+        run: |
+          if [[ ! "$BASE_REVISION" =~ ^[0-9a-f]{40}$ ||
+                "$BASE_REVISION" == "0000000000000000000000000000000000000000" ]]; then
+            echo "invalid base revision" >&2
+            exit 1
+          fi
+          if [[ ! "$TARGET_REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "invalid target revision" >&2
+            exit 1
+          fi
+          git cat-file -e "${BASE_REVISION}^{commit}"
+          git cat-file -e "${TARGET_REVISION}^{commit}"
+
+      - name: Collect source-only Q4 observations before target behavior
+        env:
+          BASE_REVISION: ${{ needs.resolve.outputs.base-revision }}
+          TARGET_REVISION: ${{ needs.resolve.outputs.target-revision }}
+        run: |
+          mkdir -p architecture-fitness-q4-raw
+          node scripts/architecture-fitness/collect-q4-technical-grain.mjs \
+            --policy docs/architecture-fitness/pilots/issue-297-q4-technical-grain.policy.json \
+            --revision "$BASE_REVISION" \
+            --run-ref "github-actions:${GITHUB_REPOSITORY}:${GITHUB_RUN_ID}:${GITHUB_RUN_ATTEMPT}:base:${BASE_REVISION}" \
+            --output architecture-fitness-q4-raw/base.observation.json
+          node scripts/architecture-fitness/collect-q4-technical-grain.mjs \
+            --policy docs/architecture-fitness/pilots/issue-297-q4-technical-grain.policy.json \
+            --revision "$TARGET_REVISION" \
+            --run-ref "github-actions:${GITHUB_REPOSITORY}:${GITHUB_RUN_ID}:${GITHUB_RUN_ATTEMPT}:target:${TARGET_REVISION}" \
+            --output architecture-fitness-q4-raw/target.observation.json
+
+      - name: Refuse partial or failed Q4 publication
+        run: |
+          npm run architecture-fitness:check-publication -- \
+            --observation architecture-fitness-q4-raw/base.observation.json \
+            --observation architecture-fitness-q4-raw/target.observation.json
+          for observation in architecture-fitness-q4-raw/*.observation.json; do
+            python3 -B .agents/skills/architecture-fitness-review/scripts/evaluate.py \
+              --policy docs/architecture-fitness/pilots/issue-297-q4-technical-grain.policy.json \
+              --observation "$observation" \
+              --validate-only
+          done
+
+      - name: Preserve non-authoritative Q4 diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: architecture-fitness-q4-diagnostic-${{ github.run_id }}-${{ github.run_attempt }}
+          path: architecture-fitness-q4-raw/
+          if-no-files-found: warn
+          retention-days: 3
+
+      - name: Seal immutable source-only Q4 artifact
+        id: q4-raw-artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: architecture-fitness-q4-raw-${{ github.run_id }}-${{ github.run_attempt }}
+          path: architecture-fitness-q4-raw/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Collect trusted Q5 base behavior in the collector-authority lane
+        env:
+          BASE_REVISION: ${{ needs.resolve.outputs.base-revision }}
+        run: |
+          mkdir -p architecture-fitness-q5-base-raw
+          node scripts/architecture-fitness/collect-q5-cache-lifecycle.mjs \
+            --policy docs/architecture-fitness/pilots/issue-298-q5-cache-lifecycle.policy.json \
+            --revision "$BASE_REVISION" \
+            --run-ref "github-actions:${GITHUB_REPOSITORY}:${GITHUB_RUN_ID}:${GITHUB_RUN_ATTEMPT}:base:${BASE_REVISION}" \
+            --output architecture-fitness-q5-base-raw/base.observation.json
+
+      - name: Refuse partial or failed Q5 base publication
+        run: |
+          npm run architecture-fitness:check-publication -- \
+            --observation architecture-fitness-q5-base-raw/base.observation.json
+          python3 -B .agents/skills/architecture-fitness-review/scripts/evaluate.py \
+            --policy docs/architecture-fitness/pilots/issue-298-q5-cache-lifecycle.policy.json \
+            --observation architecture-fitness-q5-base-raw/base.observation.json \
+            --validate-only
+
+      - name: Preserve non-authoritative Q5 base diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: architecture-fitness-q5-base-diagnostic-${{ github.run_id }}-${{ github.run_attempt }}
+          path: architecture-fitness-q5-base-raw/
+          if-no-files-found: warn
+          retention-days: 3
+
+      - name: Seal immutable trusted Q5 base observation
+        id: q5-base-raw-artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: architecture-fitness-q5-base-raw-${{ github.run_id }}-${{ github.run_attempt }}
+          path: architecture-fitness-q5-base-raw/base.observation.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Collect exact base and target observations without secrets
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: architecture-fitness-profile-*-${{ github.run_id }}-${{ github.run_attempt }}
+          path: architecture-fitness-raw
+          merge-multiple: true
+
+      - name: Refuse partial or failed protected publication
+        run: |
+          while IFS= read -r -d '' observation; do
+            npm run architecture-fitness:check-publication -- \
+              --observation "$observation"
+          done < <(find architecture-fitness-raw -type f -name '*.observation.json' -print0)
+          validate() {
+            python3 -B .agents/skills/architecture-fitness-review/scripts/evaluate.py \
+              --policy "$1" \
+              --observation "$2" \
+              --validate-only
+          }
+          for subject in base target; do
+            validate \
+              docs/architecture-fitness/pilots/issue-278.policy.json \
+              "architecture-fitness-raw/$subject.observation.json"
+            validate \
+              docs/architecture-fitness/pilots/issue-276.policy.json \
+              "architecture-fitness-raw/issue-276/$subject.observation.json"
+            validate \
+              docs/architecture-fitness/pilots/issue-276-relationship.policy.json \
+              "architecture-fitness-raw/issue-276-relationship/$subject.observation.json"
+            validate \
+              docs/architecture-fitness/pilots/issue-280-281.policy.json \
+              "architecture-fitness-raw/issue-280-281/$subject.observation.json"
+            validate \
+              docs/architecture-fitness/pilots/issue-399-serialized-input-budget.policy.json \
+              "architecture-fitness-raw/issue-399/$subject.observation.json"
+            validate \
+              docs/architecture-fitness/pilots/issue-401-gap-shared-state.policy.json \
+              "architecture-fitness-raw/issue-401-gap-shared-state/$subject.observation.json"
+            validate \
+              docs/architecture-fitness/pilots/issue-401-inline-analysis-cache-lifecycle.policy.json \
+              "architecture-fitness-raw/issue-401-inline-analysis-cache/$subject.observation.json"
+          done
+
+      - name: Preserve non-authoritative protected diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: architecture-fitness-protected-diagnostic-${{ github.run_id }}-${{ github.run_attempt }}
+          path: architecture-fitness-raw/
+          if-no-files-found: warn
+          retention-days: 3
+
+      - name: Upload immutable raw observation artifact
+        id: raw-artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: architecture-fitness-raw-${{ github.run_id }}-${{ github.run_attempt }}
+          path: architecture-fitness-raw/
+          if-no-files-found: error
+          retention-days: 14
+
+  collect_q5:
+    needs: resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    outputs:
+      target-artifact-id: ${{ steps.q5-target-raw-artifact.outputs.artifact-id }}
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          ref: ${{ needs.resolve.outputs.target-revision }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      - name: Verify pinned Architecture Fitness package
+        run: npm run guard:skills
+
+      - name: Verify exact Q5 target revision is present
+        env:
+          TARGET_REVISION: ${{ needs.resolve.outputs.target-revision }}
+        run: |
+          if [[ ! "$TARGET_REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "invalid target revision" >&2
+            exit 1
+          fi
+          git cat-file -e "${TARGET_REVISION}^{commit}"
+
+      - name: Collect Q5 behavior in the credential-isolated target harness
+        env:
+          TARGET_REVISION: ${{ needs.resolve.outputs.target-revision }}
+        run: |
+          mkdir -p architecture-fitness-q5-target-raw
+          node scripts/architecture-fitness/collect-q5-cache-lifecycle.mjs \
+            --policy docs/architecture-fitness/pilots/issue-298-q5-cache-lifecycle.policy.json \
+            --revision "$TARGET_REVISION" \
+            --run-ref "github-actions:${GITHUB_REPOSITORY}:${GITHUB_RUN_ID}:${GITHUB_RUN_ATTEMPT}:target:${TARGET_REVISION}" \
+            --output architecture-fitness-q5-target-raw/target.observation.json
+
+      - name: Refuse partial or failed Q5 target publication
+        run: |
+          npm run architecture-fitness:check-publication -- \
+            --observation architecture-fitness-q5-target-raw/target.observation.json
+          python3 -B .agents/skills/architecture-fitness-review/scripts/evaluate.py \
+            --policy docs/architecture-fitness/pilots/issue-298-q5-cache-lifecycle.policy.json \
+            --observation architecture-fitness-q5-target-raw/target.observation.json \
+            --validate-only
+
+      - name: Preserve non-authoritative Q5 target diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: architecture-fitness-q5-target-diagnostic-${{ github.run_id }}-${{ github.run_attempt }}
+          path: architecture-fitness-q5-target-raw/
+          if-no-files-found: warn
+          retention-days: 3
+
+      - name: Upload immutable Q5-only target observation artifact
+        id: q5-target-raw-artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: architecture-fitness-q5-target-raw-${{ github.run_id }}-${{ github.run_attempt }}
+          path: architecture-fitness-q5-target-raw/target.observation.json
+          if-no-files-found: error
+          retention-days: 14
+
+  attest-and-verify:
+    needs: [resolve, collect, collect_q5]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: architecture-fitness-attestor
+    env:
+      AF_REPOSITORY: ${{ github.repository }}
+      AF_EVENT: ${{ github.event_name }}
+      AF_WORKFLOW_REF: ${{ github.workflow_ref }}
+      AF_WORKFLOW_SHA: ${{ github.workflow_sha }}
+      AF_BASE_REF: ${{ github.ref }}
+      AF_BASE_REVISION: ${{ needs.resolve.outputs.base-revision }}
+      AF_TARGET_REPOSITORY: ${{ github.repository }}
+      AF_TARGET_REVISION: ${{ needs.resolve.outputs.target-revision }}
+      AF_ACTOR: ${{ github.actor }}
+      AF_PR_NUMBER: "0"
+      AF_RUN_ID: ${{ github.run_id }}
+      AF_RUN_ATTEMPT: ${{ github.run_attempt }}
+      AF_RAW_ARTIFACT_ID: ${{ needs.collect.outputs.artifact-id }}
+      AF_RAW_ARTIFACT_DIGEST: ${{ needs.collect.outputs.artifact-digest }}
+      AF_Q4_RAW_ARTIFACT_ID: ${{ needs.collect.outputs.q4-artifact-id }}
+      AF_Q4_RAW_ARTIFACT_DIGEST: ${{ needs.collect.outputs.q4-artifact-digest }}
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          ref: ${{ needs.resolve.outputs.target-revision }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Verify pinned trusted implementation
+        run: npm run guard:skills
+
+      - name: Download raw observations from this workflow run
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          artifact-ids: ${{ needs.collect.outputs.artifact-id }}
+          path: architecture-fitness-raw
+          merge-multiple: true
+
+      - name: Download sealed source-only Q4 observations
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          artifact-ids: ${{ needs.collect.outputs.q4-artifact-id }}
+          path: architecture-fitness-q4-raw
+          merge-multiple: true
+
+      - name: Download sealed Q5 base observation
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          artifact-ids: ${{ needs.collect.outputs.q5-base-artifact-id }}
+          path: architecture-fitness-q5-base-raw
+          merge-multiple: true
+
+      - name: Download isolated Q5 target observation
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          artifact-ids: ${{ needs.collect_q5.outputs.target-artifact-id }}
+          path: architecture-fitness-q5-target-raw
+          merge-multiple: true
+
+      - name: Build the exact Q5 base-target input
+        run: |
+          mkdir -p architecture-fitness-q5-raw
+          cp architecture-fitness-q5-base-raw/base.observation.json \
+            architecture-fitness-q5-raw/base.observation.json
+          cp architecture-fitness-q5-target-raw/target.observation.json \
+            architecture-fitness-q5-raw/target.observation.json
+          test "$(find architecture-fitness-q5-raw -type f | wc -l | tr -d ' ')" = "2"
+
+      - name: Seal the exact combined Q5 input
+        id: q5-combined-raw-artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: architecture-fitness-q5-raw-${{ github.run_id }}-${{ github.run_attempt }}
+          path: architecture-fitness-q5-raw/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Attest and evaluate with the protected host gate
+        run: |
+          mkdir -p architecture-fitness-attested/issue-276 architecture-fitness-attested/issue-276-relationship architecture-fitness-attested/issue-280-281 architecture-fitness-attested/issue-297-q4 architecture-fitness-attested/issue-298-q5 architecture-fitness-attested/issue-399 architecture-fitness-attested/issue-401-gap-shared-state architecture-fitness-attested/issue-401-inline-analysis-cache
+          npm run architecture-fitness:attest -- \
+            architecture-fitness-raw architecture-fitness-attested
+          npm run architecture-fitness:attest -- \
+            architecture-fitness-raw/issue-276 architecture-fitness-attested/issue-276 \
+            issue-276-search-state-boundary
+          npm run architecture-fitness:attest -- \
+            architecture-fitness-raw/issue-276-relationship \
+            architecture-fitness-attested/issue-276-relationship \
+            issue-276-relationship-state-boundary
+          npm run architecture-fitness:attest -- \
+            architecture-fitness-raw/issue-280-281 \
+            architecture-fitness-attested/issue-280-281 \
+            issue-280-281-q2-macro
+          npm run architecture-fitness:attest -- \
+            architecture-fitness-raw/issue-399 \
+            architecture-fitness-attested/issue-399 \
+            issue-399-serialized-input-budget
+          npm run architecture-fitness:attest -- \
+            architecture-fitness-raw/issue-401-gap-shared-state \
+            architecture-fitness-attested/issue-401-gap-shared-state \
+            issue-401-gap-shared-state-boundary
+          npm run architecture-fitness:attest -- \
+            architecture-fitness-raw/issue-401-inline-analysis-cache \
+            architecture-fitness-attested/issue-401-inline-analysis-cache \
+            issue-401-inline-analysis-cache-lifecycle
+          AF_RAW_ARTIFACT_ID="$AF_Q4_RAW_ARTIFACT_ID" \
+          AF_RAW_ARTIFACT_DIGEST="$AF_Q4_RAW_ARTIFACT_DIGEST" \
+            npm run architecture-fitness:attest -- \
+            architecture-fitness-q4-raw \
+            architecture-fitness-attested/issue-297-q4 \
+            issue-297-q4-technical-grain
+          AF_RAW_ARTIFACT_ID="$AF_Q5_RAW_ARTIFACT_ID" \
+          AF_RAW_ARTIFACT_DIGEST="$AF_Q5_RAW_ARTIFACT_DIGEST" \
+            npm run architecture-fitness:attest -- \
+            architecture-fitness-q5-raw \
+            architecture-fitness-attested/issue-298-q5 \
+            issue-298-q5-cache-lifecycle
+        env:
+          ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1: ${{ secrets.ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1 }}
+          AF_Q5_RAW_ARTIFACT_ID: ${{ steps.q5-combined-raw-artifact.outputs.artifact-id }}
+          AF_Q5_RAW_ARTIFACT_DIGEST: ${{ steps.q5-combined-raw-artifact.outputs.artifact-digest }}
+
+      - name: Independently verify invocation and artifact bindings
+        run: |
+          npm run architecture-fitness:verify -- architecture-fitness-attested
+          npm run architecture-fitness:verify -- \
+            architecture-fitness-attested/issue-276 issue-276-search-state-boundary
+          npm run architecture-fitness:verify -- \
+            architecture-fitness-attested/issue-276-relationship \
+            issue-276-relationship-state-boundary
+          npm run architecture-fitness:verify -- \
+            architecture-fitness-attested/issue-280-281 \
+            issue-280-281-q2-macro
+          npm run architecture-fitness:verify -- \
+            architecture-fitness-attested/issue-399 \
+            issue-399-serialized-input-budget
+          npm run architecture-fitness:verify -- \
+            architecture-fitness-attested/issue-401-gap-shared-state \
+            issue-401-gap-shared-state-boundary
+          npm run architecture-fitness:verify -- \
+            architecture-fitness-attested/issue-401-inline-analysis-cache \
+            issue-401-inline-analysis-cache-lifecycle
+          AF_RAW_ARTIFACT_ID="$AF_Q4_RAW_ARTIFACT_ID" \
+          AF_RAW_ARTIFACT_DIGEST="$AF_Q4_RAW_ARTIFACT_DIGEST" \
+            npm run architecture-fitness:verify -- \
+            architecture-fitness-attested/issue-297-q4 \
+            issue-297-q4-technical-grain
+          AF_RAW_ARTIFACT_ID="$AF_Q5_RAW_ARTIFACT_ID" \
+          AF_RAW_ARTIFACT_DIGEST="$AF_Q5_RAW_ARTIFACT_DIGEST" \
+            npm run architecture-fitness:verify -- \
+            architecture-fitness-attested/issue-298-q5 \
+            issue-298-q5-cache-lifecycle
+        env:
+          ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1: ${{ secrets.ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1 }}
+          AF_Q5_RAW_ARTIFACT_ID: ${{ steps.q5-combined-raw-artifact.outputs.artifact-id }}
+          AF_Q5_RAW_ARTIFACT_DIGEST: ${{ steps.q5-combined-raw-artifact.outputs.artifact-digest }}
+
+      - name: Add the classified service coverage projection summary
+        run: |
+          node scripts/architecture-fitness/coverage-projection.mjs \
+            > architecture-fitness-attested/service-coverage-summary.json
+
+      - name: Upload immutable signed evidence bundle
+        id: signed-artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: architecture-fitness-attested-${{ github.run_id }}-${{ github.run_attempt }}
+          path: architecture-fitness-attested/
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Publish scoped advisory summary
+        env:
+          SIGNED_ARTIFACT_URL: ${{ steps.signed-artifact.outputs.artifact-url }}
+          SIGNED_ARTIFACT_DIGEST: ${{ steps.signed-artifact.outputs.artifact-digest }}
+        run: |
+          {
+            echo "## Architecture Fitness authoritative advisory"
+            echo
+            echo "- Target revision: \`$AF_TARGET_REVISION\`"
+            echo "- Signed artifact digest: \`$SIGNED_ARTIFACT_DIGEST\`"
+            echo "- Signed evidence: $SIGNED_ARTIFACT_URL"
+            echo "- Protected profiles: Issue #278 least-authority; Issue #276 keyword-search and relationship state boundaries; Issue #280 process topology; Issue #281 first-ready critical path; Issue #297 Q4 technical grain; Issue #298 Q5 cache lifecycle; Issue #399 serialized-input budget; Issue #401 Gap shared state and inline-analysis cache lifecycle"
+            echo '- Service coverage projection: validated and preserved as `service-coverage-summary.json` in the same immutable artifact; case verdicts remain in independent signed profile bundles.'
+            echo "- Suspended coverage: Issue #286 Q3 workload envelope is unsupported / unknown until Issue #286 supplies current exact-revision measurements (Issue #459)."
+            echo "- Unsupported lenses remain unknown; this is not an overall architecture-health verdict."
+            echo "- GitHub required-check promotion remains a separate Human decision."
+          } >> "$GITHUB_STEP_SUMMARY"

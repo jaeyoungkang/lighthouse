@@ -1,0 +1,80 @@
+schemaVersion: 2
+slug: gap-led-next-search
+review: reviews/gap-led-next-search.reviews.md
+sourcePromises:
+  - promise:gap-led-next-search
+appliedAspects:
+  - aspect:visible-explanation-sufficiency
+  - aspect:reaction-prefers-load-bearing-facts
+  - aspect:immediate-navigation
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:gap-led-next-search#acceptance-check:gap-led-next-search-seeds-are-identifiable
+    assertion: vitest @ `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx` ("keeps every concept seed label legible at base view regardless of cluster activation"). 모든 cluster의 concept label이 base view에서 사용자 가독 크기로 표시되어, 사용자가 cluster를 활성화하지 않은 상태에서도 모든 seed를 식별할 수 있다. cluster activation은 selection/연결 highlight만 바꾸고 label 가시성을 더 이상 gate하지 않는다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-007
+    scenarios:
+      - scenario:search-gap-analysis-entry
+  - key: promise:gap-led-next-search#acceptance-check:gap-led-next-search-seed-traces-to-papers
+    assertion: vitest @ `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.gap-led-next-search.test.tsx` ("traces a selected concept seed to its supporting papers") + `app/server/services/__tests__/analyze-gap-network.test.ts` ("records supportingPaperIds for each concept that reflect topic profile membership"). `analyze-gap-network` 빌더가 각 concept에 `supportingPaperIds`를 기록하고, focused cluster 카드 안에서 concept를 선택하면 그 단서를 뒷받침하는 논문 제목이 노출된다.
+    executionRefs:
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+    scenarios:
+      - scenario:search-gap-analysis-entry
+  - key: promise:gap-led-next-search#acceptance-check:gap-led-next-search-seed-launches-search
+    assertion: vitest @ `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.gap-led-next-search.test.tsx` ("offers a seed-as-search action on focused cluster and prefills the cluster label"; "offers a seed-as-search action on focused gap and prefills the gap display label") + `app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx` ("tracks seed-as-search clicks from the focused explanation card") + `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx` ("carries known library availability without a result-basis preference"; "drops retired basis state on keyword routes"). focused cluster/gap 카드에 "이 단서로 검색" 버튼이 노출되고, 클릭 시 그 cluster label 또는 gap displayLabel을 seedTerm으로 `useSearchTermHandler`가 canonical `/search?q=` 조건 주소로 현재 창에서 이동해 그 주소에서 검색을 실행하며, legacy selected `libraryPaperIds`와 retired `personalize` preference를 transient entry URL 파라미터로 운반하지 않는다. 노드 선택만으로는 검색하지 않으며 명시적 버튼이 트리거다. 같은 클릭은 `product.gap_led_next_search.clicked` canonical event도 발행해 사용량을 측정한다.
+    executionRefs:
+      - execution:run-006
+    scenarios:
+      - scenario:search-gap-analysis-entry
+  - key: promise:gap-led-next-search#acceptance-check:gap-led-next-search-click-feedback
+    assertion: vitest @ `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkFocusedSelectionSummary.feedback.test.tsx` ("shows immediate progress on the clicked paper-search button"; "does not confuse a same-query route-bar activation with the gap seed button"; "does not confuse a same-query term activation with different search context"; "keeps detached gap seed search from activating the current button") + `app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.gap-led-next-search.test.tsx` ("forwards modifier and middle-click activation from the actual seed button") + `app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx` (plain seed click; "opens modified and middle-click gap seed searches without changing the current route") + `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx` (immediate route, detached, synchronous invocation cleanup) + `app/components/research/__tests__/search-followup-activation.test.tsx` (same-route no-op, consecutive identity, shell-owner unmount cleanup) + `app/components/research/__tests__/research-route-shell.test.tsx` (sticky persistent status, matching-destination cleanup, and older-arrival identity safety). focused cluster/concept/gap의 actual button event가 shared handler까지 보존된다. plain click은 버튼에 회전 표시·`aria-busy`·비활성 상태를 즉시 보여 주고, shell-scoped identity로 현재 scroll viewport에 seedTerm을 표시하면서 origin report를 유지한다. 버튼은 query 문자열만이 아니라 개인화·라이브러리·term seed까지 포함한 실제 target route 전체가 일치할 때만 busy가 되므로 같은 query의 다른 검색 activation과 혼동하지 않는다. destination 도착·동기 invocation 실패·bounded cleanup은 같은 identity만 지운다. Ctrl/Cmd/가운데 클릭은 새 탭을 열고 현재 route/receipt·버튼 상태를 바꾸지 않는다.
+    executionRefs:
+      - execution:run-006
+    scenarios:
+      - scenario:search-gap-analysis-entry
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.test.tsx
+    testNamePattern: keeps every concept seed label legible at base view regardless of cluster activation
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.gap-led-next-search.test.tsx
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/server/services/__tests__/analyze-gap-network.test.ts
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.gap-led-next-search.test.tsx
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.gap-led-next-search.test.tsx
+  - id: execution:run-006
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkFocusedSelectionSummary.feedback.test.tsx
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.gap-led-next-search.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx
+      - app/components/research/__tests__/search-followup-activation.test.tsx
+      - app/components/research/__tests__/research-route-shell.test.tsx
+  - id: execution:run-007
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx
+implementationContracts: []
+verdict: met

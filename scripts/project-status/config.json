@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "repository": "jaeyoungkang/lighthouse",
+  "label": "status-tracker",
+  "milestone": "project-status-pilot-2026-08-25--2026-09-22",
+  "period": {
+    "start": "2026-08-25",
+    "end": "2026-09-22",
+    "reviewWeekday": "Tuesday"
+  },
+  "trackers": {
+    "process": {
+      "issueNumber": 688,
+      "linkedIssues": [354, 539, 595, 626, 670, 679, 702, 730, 734, 738, 744, 757, 762],
+      "sourcePaths": [
+        "docs/agent-skills.md",
+        "docs/contracts/story-chain",
+        "docs/project-status.md"
+      ]
+    },
+    "search": {
+      "issueNumber": 689,
+      "linkedIssues": [751, 752, 753, 754, 755, 756, 757, 758, 759, 760],
+      "sourcePaths": [
+        "docs/product-identity.md",
+        "docs/runtime-flows/search-mechanism.md",
+        "docs/operational-readiness.md",
+        "docs/operational-readiness-records.md",
+        "docs/project-status.md"
+      ]
+    }
+  }
+}

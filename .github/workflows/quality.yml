@@ -1,0 +1,329 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      full:
+        description: Run coverage and executable Evidence Ledger checks
+        required: false
+        type: boolean
+        default: false
+
+# PR/push wall-clock is dominated by test:unit (~5m of an ~8.5m serial job), so
+# the product fast path splits `quality:static`, sharded `test:unit`, and
+# `build` into parallel jobs. PostgreSQL integration contracts have a separate
+# blocking job because they own a real local service and a different failure
+# meaning. Audit and PR-only review closeout keep their existing responsibility
+# lanes. The manual dispatch-full path stays a single `full` job running
+# `quality:full` (coverage + executable Evidence Ledger + live tests), where
+# wall-clock matters less than coverage.
+# No job in this workflow pushes; keep the GITHUB_TOKEN read-only.
+permissions:
+  contents: read
+
+jobs:
+  static:
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !inputs.full)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # quality:static compares contract-bearing sources with the PR base
+          # through guard:operational-boundaries. Keep origin/<base> available
+          # even though the retired decision-log and LLM judge no longer need
+          # repository history themselves.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Classify complete change range
+        id: scope
+        run: node scripts/quality/quality-change-scope.mjs --ci
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - run: npm ci
+
+      # `lint:cached` writes its cache to .next/cache/eslint. Restoring the
+      # newest prior cache turns the CI ESLint run from cold (~68s) to warm.
+      - uses: actions/cache@v4
+        with:
+          path: .next/cache/eslint
+          key: eslint-${{ runner.os }}-${{ hashFiles('package-lock.json', 'eslint.config.mjs') }}-${{ github.sha }}
+          restore-keys: |
+            eslint-${{ runner.os }}-${{ hashFiles('package-lock.json', 'eslint.config.mjs') }}-
+
+      - name: Run prose validation
+        if: steps.scope.outputs.docs_only == 'true'
+        run: npm run quality:docs
+        env:
+          CAIR_COMPARISON_BASE: ${{ github.event_name == 'push' && github.event.before || '' }}
+          INLINE_ANALYSIS_CONTRACT_BASE_REF: ${{ github.event_name == 'push' && github.event.before || '' }}
+
+      - name: Run static quality gates
+        if: steps.scope.outputs.docs_only != 'true'
+        run: npm run quality:static
+        env:
+          # Structural topology is compared with the complete push range. The
+          # checker fails closed if this declared ref cannot be resolved.
+          STRUCTURAL_AUDIT_BASE_REF: ${{ github.event_name == 'push' && github.event.before || '' }}
+          # A push can contain multiple commits. Compare cache-contract drift
+          # with the ref that preceded the whole push, not only HEAD^1.
+          INLINE_ANALYSIS_CONTRACT_BASE_REF: ${{ github.event_name == 'push' && github.event.before || '' }}
+          # CAIR is also diff-scoped; preserve the whole push range instead of
+          # degrading to HEAD^ when origin/main already points at the new head.
+          CAIR_COMPARISON_BASE: ${{ github.event_name == 'push' && github.event.before || '' }}
+
+      # Advisory visibility only (#652): surface the repo-wide CAIR latent
+      # nonconformance count as a notice annotation on every PR. Never blocks.
+      - name: CAIR inventory (advisory)
+        if: steps.scope.outputs.docs_only != 'true'
+        run: echo "::notice title=cair-inventory::$(npm run mc:cair-inventory --silent | tail -1)"
+
+  test:
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !inputs.full)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Architecture Fitness process tests reproduce pilot artifacts at
+          # revisions older than the PR head.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Classify complete change range
+        id: scope
+        run: node scripts/quality/quality-change-scope.mjs --ci
+
+      - if: steps.scope.outputs.docs_only != 'true'
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - if: steps.scope.outputs.docs_only != 'true'
+        run: npm ci
+
+      - name: Run test:unit (shard ${{ matrix.shard }}/2)
+        if: steps.scope.outputs.docs_only != 'true'
+        run: npm run test:unit -- --shard=${{ matrix.shard }}/2
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY || secrets.GEMINI_API_KEY }}
+
+      - name: Report prose-only applicability
+        if: steps.scope.outputs.docs_only == 'true'
+        run: echo "Prose-only change; this runtime responsibility is not applicable. Document validation runs in static."
+
+  build:
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !inputs.full)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Classify complete change range
+        id: scope
+        run: node scripts/quality/quality-change-scope.mjs --ci
+
+      - if: steps.scope.outputs.docs_only != 'true'
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - if: steps.scope.outputs.docs_only != 'true'
+        run: npm ci
+
+      - if: steps.scope.outputs.docs_only != 'true'
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+
+      - name: Run production build
+        if: steps.scope.outputs.docs_only != 'true'
+        run: npm run build
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY || secrets.GEMINI_API_KEY }}
+
+      - name: Report prose-only applicability
+        if: steps.scope.outputs.docs_only == 'true'
+        run: echo "Prose-only change; this runtime responsibility is not applicable. Document validation runs in static."
+
+  db-integration:
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !inputs.full)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Classify complete change range
+        id: scope
+        run: node scripts/quality/quality-change-scope.mjs --ci
+
+      - if: steps.scope.outputs.docs_only != 'true'
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - if: steps.scope.outputs.docs_only != 'true'
+        run: npm ci
+
+      - name: Start local Supabase integration services
+        if: steps.scope.outputs.docs_only != 'true'
+        # The CI-only wrapper retries exactly once after the Docker host-port
+        # collision signature and fails immediately for every other error.
+        # Keep gotrue running: `supabase status -o json` only reports the local
+        # service-role credential while the auth container is part of the stack.
+        run: npm run db:start:ci
+
+      - name: Apply the exact repository migration revision
+        if: steps.scope.outputs.docs_only != 'true'
+        run: npm run db:reset:local
+
+      - name: Run PostgreSQL integration contracts
+        if: steps.scope.outputs.docs_only != 'true'
+        run: npm run test:db:gap-report-concurrency
+
+      - name: Stop local Supabase integration services
+        if: always() && steps.scope.outputs.docs_only != 'true'
+        run: npm run db:stop:ci
+
+      - name: Report prose-only applicability
+        if: steps.scope.outputs.docs_only == 'true'
+        run: echo "Prose-only change; this runtime responsibility is not applicable. Document validation runs in static."
+
+  # PR-only closeout gate (issue #318). A separate job so its failure reads as
+  # "review closeout incomplete at this head", not as a code regression. It
+  # verifies that the PR's exact content head (trailing record-only usage-log
+  # commits and empty trailer commits excluded) has a review record in
+  # shared-skills/review-checklist-steward/references/checklist-usage-log.md.
+  # External bot review state is not an input. Uses only git + node stdlib, so
+  # no npm ci.
+  review-closeout:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Needs history to resolve origin/<base> and walk base..HEAD.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Verify exact-head review record (issue #318)
+        run: node scripts/quality/check-review-closeout.mjs --base origin/${{ github.base_ref }}
+
+  full:
+    if: github.event_name == 'workflow_dispatch' && inputs.full
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # quality:full also runs the exact-revision Architecture Fitness
+          # process tests, so full runs need repository history.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run full quality gate (coverage + executable Evidence Ledger + live tests)
+        run: npm run quality:full
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY || secrets.GEMINI_API_KEY }}
+
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Classify complete change range
+        id: scope
+        run: node scripts/quality/quality-change-scope.mjs --ci
+
+      - if: steps.scope.outputs.docs_only != 'true'
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+
+      - if: steps.scope.outputs.docs_only != 'true'
+        run: npm ci
+
+      - name: Run dependency and structure audit
+        if: steps.scope.outputs.docs_only != 'true'
+        run: npm run quality:audit
+
+      - name: Report prose-only applicability
+        if: steps.scope.outputs.docs_only == 'true'
+        run: echo "Prose-only change; this runtime responsibility is not applicable. Document validation runs in static."

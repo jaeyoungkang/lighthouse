@@ -1,0 +1,552 @@
+schemaVersion: 2
+slug: search-result-window
+review: reviews/search-result-window.reviews.md
+sourcePromises:
+  - promise:search-results-fast-window
+  - promise:search-spelling-correction
+  - promise:search-results-suggest-english-terms
+appliedAspects:
+  - aspect:user-facing-language-governance
+  - aspect:visible-explanation-sufficiency
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-initial-dom-window
+    assertion: contract-check @ `scripts/evidence-ledger/helpers/contract-check.ts search-result-window visible-window` + vitest @ `app/lib/__tests__/constants.contract.test.ts` ("SEARCH_RESULTS_INITIAL_VISIBLE_COUNT is literally 10 — changing the value breaks the user-facing promise") + ("constants.ts carries the @check-removes-fails comment naming this AC, anchored to this test as the negative-test contract") + `app/server/services/__tests__/search-hydration.test.ts` ("hydrates the committed corpus ids and preserves provider total when no library blend applies"; "preserves committed corpus ids when locked papers share a title family") + `app/components/research/__tests__/ResearchBackgroundTasks.hydration.test.tsx` ("queues enrichment only after search run fills the result window"). Pins the literal value `10`, the `@check-removes-fails` marker above the constant, the UI controller/store use of the shared first-window constant, and the progressive hydration invariant that lightweight search cards with numeric aliases or E3 `paper_uid` references keep their committed identities while abstracts/authors/PDF fill in later, including a committed title-family collision that hydration must not shrink.
+    executionRefs:
+      - execution:run-001
+      - execution:run-009
+      - execution:run-010
+      - execution:run-023
+      - execution:run-004
+      - execution:run-025
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-load-more-shows-progress-counts
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx` ("advances the load-more window by ten and stops at the total result count"). A 25-paper result set renders `더보기 (10/25)`, advances to exactly 20 visible papers with `더보기 (20/25)`, then exposes the final 25 papers and removes the button.
+    executionRefs:
+      - execution:run-011
+    scenarios:
+      - scenario:search-load-more-window
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-inline-analysis-visible-first
+    assertion: vitest @ `app/components/research/__tests__/ResearchBackgroundTasks.test.tsx` + `app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-window.test.tsx` + `app/components/research/__tests__/ResearchBackgroundTasks.term-discovery.test.tsx` + `app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx` ("fires at commit for a personalized pending search without waiting for card hydration"; "fires route AI comment generation at commit for a first-reveal-locked personalized search") + `app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx` ("waits for a hydration-dependent search facet and generates once from the stable result set") + `app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts` ("waits for one-shot repair before generating from a ready faceted search"). Inline analysis and term discovery queue only after the search ResearchRoutePayload is no longer `abstractHydration.status:"pending"`; search completion and hydration do not enqueue inline analysis by themselves, search cards report viewport exposure through `visiblePaperIds`, hidden cards behind 더보기 stay out, expanded exposed cards enter the visible-id task, and stale cycle results are ignored. Search retrieval and library graph grounding are fixed before the first payload, so facet-neutral route AI comment generation fires from the committed snapshot without waiting for card hydration. 저자·분야·venue·PDF facet처럼 hydration metadata가 visible membership을 결정하는 경우에는 card detail enrichment와 one-shot compatibility repair가 끝나 stable result pool이 terminal ready가 될 때까지 보류한다(canonical generation timing in `search-reaction.ledger.yaml` acceptance-check:search-reaction-summarizes-terrain-generation-boundary).
+    executionRefs:
+      - execution:run-009
+    scenarios:
+      - scenario:search-inline-analysis-visible-first
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-card-inspection
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-result-item.test.tsx` + `app/components/research-route-renderers/__tests__/search-result-item-spatial-stability.test.tsx` + `app/components/research-route-renderers/__tests__/search-result-item-library-action.test.tsx` + `app/components/research-route-renderers/__tests__/search-result-item.pdf-links.test.tsx` + `app/components/research-route-renderers/__tests__/search-view-formatting.helpers.test.ts` + `app/server/services/__tests__/episteme-literature.test.ts` + `app/server/services/__tests__/pdf-url-resolver.test.ts`. 제목은 non-interactive 식별 텍스트로 남는다. 카드의 링크·버튼이 아닌 영역을 누르면 inspection이 열리고 다시 누르면 닫히며, DOI·PDF·저자·인용·비슷한 논문·라이브러리 버튼은 toggle로 전파되지 않는다. 화면에는 펼침 command 문구를 반복하지 않고 icon-only chevron만 보이며 그 버튼의 aria-label/aria-expanded가 키보드·보조 기술 경계를 닫는다. 펼친 영역은 외부 원문 링크를 제공한다. 외부 링크는 Semantic Scholar로 보내지 않고 E3 best landing page → DOI(`doi.org`) → arXiv(`arxiv.org/abs`) → Episteme paper URL 체인으로 destination을 고르며, 식별자가 없는 잔여 논문만 Episteme paper 페이지(`{EPISTEME}/papers/{paper_uid}`)로 떨어진다. 비-arxiv PDF URL은 PDF 버튼에서 Moonlight handoff로 이동하고, raw PDF 주소 텍스트는 검색 결과 카드에 렌더하지 않으며, PDF 미존재 시 disabled affordance와 arXiv/ACL external id 기반 PDF 보강을 잠근다.
+    executionRefs:
+      - execution:run-005
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-expanded-window-persists-per-batch
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx`. "더 보기" 이후 같은 검색 ResearchRoutePayload remount에서 12번째 결과가 유지되고, 새 result batch 교체 시 다시 10편 window와 "더보기 (10/12)"로 초기화됨을 deterministic하게 잠근다.
+    executionRefs:
+      - execution:run-011
+    scenarios:
+      - scenario:search-load-more-window
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-selected-sort
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view.helpers.test.ts` ("sorts search papers by citation and year with deterministic tie-breakers", "builds search body view models and pagination decisions") + `app/server/services/__tests__/search-service.test.ts` ("applies deterministic oldest-first ordering for sorted clause results", "requests a provider-wide ascending year window and final-sorts fetched papers") + `app/server/services/__tests__/search-execution-legacy-position.test.ts` ("normalizes the retired relevance basis to the unified default identity"; "normalizes the retired interest basis to the unified default identity") + `app/lib/__tests__/api-routes.test.ts` ("omits the retired relevance basis and personalize=true flag"; "omits the retired interest basis and personalize=true flag"). Asserts selected citation/year/yearAsc metadata drives deterministic rendered order, E3 executes citation/year/yearAsc as provider-wide lexical sorts and the loaded result window is final-sorted deterministically, and both retired basis sort inputs normalize to one default projection and canonical identity.
+    executionRefs:
+      - execution:run-012
+      - execution:run-015
+      - execution:run-018
+    scenarios:
+      - scenario:search-selected-sort
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-loading-visible
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view-content.year-range.test.tsx` ("shows loading state and disables condition apply while a search request is in flight") + `app/components/research/__tests__/ResearchRouteSearchBar.test.tsx` ("uses URL query as the input source of truth on the search route"). Asserts the route-level command field owns the query input and busy state while the search ResearchRoutePayload body repeats no query input; the results refine toolbar only reports "검색 결과를 불러오는 중" and disables condition application while work is in flight.
+    executionRefs:
+      - execution:run-003
+      - execution:run-006
+      - execution:run-008
+      - execution:run-009
+      - execution:run-013
+      - execution:run-014
+      - execution:run-015
+      - execution:run-017
+      - execution:run-019
+    scenarios: []
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-year-distribution
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view-content.year-range.test.tsx` ("keeps publication-year distribution inside the year filter dropdown"; "accents only the bars inside the entered publication-year range") + `app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx` ("keeps search metadata compact and renders research terms as clickable AI comment text"; "draws the year distribution as a continuous full-width axis"). The publication-year preview is built from loaded result metadata and mounts inside the publication-year filter dropdown panel (`search-year-filter-panel`) after that dropdown opens. It keeps continuous year bars and year labels, exposes `{year}년 {count}편` via app-rendered hover/focus tooltip, and highlights only the entered year range.
+    executionRefs:
+      - execution:run-014
+    scenarios: []
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-title-year-summary
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-result-item.test.tsx` ("renders the paper card hierarchy with a separate three-author row before actions and summary"). Asserts result cards render the original title as the strongest first line, show the publication year without a badge as the first item in the bibliography metadata row, and do not spend card space on a localized-title companion line.
+    executionRefs:
+      - execution:run-005
+      - execution:run-014
+      - execution:run-016
+      - execution:run-018
+    scenarios: []
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-card-triage-metadata
+    assertion: 'vitest @ `app/components/research-route-renderers/__tests__/search-result-item.test.tsx` ("renders the paper card hierarchy with a separate three-author row before actions and summary"; "uses citation count as the default card-level lineage signal"; "explains limited reference lists instead of showing a zero-reference lineage chip") + `app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx` ("opens author and topic terms through the search-term handler"; "keeps author expansion focus stable without toggling the card") + `app/components/research-route-renderers/__tests__/search-result-item-spatial-stability.test.tsx` ("replaces analysis progress inside one stable region and expands through the wide card surface"; "keeps metadata-only and not-yet-started cards in the compact common frame"; "keeps fixed scan anchors with explicit unavailable metadata"; "keeps a long metadata-only title on one line until the user expands it") + `app/components/research-route-renderers/__tests__/search-view.whitespace-abstract.test.ts` ("keeps whitespace-only abstracts out of every inline-analysis scheduling stage") + `app/components/research-route-renderers/__tests__/search-view-content.test.tsx` ("keeps pending lightweight search cards focused on available metadata") + `app/server/services/__tests__/episteme-literature.test.ts` ("hydrates stored numeric ids through E3 paper refs and rich projection"). Asserts result cards share a compact responsive minimum and scan in title → year·venue·fields metadata row → author row → DOI/PDF/citation/similar actions → summary order. The year is unboxed metadata text at the start of the bibliography row; venue follows it, and the labeled field summary stays directly after venue. The author row shows up to three names; each author starts an author search, and `외 N명 펼치기`/`접기` reveals or hides the remainder inline without toggling card inspection. Actual title utilities stay in marker/representative/library order on the right, while omitted utilities do not reserve empty placeholders. Missing metadata renders as low-emphasis `출처 정보 없음`, `분야 정보 없음`, or `저자 정보 미제공` at the corresponding row instead of becoming blank gaps; a missing year creates no placeholder. The fixed-width DOI slot shows only `DOI`: it links to the identifier when present and remains a same-width disabled control when absent, keeping PDF and citation anchors predictable without exposing the identifier text. Collapsed titles stay on one line and completed summaries use at most two lines; the source label is absent until expansion. Actual title overflow exposes card inspection even without analysis, and expanded content returns to natural height only after the user acts. Pending, error, metadata-only, not-started, and settled states replace content inside one generated region; missing or whitespace-only abstracts never fabricate queued analysis and use only visible fields as a constrained clue without a separate `메타데이터 단서` heading. PDF hydration, citation signal, and provider metadata preservation keep their existing behavior (aspect:paper-card-presentation-consistency; aspect:paper-card-action-loading-feedback; aspect:visible-explanation-sufficiency; aspect:progressive-content-spatial-stability).'
+    executionRefs:
+      - execution:run-005
+      - execution:run-006
+      - execution:run-008
+      - execution:run-009
+      - execution:run-014
+      - execution:run-016
+      - execution:run-018
+      - execution:run-019
+      - execution:run-020
+      - execution:run-024
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-title-family-dedup
+    assertion: vitest @ `app/server/services/__tests__/dedupe-papers-by-title-family.test.ts` ("drops title-family near-duplicates (punctuation variants) keeping the first, preserves order, never collapses empty titles") + `app/server/services/__tests__/library-neighborhood-discovery.test.ts` (keyword/supplement와 supplement 내부의 다른 corpus-id title-family 중복 제거) + `app/server/services/__tests__/search-hydration.test.ts` + `app/components/research/__tests__/ResearchBackgroundTasks.condition-ownership.test.ts` (저장 snapshot 호환과 원 결과 순서 보존). 새 검색은 keyword 결과를 commit 전에 dedup하고 합류 후보는 keyword 결과와 먼저 허용된 candidate title family를 모두 피한다. Background hydration과 저장된 과거 snapshot reader는 기존 corpus id·순서와 prefix 호환을 유지한다.
+    executionRefs:
+      - execution:run-023
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-comma-query-single-intent
+    assertion: 'vitest @ `app/lib/__tests__/search-query.test.ts` ("keeps a comma-separated topical query as one search intent"; "keeps a coordinated comma title as one search intent"; "splits semicolon-separated conditions while preserving commas inside each condition"; "splits newline-separated conditions"; "keeps a comma-separated topical query as a single effective clause"; "still strips a leading boilerplate phrase from one comma-containing query") + `app/server/services/__tests__/query-clause-normalization-service.test.ts` ("keeps comma-separated concepts in one deterministic clause without an LLM call"; "splits only explicit semicolon and newline separators") + `app/server/services/__tests__/search-service.test.ts` ("sends a comma-separated compound query through one provider request"; "keeps semicolon-separated conditions on the explicit multi-query path") + `app/server/services/__tests__/search-service.multi-query.test.ts` ("keeps comma queries intact and dedupes explicit semicolon clauses"; "splits multi-query fetches across the shared result budget"; "starts clause fetches concurrently and merges results in clause order") + `app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx` ("does not present provider total as the loaded result window"). 콤마가 포함된 복합 주제와 정식 논문 제목은 모두 하나의 검색 의도로 유지한다. `;`와 줄바꿈만 명시적 clause 구분자로 사용한다. 검색 서비스는 콤마 검색어를 한 번의 provider 요청으로 전달하고 여러 조건을 번갈아 병합한 metadata를 만들지 않는다. 결과 기준 문구도 콤마 검색어를 조건 병합으로 표시하지 않는다. 절 정규화는 결정적으로 수행하며 LLM 경로를 타지 않는다(issue #525).'
+    executionRefs:
+      - execution:run-024
+    scenarios: []
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-result-basis-visible
+    assertion: vitest @ `app/__tests__/root-metadata.test.ts` + `app/components/__tests__/EmailGate.test.tsx` + `app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx` + `app/lib/__tests__/view-snapshot.test.ts` + `app/server/services/__tests__/episteme-literature.test.ts` ("posts the E3 search contract and accepts nullable relevance") + `app/domain/__tests__/research-route-payload-schema.test.ts` + `app/server/services/__tests__/search-service.test.ts`. Asserts the search and auth surfaces preserve Moonlight source coverage, the first search surface keeps one centered input without library application controls, query/result routes stay on the bounded rail, E3 estimated/bounded total and completeness survive provider and payload parsing, opaque cursor metadata is preserved, and loaded-result/AI wording remains provider-total-free.
+    executionRefs:
+      - execution:run-003
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-012
+      - execution:run-014
+      - execution:run-015
+      - execution:run-017
+      - execution:run-018
+      - execution:run-019
+      - execution:run-020
+      - execution:run-021
+      - execution:run-022
+      - execution:run-024
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-session-principal-handoff
+    assertion: vitest @ `app/__tests__/proxy.test.ts` + `app/components/__tests__/MoonlightAuthBootstrap.test.tsx` + `app/api/auth/moonlight-scholar/session/__tests__/route.test.ts` + `app/server/auth/__tests__/identity.test.ts` + owner-principal auth-boundary suites + shared-artifact negative exception @ `app/server/repository/__tests__/gap-reports.test.ts`. Asserts the Scholar token exchange creates or clears the Light House HttpOnly session cookie, successful handoff preserves the current route, Moonlight principal resolution precedes the legacy Supabase principal, stale Supabase refresh cookies are removed from the browser response and same-request downstream header, unexpected auth failures remain observable, owner-scoped resources use the verified principal id, and the shared gap artifact does not regain a creator owner column while viewer preference stays principal-scoped.
+    executionRefs:
+      - execution:run-003
+    scenarios:
+      - scenario:moonlight-search-route-handoff
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-bootstrap-auth-challenge
+    assertion: vitest @ `app/(research)/__tests__/layout.test.tsx` ("renders the search-first research shell without server auth gating"; "does not put user resolution on the layout first-paint path") + `app/(research)/__tests__/research-routes.test.tsx` ("renders the empty search entry for an unauthenticated visitor without executing or gating"; "leaves an unauthenticated query unresolved for the shared shell auth challenge") + `app/components/research/__tests__/research-route-shell.library-context.test.tsx` ("seeds library availability and papers from the background bootstrap endpoint"; "replaces stale research state with the auth surface on bootstrap 401"; "reloads the document after the auth surface establishes a session") + `app/components/research/__tests__/research-route-shell.test.tsx` ("uses the shared auth surface when the compatibility path rejects the token") + `app/components/__tests__/MoonlightAuthBootstrap.test.tsx` (session creation, 5-second timeout, 403 notice, stale-session cleanup fallback, stalled-cleanup timeout, unmount abort) + `app/api/auth/magic-link/__tests__/route.test.ts` ("keeps the current production host as the PKCE callback origin") + `app/api/auth/magic-link/__tests__/production-auth-config.test.ts` ("declares every production alias and PKCE callback in the Supabase config") + `app/lib/__tests__/track.test.ts` ("emits the visible auth challenge state transition") + `app/lib/analytics/__tests__/event-router.test.ts` ("accepts the rebuilt journey events against the real semantic property schema"). Asserts the empty entry and layout stay off the server auth hot path, the shared shell is the single owner for 401 and Scholar-session-invalid challenges, auth state removes a seeded stale active view plus research, background, account, and footer surfaces, the retired feature onboarding stays absent after authenticated bootstrap, the magic-link callback preserves the request host while the checked-in Supabase config declares every production alias needed for the same-origin PKCE exchange, successful bounded session exchange requests same-URL document reload without restoring the old subtree first, failed exchange bounds and aborts stale-session cleanup before fallback, and the declared anonymous auth-challenge payload passes the real analytics router.
+    executionRefs:
+      - execution:run-026
+    scenarios:
+      - scenario:research-auth-bootstrap-required
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-canonical-production-host
+    assertion: vitest @ `app/api/auth/magic-link/__tests__/production-auth-config.test.ts` ("redirects the compatibility host to the canonical Scholar host"; "keeps the canonical Scholar host on the application route") + checked-in host rule @ `next.config.ts`. Asserts a request for `search.themoonlight.io` receives a permanent redirect that preserves path and query at `scholar.themoonlight.io`, while the canonical host remains on the application route. The same config suite keeps both exact production callback URLs in the Supabase allowlist during the compatibility transition.
+    executionRefs:
+      - execution:run-026
+    scenarios: []
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-library-bootstrap-outcomes
+    assertion: vitest @ `app/components/research/__tests__/research-route-shell.library-context.test.tsx` ("seeds library availability and papers from the background bootstrap endpoint"; "keeps the research shell on non-auth bootstrap failures") + `app/components/research/__tests__/research-route-shell.test.tsx` ("hydrates the current account chrome from the post-paint library bootstrap") + `app/api/library-context/bootstrap/__tests__/route.test.ts` ("returns the authenticated user's library context for post-paint seeding"; "degrades library source failures without blocking the research shell"; "keeps authentication failures as route-guard failures"). Asserts bootstrap 200 seeds current principal email/library state, auth-required outcomes remain an auth signal, and other transport/response failures keep current research content while lowering account and library projections to unavailable.
+    executionRefs:
+      - execution:run-026
+    scenarios:
+      - scenario:search-library-bootstrap-background
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-post-search-layout-about
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteSearchBar.test.tsx` + `app/components/research/__tests__/ResearchRouteLayout.view-mode.test.tsx` + `app/components/research/__tests__/research-route-shell.test.tsx` ("owns one common footer after completed search result content") + `app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx` + `app/components/research-route-renderers/__tests__/search-view-content.test.tsx` ("keeps the results-state query input and page footer out of the route body"). Asserts the post-search command rail, result content rail, compact metadata, and AI comment text stay aligned with the bounded layout contract; the result renderer has no page footer and the route shell places one Scholar explanatory footer after completed result content.
+    executionRefs:
+      - execution:run-006
+      - execution:run-019
+      - execution:run-003
+      - execution:run-014
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-brand-mark-home-link
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteSearchBar.test.tsx` ("links the top-bar brand mark to the search home"). Asserts the top-bar `Moonlight Search` brand mark is a link to `/`.
+    executionRefs:
+      - execution:run-003
+      - execution:run-006
+      - execution:run-008
+      - execution:run-009
+      - execution:run-017
+      - execution:run-019
+    scenarios: []
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-reviewed-papers-context-source
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteSearchBar.test.tsx` ("keeps the route command row as a search-and-account layout"; "shows and edits the reviewed papers library list without route search transport"; "keeps the authenticated library list entry visible when no papers are saved"; "builds the next route search from current library availability"; "submits the route search without a result-basis parameter") + `app/components/research/__tests__/research-route-shell.library-context.test.tsx` ("updates empty search submits after the client library availability changes") + `app/components/research/__tests__/research-route-shell.test.tsx` ("seeds the library availability store from the compatibility initial prop"; "seeds internal reviewed_papers while the initial search route hides the top bar"; "keeps internal reviewed_papers on query routes as the current basis") + `app/server/domain-access/__tests__/reviewed-paper-access.auth-boundary.test.ts` ("builds a current library context source through the owner principal"; "reads the latest owner rows after a mutation instead of reusing an empty source") + `app/server/services/__tests__/library-context-source.test.ts` (reviewed source가 E3 `paper_uid`를 보존하며 `LIGHTHOUSE_LIBRARY_GROUNDING_ENABLED=1`이 external Moonlight source sync를 gates) + `app/server/services/__tests__/paper-neighborhood.test.ts` (E3-only seed를 wire에 그대로 전달하고 unresolved/unavailable discovery를 degradation으로 처리) + `app/components/research/__tests__/InitialSearchScreen.test.tsx` ("renders the initial search as a condition URL input"; "builds the first search without a result-basis parameter") + `app/components/research-route-renderers/__tests__/search-view-empty-state.test.tsx` ("keeps selected-paper basis controls out of the empty search input"; "uses condition URL execution for the empty search input") + `app/components/research-route-renderers/__tests__/search-view-content.test.tsx` ("submits the initial search without a result-basis parameter") + `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx` ("carries known library availability without a result-basis preference"; "drops retired basis state on keyword routes"). Asserts internal availability/display papers can be seeded, the authenticated route command can open the current reviewed_papers list through `/api/papers/reviewed`, empty and populated lists render, list removal uses reviewed_papers DELETE and updates availability, save/unsave is visible to the next owner-scoped context read without reusing a prior empty result, E3-only stored paper references remain eligible library anchors, every new search and follow-up automatically reads current reviewed_papers without a selectable basis parameter, legacy selected-anchor inputs normalize as no-op compatibility values, and external Moonlight library sync is excluded unless `LIGHTHOUSE_LIBRARY_GROUNDING_ENABLED=1`.
+    executionRefs:
+      - execution:run-003
+      - execution:run-005
+      - execution:run-006
+      - execution:run-008
+      - execution:run-009
+      - execution:run-014
+      - execution:run-017
+      - execution:run-018
+      - execution:run-019
+      - execution:run-020
+      - execution:run-021
+      - execution:run-026
+    scenarios:
+      - scenario:search-reviewed-papers-context-source
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-publication-year-range-filter
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view.helpers.test.ts` ("publication-year range filter helpers parse/build/match") + `app/components/research-route-renderers/__tests__/SearchYearRangeFilter.test.tsx` ("invokes onChange while user types and only fires onSubmit on Enter") + `app/components/research-route-renderers/__tests__/search-view-content.year-range.test.tsx` ("renders a condition apply button in the result overview controls"; "keeps the year-range filter in the result overview controls without a repeated query input"; "does not trigger a search request while the user is only typing in the year range inputs"; "commits the staged year range to the query route when the user clicks the condition apply button") + `app/lib/__tests__/search-condition-url-budget.test.ts` ("accepts every canonical publication-year shape and rejects partial numeric suffixes") + `app/server/services/__tests__/search-execution.test.ts` ("canonicalizes direct reversed, equal, and lower-open publication-year ranges"; "carries the canonical publication-year range through execution metadata") + `app/(research)/__tests__/relationship-route-page.test.tsx` ("executes a reversed publication-year range in place with canonical conditions"; "rejects a malformed publication-year range before auth or provider execution") + `app/server/services/__tests__/search-service.multi-query.test.ts` ("splits multi-query fetches across the shared result budget") + `app/server/services/__tests__/episteme-literature.year-range.test.ts` ("sends canonical half-open and reversed publication-year bounds") + `app/server/services/__tests__/search-service.test.ts` ("applies the publication-year range before returning an exact DOI match"). Asserts helper round-trips for single, closed, lower-open, upper-open, reversed, equal, and empty ranges; rejects malformed direct URL values before auth or provider execution; keeps a reversed direct URL in place while canonicalizing execution identity, metadata, and provider bounds; sends the same bounds to every multi-query provider leg; and prevents the DOI exact-lookup path from returning an out-of-range paper. Typing alone never starts a search. The explicit apply action commits the staged `q/sort/year` conditions to `/search?q=...` without reserving a server document or carrying a retired basis parameter.
+    executionRefs:
+      - execution:run-015
+    scenarios: []
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-loaded-result-facet-filters
+    assertion: "vitest @ `app/components/research-route-renderers/__tests__/search-view-facet-projection.test.ts` (\"filters the loaded result window by fields, authors, venues, and PDF metadata\") + `app/lib/__tests__/api-routes.test.ts` (\"serializes search facet filters as URL query state\") + `app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx` (\"explains the loaded search result basis in the results header\"; \"keeps the library-reflection row out of the results body\"; \"persists a facet mutation when the server timestamp is ahead of the browser\") + `app/lib/__tests__/view-snapshot.test.ts` (\"builds the search reaction snapshot from the loaded facet projection\"). Asserts loaded-result facet filters are stored in search metadata, represented in shareable URL query state (`field`, `author`, `venue`, `hasPdf`), and applied through the shared result projection before visible count, load-more count, result basis wording, and AI focused snapshot are calculated. Facet mutation advances logical freshness even when the server timestamp is ahead of the browser. The facet filters use metadata already present in the loaded/hydrated result window and do not pretend to be corpus-wide provider facets; publication year remains the provider-side route query condition. The facet controls (fields/authors/venues/PDF) and the year condition render as one visually bounded group (`data-testid=\"search-facet-filter-group\"`) without a redundant visible group label, distinct from the result-basis line and the sort control. The facet chip dropdowns are mutually exclusive: `app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx` (\"opens only one facet filters dropdown at a time\") opens one dropdown, asserts the others' `open` attribute is cleared, and confirms an outside pointerdown and an Escape keydown each close the open dropdown so panels never stack."
+    executionRefs:
+      - execution:run-018
+    scenarios: []
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-representative-filter
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-result-item.test.tsx` ("marks representative papers inside the result list") + `app/components/research-route-renderers/__tests__/search-view-content.representative-filter.test.tsx` ("filters the visible list but opens gap analysis from the current top-result pool") + `app/components/research-route-renderers/__tests__/search-view-knowledge-map.test.ts` ("can preserve an explicitly scoped gap report source set"). Asserts representative search papers render a `대표` mark inside the repeated one-paper card, the result facet group exposes a `대표 논문` checkbox that narrows only the current visible list and hides load-more while active. This display filter does not redefine the research-gap report input, which stays with the current sorted/filtered top-result pool under `promise:gap-network-detection-from-search`.
+    executionRefs:
+      - execution:run-016
+    scenarios:
+      - scenario:search-representative-paper-cards
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-doi-exact-lookup
+    assertion: vitest @ `app/server/services/__tests__/search-service.test.ts` ("resolves DOI input through the exact paper endpoint before keyword search", "resolves arXiv DOI input through the arXiv paper identifier before keyword search", "falls back to normalized DOI keyword search when DOI exact lookup has no match", "applies the publication-year range before returning an exact DOI match") + `app/server/services/__tests__/episteme-literature.test.ts` ("uses the E3 by-ref exact lookup instead of the removed E2 lookup route") + `app/server/services/__tests__/search-execution.test.ts` + `app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx` + `app/lib/__tests__/doi.test.ts`. Asserts DOI and `doi.org` inputs are normalized, `10.48550/arXiv.*` DOI inputs route through E3 `arxiv:` paper ref before `doi:`, exact lookup metadata distinguishes real in-range exact matches from keyword fallback, no-match or out-of-range lookup falls back to keyword search with the same year bounds, and the basis line marks exact DOI matches.
+    executionRefs:
+      - execution:run-003
+      - execution:run-006
+      - execution:run-009
+      - execution:run-012
+      - execution:run-014
+      - execution:run-015
+      - execution:run-018
+      - execution:run-020
+      - execution:run-022
+      - execution:run-024
+    scenarios: []
+  - key: promise:search-spelling-correction#acceptance-check:search-spelling-correction-original-results-shown-first
+    assertion: vitest @ `app/server/services/__tests__/search-service.test.ts` ("returns original search results without running spelling correction on the search critical path"). Asserts typo queries still issue exactly one original provider search fetch and return the original papers first.
+    executionRefs:
+      - execution:run-006
+      - execution:run-012
+      - execution:run-014
+      - execution:run-015
+      - execution:run-018
+      - execution:run-020
+      - execution:run-022
+      - execution:run-024
+    scenarios:
+      - scenario:search-spelling-correction
+  - key: promise:search-spelling-correction#acceptance-check:search-spelling-correction-corrected-query-not-auto-submitted
+    assertion: contract-check @ `scripts/evidence-ledger/helpers/contract-check.ts search-result-window no-llm-critical-path` + vitest @ `app/server/services/__tests__/search-service.test.ts` ("returns original search results without running spelling correction on the search critical path") + route/component path `app/api/search/spelling-correction/route.ts` / `app/components/research-route-renderers/search-view-content.tsx`. The search service no longer performs a corrected provider search fetch; spelling correction is a post-result ResearchRoutePayload metadata update surfaced through the document view action.
+    executionRefs:
+      - execution:run-002
+      - execution:run-006
+    scenarios:
+      - scenario:search-spelling-correction
+  - key: promise:search-spelling-correction#acceptance-check:search-spelling-correction-spelling-correction-metadata-recorded
+    assertion: vitest @ `app/server/services/__tests__/search-view-payload.test.ts` ("records spelling correction metadata in search research route payloads") + vitest @ `app/components/research-route-renderers/__tests__/search-view-content.spelling-correction.test.tsx` ("issues a bounded correction request whose signal survives a same-execution remount"; "does not re-fire a duplicate request when the view remounts mid-flight"; "times out an abort-ignoring transport and releases the request key for retry"; "starts only the hydrated execution's spelling request during replacement"; "merges a delayed correction without erasing newer search enrichment"; "keeps an existing correction when later background metadata merges"; "does not re-request after the route has answered (correction or confident null)"; "retries on a later mount when the request fails at the transport layer"; "does not re-request a terminal 400 on a later mount"; "retries on a later mount when a successful response has malformed JSON"). Asserts `buildSearchViewPayload` preserves original and corrected query metadata. The bounded post-result correction request survives controllerKey-driven same-execution remounts, aborts on execution replacement, and releases its key after a 25-second deadline but validates live execution/view/metadata identity before transport so a replacement route starts only its hydrated execution's request. Completion merges only the owned `spellingCorrection` field into current metadata, and later search/term background merges preserve that field; therefore graph support, term discovery, card hydration, inline analysis, reviewed state, and the correction remain monotonic in either completion order. Correctable/auth 응답은 해당 execution에서 terminal로 기억하고, timeout·transport·overload·transient server·malformed-success만 다음 mount에서 retryable하다.
+    executionRefs:
+      - execution:run-020
+    scenarios:
+      - scenario:search-spelling-correction
+  - key: promise:search-spelling-correction#acceptance-check:search-spelling-correction-corrected-suggestion-user-confirms
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view-content.test.tsx` ("renders spelling correction feedback with original and corrected queries"). Asserts the rendered search ResearchRoutePayload header names both the typo query and corrected query and only runs the corrected search when the user clicks the proposal action.
+    executionRefs:
+      - execution:run-005
+      - execution:run-006
+      - execution:run-008
+      - execution:run-009
+      - execution:run-014
+      - execution:run-018
+      - execution:run-019
+      - execution:run-020
+    scenarios:
+      - scenario:search-spelling-correction
+  - key: promise:search-spelling-correction#acceptance-check:search-spelling-correction-corrected-apply-route-owned
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view-content.test.tsx` ("commits the corrected query through the search route so the top input reflects it"). Asserts clicking the proposal action commits through the route-owned `onRouteSearchCommit`, executing a Search-first result snapshot for the corrected query (carrying current sort/year without a basis parameter) rather than a legacy local re-search, so the loaded document and route command input reflect the corrected query at its canonical `/search?q=` route and browser history (not an in-app restore) owns the return path to the original search.
+    executionRefs:
+      - execution:run-005
+      - execution:run-006
+      - execution:run-008
+      - execution:run-009
+      - execution:run-014
+      - execution:run-018
+      - execution:run-019
+      - execution:run-020
+    scenarios:
+      - scenario:search-spelling-correction
+  - key: promise:search-spelling-correction#acceptance-check:search-spelling-correction-best-effort-silent-when-absent
+    assertion: vitest @ `app/server/services/__tests__/search-spelling-correction-service.test.ts` ("returns null without a Gemini key", "returns null when the corrected query normalizes to the original query", "returns null when the corrector finds no clear typo", "returns null when the judgment fallback handles a timeout or failure"). Asserts the best-effort corrector stays silent (returns `null`, so the route writes no `spellingCorrection` metadata and the view renders no suggestion or degraded copy) when the LLM key is absent, the judgment path times out/fails into its fallback, or no clear typo exists, instead of fabricating a correction or a degraded notice.
+    executionRefs:
+      - execution:run-020
+    scenarios:
+      - scenario:search-spelling-correction
+  - key: promise:search-results-suggest-english-terms#acceptance-check:search-results-suggest-english-terms-result-basis
+    assertion: vitest @ `app/server/services/__tests__/search-term-discovery.test.ts` ("extracts LLM method/contribution phrase families and uses graph support for term priority"; "counts graph support from full support ids beyond the visible sample ids"; "allows specific LLM phrases that contain broad ai-for-science tokens"; "rejects support ids outside the compact prompt window"; "returns an empty llm result on timeout instead of building fallback terms") + `app/server/services/__tests__/search-execution.test.ts` (first payload library-anchor v2 graph evidence) + `app/components/research-route-renderers/__tests__/search-view-content.term-discovery.test.tsx` ("keeps research terms as clickable AI comment text"; "preserves the term seed without rendering a results-header iteration trace") + `app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx` ("keeps search metadata compact and renders research terms as clickable AI comment text") + `app/components/research/__tests__/ResearchBackgroundTasks.term-discovery.test.tsx` ("preserves graph support when a stale term-discovery response arrives later"). Terms are extracted from current result title/abstract plus inline-analysis context; when first-reveal library graph evidence is present it reinforces priority/basis from full support ids without a second PaperNeighborhood call or candidate synthesis. Accepted terms remain clickable AI-comment text and preserve `termSeed`.
+    executionRefs:
+      - execution:run-003
+      - execution:run-009
+      - execution:run-014
+      - execution:run-015
+      - execution:run-021
+      - execution:run-022
+    scenarios:
+      - scenario:search-english-term-discovery
+  - key: promise:search-results-suggest-english-terms#acceptance-check:search-results-suggest-english-terms-prefilled-search
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx` ("pushes the query-format search route immediately without waiting for a search POST"; "pushes the same entry URL even when it resolves to the current route"; "carries known library availability without a result-basis preference"; "drops retired basis state on keyword routes"; "carries a research term seed on the transient entry URL"; "opens modified research term searches in a new window while preserving the seed carry"; "opens a different-position query without source provenance") + `app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx` ("keeps search metadata compact and renders research terms as clickable AI comment text") + `app/server/services/__tests__/search-view-payload.test.ts` ("records term seed and commits term discovery as pending in search research route payloads") + `app/lib/__tests__/track.test.ts` ("bridges research term clicks with the served source but without raw query or term text"). Asserts research-term text and different-position follow-up clicks navigate immediately (no fetch) to the `/search?q=` entry route. Research-term entry alone carries its transient `termSeed`; different-position entry carries only the generated query and entry type, without source-paper provenance. Ctrl/Cmd/가운데 클릭 opens the same entry URL in a new browser tab without mutating the current route. The flow carries neither legacy selected library anchors nor retired personalize preference, preserves `termSeed` into payload metadata server-side with the canonical `/search?q=` condition URL staying seed-free, and records canonical analytics with hashes/type/support count only.
+    executionRefs:
+      - execution:run-021
+    scenarios:
+      - scenario:search-english-term-discovery
+  - key: promise:search-results-suggest-english-terms#acceptance-check:search-results-suggest-english-terms-click-feedback
+    assertion: vitest @ `app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx` ("keeps search metadata compact and renders research terms as clickable AI comment text") + `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx` ("pushes the query-format search route immediately without waiting for a search POST"; "pushes the same entry URL even when it resolves to the current route"; "opens modified research term searches in a new window while preserving the seed carry"; "clears the keyword activation when the route push throws") + `app/components/research/__tests__/search-followup-activation.test.tsx` (exact same-route no-op, consecutive identity, shell-owner unmount cleanup) + `app/components/research/__tests__/research-route-shell.test.tsx` ("shows keyword activation feedback without replacing the origin content"; "clears keyword activation feedback after the destination route arrives"; "keeps the newest keyword activation when an older destination arrives"). AI comment 연구 용어 plain click은 선택 용어와 origin route를 shell-scoped activation identity로 기록한다. persistent live region의 sticky surface가 현재 scroll viewport에 선택 용어를 즉시 표시하면서 기존 결과를 유지한다. destination 도착, 동기 navigation invocation 실패, bounded stale cleanup은 같은 identity만 지운다. shell unmount는 timer와 local state를 폐기한다. exact same-route와 detached click은 현재 창에 상태를 만들지 않는다. 실제 search processing state는 destination route가 계속 소유한다.
+    executionRefs:
+      - execution:run-021
+    scenarios:
+      - scenario:search-english-term-discovery
+  - key: promise:search-results-suggest-english-terms#acceptance-check:search-results-suggest-english-terms-term-seed-preserved
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view-content.term-discovery.test.tsx` ("preserves the term seed without rendering a results-header iteration trace", "does not render an iteration trace for an ordinary search without a term seed") + `app/server/services/__tests__/search-view-payload.test.ts` ("records term seed and commits term discovery as pending in search research route payloads") + metadata path `app/server/services/search-execution.ts`. Asserts a search created from a research term carries `termSeed` through the route-owned execution payload, while the next search result ResearchRoutePayload does not render a previous-term trace line under the results header.
+    executionRefs:
+      - execution:run-021
+    scenarios:
+      - scenario:search-english-term-discovery
+  - key: promise:search-results-suggest-english-terms#acceptance-check:search-results-suggest-english-terms-no-answer-state
+    assertion: vitest @ `app/server/services/__tests__/search-term-discovery.test.ts` ("returns no candidates when the loaded result set does not expose stable English terms") + `app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx` ("hides the research term row when discovery is ready with no terms"). Asserts sparse/non-English result sets do not create forced terms and the UI does not render a forced empty research-term row.
+    executionRefs:
+      - execution:run-021
+      - execution:run-022
+    scenarios:
+      - scenario:search-english-term-discovery
+  - key: promise:search-results-suggest-english-terms#acceptance-check:search-results-suggest-english-terms-background-llm-primary
+    assertion: vitest @ `app/server/services/__tests__/search-service.test.ts` ("commits search ResearchRoutePayloads with pending term discovery instead of blocking on LLM extraction") + `app/server/services/__tests__/search-term-discovery.test.ts` ("returns an empty llm result on timeout instead of building fallback terms") + `app/server/services/__tests__/search-term-discovery.background.test.ts` (no-key/success/failure/no-answer/numbered-support repair) + `app/components/research/__tests__/ResearchBackgroundTasks.term-discovery.test.tsx` (queue lifecycle, stale graph-support preservation, deadline/error handling) + `app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx` + `app/lib/__tests__/track.test.ts` + `app/server/domain-access/__tests__/server-analytics.test.ts`. Search commits pending term discovery without awaiting the LLM; background extraction closes ready/no-answer honestly, preserves first-reveal graph support and newer hydrated metadata, and emits viewed analytics without raw query/term.
+    executionRefs:
+      - execution:run-022
+    scenarios:
+      - scenario:search-english-term-discovery
+executions:
+  - id: execution:run-001
+    kind: contract-check
+    target: search-result-window
+    subcase: visible-window
+  - id: execution:run-002
+    kind: contract-check
+    target: search-result-window
+    subcase: no-llm-critical-path
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - app/__tests__/proxy.test.ts
+      - app/components/__tests__/MoonlightAuthBootstrap.test.tsx
+      - app/components/__tests__/EmailGate.test.tsx
+      - app/(research)/__tests__/layout.test.tsx
+      - app/(research)/__tests__/research-routes.test.tsx
+      - app/api/auth/moonlight-scholar/session/__tests__/route.test.ts
+      - app/server/auth/__tests__/identity.test.ts
+      - app/server/repository/__tests__/gap-reports.test.ts
+      - app/server/domain-access/__tests__/reviewed-paper-access.auth-boundary.test.ts
+      - app/server/services/__tests__/search-execution.test.ts
+      - app/server/services/__tests__/episteme-literature.test.ts
+      - app/api/search/enrichment/__tests__/route.test.ts
+      - app/api/search/term-discovery/__tests__/route.test.ts
+      - app/api/papers/analyze-inline/__tests__/route.test.ts
+      - app/components/research/__tests__/research-route-shell.library-context.test.tsx
+      - app/components/research/__tests__/research-route-shell.test.tsx
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+  - id: execution:run-004
+    kind: guard
+    script: guard:auth-hot-path
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item-spatial-stability.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item-library-action.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item.pdf-links.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-formatting.helpers.test.ts
+      - app/components/research-route-renderers/__tests__/search-view.whitespace-abstract.test.ts
+      - app/components/research-route-renderers/__tests__/search-result-basis-badge.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+      - app/server/services/__tests__/episteme-literature.test.ts
+      - app/server/services/__tests__/pdf-url-resolver.test.ts
+  - id: execution:run-006
+    kind: vitest
+    files:
+      - app/__tests__/root-metadata.test.ts
+      - app/domain/__tests__/research-route-payload-schema.test.ts
+      - app/components/__tests__/EmailGate.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-empty-state.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+      - app/components/research/__tests__/InitialSearchScreen.test.tsx
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+      - app/components/research/__tests__/ResearchRouteLayout.view-mode.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx
+      - app/server/services/__tests__/search-service.test.ts
+  - id: execution:run-007
+    kind: vitest
+    files:
+      - app/lib/__tests__/view-snapshot.test.ts
+  - id: execution:run-008
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+      - app/components/research/__tests__/research-route-shell.library-context.test.tsx
+      - app/components/research/__tests__/research-route-shell.test.tsx
+      - app/components/research/__tests__/InitialSearchScreen.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-empty-state.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx
+      - app/server/services/__tests__/library-context-source.test.ts
+      - app/server/services/__tests__/paper-neighborhood.test.ts
+  - id: execution:run-009
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+      - app/server/services/__tests__/search-execution.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+      - app/server/services/__tests__/search-hydration.test.ts
+      - app/api/search/enrichment/__tests__/route.test.ts
+      - app/components/research/__tests__/ResearchBackgroundTasks.test.tsx
+      - app/components/research/__tests__/ResearchBackgroundTasks.hydration.test.tsx
+      - app/lib/__tests__/fetch-with-silence-timeout.test.ts
+      - app/components/research/__tests__/ResearchBackgroundTasks.inline-analysis-window.test.tsx
+      - app/components/research/__tests__/ResearchBackgroundTasks.term-discovery.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.hydration-gating.test.tsx
+      - app/components/research/__tests__/research-route-runtime.bootstrap-events.test.ts
+  - id: execution:run-010
+    kind: vitest
+    files:
+      - app/lib/__tests__/constants.contract.test.ts
+  - id: execution:run-011
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/SearchView.visible-window.test.tsx
+  - id: execution:run-012
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-view.helpers.test.ts
+      - app/server/services/__tests__/search-service.test.ts
+  - id: execution:run-013
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-view-content.year-range.test.tsx
+  - id: execution:run-014
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+      - app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.year-range.test.tsx
+      - app/components/research-route-renderers/__tests__/SearchYearRangeFilter.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item.test.tsx
+      - app/server/services/__tests__/search-service.test.ts
+      - app/lib/__tests__/view-snapshot.test.ts
+  - id: execution:run-015
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-view.helpers.test.ts
+      - app/components/research-route-renderers/__tests__/SearchYearRangeFilter.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.year-range.test.tsx
+      - app/lib/__tests__/search-condition-url-budget.test.ts
+      - app/server/services/__tests__/search-execution-legacy-position.test.ts
+      - app/server/services/__tests__/search-execution.test.ts
+      - app/(research)/__tests__/relationship-route-page.test.tsx
+      - app/server/services/__tests__/search-service.multi-query.test.ts
+      - app/server/services/__tests__/episteme-literature.year-range.test.ts
+      - app/server/services/__tests__/search-service.test.ts
+  - id: execution:run-016
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.representative-filter.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-knowledge-map.test.ts
+  - id: execution:run-017
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+  - id: execution:run-018
+    kind: vitest
+    files:
+      - app/lib/__tests__/doi.test.ts
+      - app/lib/__tests__/api-routes.test.ts
+      - app/server/services/__tests__/search-service.test.ts
+      - app/components/research/__tests__/ResearchRouteLayout.view-mode.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-facet-projection.test.ts
+      - app/components/research-route-renderers/__tests__/search-result-item.test.tsx
+      - app/lib/__tests__/view-snapshot.test.ts
+  - id: execution:run-019
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+      - app/components/research/__tests__/ResearchRouteLayout.view-mode.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+  - id: execution:run-020
+    kind: vitest
+    files:
+      - app/server/services/__tests__/search-service.test.ts
+      - app/server/services/__tests__/search-spelling-correction-service.test.ts
+      - app/server/services/__tests__/search-view-payload.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.spelling-correction.test.tsx
+  - id: execution:run-021
+    kind: vitest
+    files:
+      - app/server/services/__tests__/search-term-discovery.test.ts
+      - app/server/services/__tests__/search-view-payload.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx
+      - app/components/research/__tests__/search-followup-activation.test.tsx
+      - app/components/research/__tests__/research-route-shell.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.term-discovery.test.tsx
+      - app/components/research/__tests__/AgentPanel.test.tsx
+      - app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx
+      - app/lib/__tests__/track.test.ts
+  - id: execution:run-022
+    kind: vitest
+    files:
+      - app/server/services/__tests__/search-service.test.ts
+      - app/server/services/__tests__/search-term-discovery.test.ts
+      - app/server/services/__tests__/search-term-discovery.background.test.ts
+      - app/server/services/__tests__/search-execution.test.ts
+      - app/components/research/__tests__/ResearchBackgroundTasks.term-discovery.test.tsx
+      - app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx
+      - app/lib/__tests__/track.test.ts
+      - app/server/domain-access/__tests__/server-analytics.test.ts
+  - id: execution:run-023
+    kind: vitest
+    files:
+      - app/server/services/__tests__/dedupe-papers-by-title-family.test.ts
+      - app/server/services/__tests__/library-neighborhood-discovery.test.ts
+      - app/api/search/__tests__/route.helpers.test.ts
+      - app/server/services/__tests__/search-hydration.test.ts
+      - app/components/research/__tests__/ResearchBackgroundTasks.condition-ownership.test.ts
+  - id: execution:run-024
+    kind: vitest
+    files:
+      - app/lib/__tests__/search-query.test.ts
+      - app/server/services/__tests__/query-clause-normalization-service.test.ts
+      - app/server/services/__tests__/search-service.test.ts
+      - app/server/services/__tests__/search-service.multi-query.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx
+  - id: execution:run-025
+    kind: guard
+    script: guard:landing-auth-source-boundary
+  - id: execution:run-026
+    kind: vitest
+    files:
+      - app/(research)/__tests__/layout.test.tsx
+      - app/(research)/__tests__/research-routes.test.tsx
+      - app/components/research/__tests__/research-route-shell.library-context.test.tsx
+      - app/components/research/__tests__/research-route-shell.test.tsx
+      - app/components/__tests__/MoonlightAuthBootstrap.test.tsx
+      - app/api/auth/magic-link/__tests__/route.test.ts
+      - app/api/auth/magic-link/__tests__/production-auth-config.test.ts
+      - app/api/library-context/bootstrap/__tests__/route.test.ts
+      - app/lib/__tests__/track.test.ts
+      - app/lib/analytics/__tests__/event-router.test.ts
+implementationContracts:
+  - "`SEARCH_RESULTS_INITIAL_VISIBLE_COUNT` remains the user-facing first window size, is value-pinned to `10`, and is consumed by the search ResearchRoutePayload controller/store path that expands or resets the visible result window (aspect:paper-card-list-windowing). The same value is reused by citation-lineage and graph-neighbor paper-card lists in their own ledgers."
+  - Single-query default relevance results stay within the Episteme loaded result window and preserve Episteme provider order. Multi-query relevance results merge the loaded provider windows for each condition and must be described as a condition-merged result. Explicit user-selected citation/year sorts keep the selected sort semantics inside the loaded provider window.
+  - "Query clause normalization on the search critical path stays deterministic and does not import LLM generation helpers. 콤마가 포함된 복합 주제와 정식 논문 제목은 모두 하나의 검색 의도로 유지한다. `;`와 줄바꿈만 명시적인 query clause 구분자로 사용한다. 명시적으로 나뉜 여러 clause는 condition-merged provider 결과로 표시한다. Boilerplate lead-phrase stripping(`Towards `, `A Survey of `)은 콤마가 포함된 단일 query에도 같은 방식으로 적용한다(`app/lib/search-query.ts`, issue #525)."
+  - 'Spelling correction stays outside the initial search critical path: the search service returns original-query results first, and existing route/view vitest evidence covers the post-result metadata update path. The correction suggestion shows both original and corrected query before the user chooses it. Choosing it commits the corrected query through the route-owned `/search?q=` execution model (the same `onRouteSearchCommit` the main search bar uses, carrying current sort/year without a retired basis parameter), not a legacy local re-search, so the loaded document and top route input reflect the corrected query at its canonical `/search?q=` route and browser history — not an in-app restore action — owns the return path. Correction is best-effort: `resolveSearchSpellingCorrection` returns `null` (no `spellingCorrection` metadata written, no suggestion or degraded copy rendered) when the LLM key is absent, the call times out/fails, no clear typo exists, or the correction normalizes to the original query. Silence is honest because "no typo" and "could not correct" are the same state to the user; it creates no visible explanation surface and so falls outside `aspect:visible-explanation-sufficiency`.'
+  - 'Research term discovery uses the loaded result title/abstract plus current inline-analysis context as the anchored LLM input for method/contribution noun-phrase candidates, with a compact prompt budget of 12 papers and 300 abstract characters per paper. Legacy-version, fingerprint-free, failure-placeholder, missing-abstract, and whitespace-only embedded analyses do not enter the prompt or method-support count. The LLM extraction does not run on the search critical path: `buildSearchViewPayload` commits `englishTermDiscovery.status="pending"`, and the background route `POST /api/search/term-discovery` closes the single `initial` phase to `status="ready"` with `source:"llm"`. A `bounded` background timeout (`TERM_CANDIDATE_LLM_TIMEOUT_MS`, off-critical-path) and `TERM_CANDIDATE_LLM_MAX_OUTPUT_TOKENS` bound the call. No-key/failure/timeout and filtered-empty results close as an honest empty `llm` result; the deterministic topic-profile candidate generator and `analysis_upgrade` phase are not production paths. A search-usefulness filter still runs before rendering: query-equivalent labels, broad field labels, broad method labels, and one-word general terms are not enough for the research-term suggestion text; LLM-specific multi-word method/contribution phrases are allowed to contain otherwise broad umbrella tokens when the phrase is concrete. First-payload library graph support boosts priority and basis copy for existing terms supported by graph-scored papers, but it does not expand candidates outside the loaded result sample and does not synthesize terms over a pending or honest-no-answer document. Background term discovery never calls the graph provider; it preserves the fixed first-payload evidence, counts against full support ids, annotates basis, and reorders graph-supported candidates. A late `mergeSearchMetadataWithExistingEnrichments` snapshot keeps the closed discovery state instead of regressing it to pending. The research-term text renders inside the AI comment as clickable term text embedded in a sentence, shows an extracting state while pending, and keeps graph-aware basis in candidate data rather than adding a separate chip row or degraded fallback note. It does not expose gap scores, bridge claims, or a final translation judgment. Method/contribution family presence on the real `slide accessibility` result is locked by the gated reproduction eval `npm run eval:term-discovery`.'
+  - Progressive hydration is a post-commit card-detail enrichment. Unified search fixes the combined keyword-plus-library-neighbor membership and score order in the first payload; background hydration never adds candidates, changes result order, or changes the positive-library-evidence `내 연구와 가까움` marker. Ordinary keyword searches still carry `metadata.abstractHydration.status:"pending"` and DOI exact lookup still skips that marker. `ResearchBackgroundTasks` calls `POST /api/search/enrichment` only after the route-owned search snapshot itself is `status:"ready"` and contains hydrate-capable E3 paper references. The enrichment path hydrates only committed result references through `/api/v3/papers/batch`, preserves each committed identity and first-revealed library metadata, and merges only when the current route payload id and paper-id order still match. Stored snapshots may still carry `libraryBlendPolicy`, `libraryOnlyPaperIds`, or graph support; their readers preserve that compatibility state. Pending hydration suppresses inline analysis and term discovery. Facet-neutral route AI comment generation may use the committed first-payload result basis; 저자·분야·venue·PDF facet이 활성화되면 hydration이 `ready`가 되어 current facet projection이 고정될 때까지 generation을 pending으로 유지하고, terminal projection이 비어 있으면 provider 요청 없이 닫는다.
+  - Repeated search cards use the shared responsive collapsed-card minimum-height class and stable metadata, author, action, and analysis rows. Hydration, metadata-only, not-started, progress, error, and settled output stay in the same analysis region. Missing abstracts use visible fields only as a limited clue and do not infer content from author identity; an available abstract without an actual task does not fabricate a queued state. The exact height value is owned by `docs/design-standards.md` and the shared code constant rather than this ledger.
+  - "`aspect:library-grounded-research`의 내부 reviewed_papers source와 자동 통합 projection은 `library-grounded-research.ledger.yaml`에서 닫는다. 이 ledger의 `result-basis-visible` entry는 최초 검색 전 화면과 route command에 별도 적용 control이 없고, 내부 reviewed_papers 목록 UI는 표시할 수 있으며, 완료된 결과 header는 실제 라이브러리 반영 여부만 설명하고 기준 토글·탭은 만들지 않는다는 연결을 담는다."
+verdict: met

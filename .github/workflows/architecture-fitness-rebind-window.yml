@@ -1,0 +1,176 @@
+name: Architecture Fitness Rebind Window
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+concurrency:
+  group: architecture-fitness-rebind-window
+  cancel-in-progress: true
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Resolve the latest protected signed target
+        id: freshness
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          current_head="$(git rev-parse HEAD)"
+          freshness="absent"
+          verified_head=""
+          verdict_at=""
+
+          while IFS=$'\t' read -r artifact_id artifact_created_at run_id; do
+            [[ -n "$artifact_id" ]] || continue
+            mapfile -t run_authority < <(
+              gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id" \
+                --jq '[.path, .event, .conclusion, .head_branch, .head_sha] | @tsv'
+            )
+            IFS=$'\t' read -r run_path run_event run_conclusion run_head_branch run_head_sha <<< "${run_authority[0]}"
+            if [[ "$run_path" != ".github/workflows/architecture-fitness-attestation.yml" ||
+                  "$run_conclusion" != "success" ||
+                  "$run_event" != "workflow_dispatch" ||
+                  "$run_head_branch" != "main" ]]; then
+              continue
+            fi
+            rm -rf latest-attestation
+            mkdir -p latest-attestation
+            if gh api \
+              "repos/$GITHUB_REPOSITORY/actions/artifacts/$artifact_id/zip" \
+              > latest-attestation.zip &&
+              unzip -q latest-attestation.zip -d latest-attestation; then
+              mapfile -t verified_heads < <(
+                find latest-attestation -name provenance.json -print0 |
+                  xargs -0 -r jq -r '.invocation.targetRevision' |
+                  sort -u
+              )
+              mapfile -t pull_requests < <(
+                find latest-attestation -name provenance.json -print0 |
+                  xargs -0 -r jq -r '.invocation.pullRequestNumber' |
+                  sort -u
+              )
+              provenance_count="$(
+                find latest-attestation -name provenance.json -type f | wc -l | tr -d ' '
+              )"
+              verified_bundle_count="$(
+                find latest-attestation -name verification.json -type f -print0 |
+                  xargs -0 -r jq -r 'select(.status == "verified") | .status' |
+                  wc -l |
+                  tr -d ' '
+              )"
+              if [[ "${#verified_heads[@]}" == "1" &&
+                    "${verified_heads[0]}" =~ ^[0-9a-f]{40}$ &&
+                    "${#pull_requests[@]}" == "1" &&
+                    "$run_head_sha" == "${verified_heads[0]}" &&
+                    "${pull_requests[0]}" == "0" &&
+                    "$provenance_count" -gt 0 &&
+                    "$verified_bundle_count" == "$provenance_count" ]]; then
+                candidate_head="${verified_heads[0]}"
+                if [[ "$candidate_head" == "$current_head" ]]; then
+                  verified_head="$candidate_head"
+                  verdict_at="$artifact_created_at"
+                  freshness="fresh"
+                  break
+                fi
+                if [[ -z "$verified_head" ]]; then
+                  verified_head="$candidate_head"
+                  verdict_at="$artifact_created_at"
+                  freshness="stale"
+                fi
+              fi
+            fi
+          done < <(
+            gh api --paginate \
+              "repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100" \
+              --jq '.artifacts[] | select(.expired == false and (.name | startswith("architecture-fitness-attested-"))) | [.id, .created_at, .workflow_run.id] | @tsv'
+          )
+
+          {
+            echo "current-head=$current_head"
+            echo "verified-head=$verified_head"
+            echo "verdict-at=$verdict_at"
+            echo "attestation-freshness=$freshness"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Publish exact freshness axes
+        env:
+          VERIFIED_HEAD: ${{ steps.freshness.outputs.verified-head }}
+          VERDICT_AT: ${{ steps.freshness.outputs.verdict-at }}
+          CURRENT_HEAD: ${{ steps.freshness.outputs.current-head }}
+          ATTESTATION_FRESHNESS: ${{ steps.freshness.outputs.attestation-freshness }}
+        run: |
+          {
+            echo "## Architecture Fitness rebind window"
+            echo
+            echo "- verifiedHead: \`${VERIFIED_HEAD:-none}\`"
+            echo "- verdictAt: \`${VERDICT_AT:-none}\`"
+            echo "- currentHead: \`$CURRENT_HEAD\`"
+            echo "- attestationFreshness: \`$ATTESTATION_FRESHNESS\`"
+            echo "- policyCompatibilityFreshness: \`Human-owned / not inferred\`"
+            echo "- checkedFixtureFreshness: \`not evaluated by this notifier\`"
+            echo
+            echo "No signed bundle at currentHead means no authoritative machine verdict at currentHead."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open, refresh, or close the rolling rebind issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERIFIED_HEAD: ${{ steps.freshness.outputs.verified-head }}
+          VERDICT_AT: ${{ steps.freshness.outputs.verdict-at }}
+          CURRENT_HEAD: ${{ steps.freshness.outputs.current-head }}
+          ATTESTATION_FRESHNESS: ${{ steps.freshness.outputs.attestation-freshness }}
+        run: |
+          title="[Architecture Fitness] rebind window"
+          issue_number="$(
+            gh issue list \
+              --state open \
+              --search "\"$title\" in:title" \
+              --json number,title \
+              --jq ".[] | select(.title == \"$title\") | .number" |
+              head -n 1
+          )"
+
+          if [[ "$ATTESTATION_FRESHNESS" == "fresh" ]]; then
+            if [[ -n "$issue_number" ]]; then
+              gh issue close "$issue_number" \
+                --comment "Current main $CURRENT_HEAD has a protected signed bundle; closing this batch window."
+            fi
+            exit 0
+          fi
+
+          body="$(
+            cat <<EOF
+          This rolling issue reports Architecture Fitness attestation freshness. It does not carry a prior verdict to a new head and does not classify CAIR impact.
+
+          - verifiedHead: \`${VERIFIED_HEAD:-none}\`
+          - verdictAt: \`${VERDICT_AT:-none}\`
+          - currentHead: \`$CURRENT_HEAD\`
+          - attestationFreshness: \`$ATTESTATION_FRESHNESS\`
+          - policyCompatibilityFreshness: Human-owned / not inferred
+          - checkedFixtureFreshness: not evaluated by this notifier
+
+          There is no authoritative machine verdict at currentHead until a protected exact-target bundle is produced. Batch rebind when an operator review says the covered behavior warrants it; do not create per-product-PR bridge work by default.
+
+          Related: #424
+          EOF
+          )"
+
+          if [[ -n "$issue_number" ]]; then
+            gh issue edit "$issue_number" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body"
+          fi

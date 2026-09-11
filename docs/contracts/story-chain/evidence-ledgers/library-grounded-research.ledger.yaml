@@ -1,0 +1,126 @@
+schemaVersion: 2
+slug: library-grounded-research
+review: reviews/library-grounded-research.reviews.md
+sourcePromises:
+  - promise:search-results-fast-window
+  - promise:search-nonascii-library-relevance
+appliedAspects:
+  - aspect:library-grounded-research
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-library-interest-default
+    assertion: vitest @ `app/server/services/__tests__/library-neighborhood-discovery.test.ts` + `app/server/services/__tests__/search-execution.test.ts`. Locks one automatic combined projection where provider relevance and query-aware graph relation each contribute at most half, overlap receives both contributions, and no source blanket-precedes the other.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-library-interest-default
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-combined-result-membership
+    assertion: vitest @ `app/server/services/__tests__/library-neighborhood-discovery.test.ts` + `app/server/services/__tests__/search-execution.test.ts` + `app/components/research-route-renderers/__tests__/search-view-interest-sort.test.ts` + `app/components/research-route-renderers/__tests__/search-view-facet-projection.test.ts` + `app/lib/__tests__/view-snapshot.test.ts` + `app/components/research-route-renderers/__tests__/search-view-knowledge-map.test.ts`. Locks one bounded keyword-plus-neighbor pool, combined total, facet projection, AI snapshot, and gap source handoff without a selectable keyword-only escape hatch.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-library-interest-default
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-balanced-basis-order
+    assertion: vitest @ `app/server/services/__tests__/library-neighborhood-discovery.test.ts` + `app/domain/__tests__/research-route-payload-schema.test.ts` + `app/server/services/__tests__/search-hydration.test.ts` + `app/components/research-route-renderers/__tests__/search-view-interest-sort.test.ts` + `app/server/services/__tests__/episteme-literature.test.ts` + `app/server/services/__tests__/paper-neighborhood.test.ts` + `app/server/external-http-gateway/__tests__/literature-provider-fetch.test.ts`. Locks equal maximum query/library contributions, schema and later-hydration preservation, overlap promotion, stable ties, no fixed slots, the current query reaching PaperNeighborhood, and privacy-safe provider paths.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-library-interest-default
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-library-first-response
+    assertion: vitest @ `app/server/services/__tests__/search-execution.test.ts`. Locks one first payload containing the combined pool and basis without a later rerank.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-library-interest-default
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-library-grounding-unavailable
+    assertion: vitest @ `app/server/services/__tests__/library-anchor-blend.test.ts` + `app/server/services/__tests__/search-hydration.test.ts` + `app/server/services/__tests__/search-hydration.provider-outcome.test.ts` + `app/server/services/__tests__/search-execution.test.ts` + `app/server/services/__tests__/search-execution.library-grounding-outcome.test.ts` + `app/domain/__tests__/research-route-payload-schema.test.ts` + `app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx` + `app/server/external-http-gateway/__tests__/literature-provider-fetch.test.ts`. Locks provider failure versus honest empty/no-signal, safe tagged metadata, keyword result preservation, visible accessible notice only for unavailable, raw detail stripping, no late graph injection, and server-only provider/load-shed observations.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:search-library-grounding-unavailable
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-library-neighbor-combined-pool
+    assertion: vitest @ `app/server/services/__tests__/library-neighborhood-discovery.test.ts` + `app/server/services/__tests__/search-execution.test.ts` + `app/components/research-route-renderers/__tests__/search-view-interest-sort.test.ts` + `app/components/research-route-renderers/__tests__/search-view-facet-projection.test.ts` + `app/lib/__tests__/view-snapshot.test.ts` + `app/components/research-route-renderers/__tests__/search-view-knowledge-map.test.ts`. Locks paper-id/title-family overlap and year filtering, the full 40-paper graph band and 80-paper pre-dedup combined bound, shared result sorting, facet/AI/gap consumers, and the absence of fixed supplement slots.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-library-discovery
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-personalization-opt-out
+    assertion: vitest @ `app/server/services/__tests__/search-execution.test.ts` (including current hydration snapshots without `personalize`) + `app/server/services/__tests__/search-execution.library-grounding-outcome.test.ts` + `app/lib/__tests__/api-routes.test.ts` + `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx`. Locks legacy `personalize=false` input validation followed by normalization to the unified result model, while all current route, follow-up and hydration snapshot writers omit the preference.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-personalization-opt-out
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-unified-result-projection
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx` ("does not expose a result-basis switch or commit hidden basis state") + `app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx` + `app/components/research/__tests__/ResearchRouteSearchBar.test.tsx` ("drops retired basis state before library availability is known") + `app/components/research-route-renderers/__tests__/SearchView.similar-paper.test.tsx` ("drops retired basis state without carrying reviewed papers in the similar entry URL") + `app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx` ("drops retired basis state on keyword routes") + `app/server/services/__tests__/search-execution.test.ts` (retired `sort=relevance|interest` normalization and current hydration snapshot omission). Locks one automatic result projection and canonical identity, absence of basis tabs/toggles and current preference writers, and actual library-reflection header copy.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-library-interest-default
+      - scenario:search-personalization-opt-out
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-library-proximity-marker
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-result-basis-badge.test.tsx` ("marks every result with positive library-proximity evidence"; "requires a positive weight and does not infer proximity from membership"; "pins the research-proximity badge inside the card without adding a metadata row") + `app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx` ("labels every result with positive library-proximity evidence") + `app/components/research-route-renderers/__tests__/search-view-interest-sort.test.ts` ("uses fused weights for sorting while positive library evidence owns proximity markers"). Locks one `내 연구와 가까움` marker for every result with a positive query-aware library relation weight, including graph-added results, while keyword-only, zero/negative-weight, and DOI exact-lookup results remain unmarked. The marker does not expose source taxonomy or claim certainty.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-library-interest-default
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-library-source-sync
+    assertion: vitest @ `app/server/domain-access/__tests__/reviewed-paper-access.auth-boundary.test.ts` ("builds a current library context source through the owner principal"; "reads the latest owner rows after a mutation instead of reusing an empty source") + `app/server/repository/__tests__/reviewed-papers.test.ts` ("orders an owner list by reviewed time and id for deterministic ties") + `app/api/library-context/bootstrap/__tests__/route.test.ts` + `app/server/services/__tests__/search-execution.test.ts` ("starts keyword retrieval beside the live library read, then starts graph retrieval when ids arrive") + `app/server/services/__tests__/library-neighborhood-discovery.test.ts`. Locks current reviewed_papers ownership and per-execution reads without empty-source reuse, deterministic latest-first repository query shape, keyword/source concurrency, the absence of a hidden citation-index source on reviewed-paper access, and query-aware graph relation scoring as the library-proximity evidence and ranking basis.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-library-source-sync
+  - key: promise:search-nonascii-library-relevance#acceptance-check:search-nonascii-library-relevance-korean-overlap
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view-interest-sort.test.ts` + `app/components/research-route-renderers/__tests__/search-view-content.analytics.test.tsx` + `app/lib/__tests__/track.test.ts` + `app/lib/analytics/__tests__/event-router.test.ts`. Preserves Hangul/CJK-aware admission and its existing visibility event for stored compatibility projections while proving the active combined pool does not emit the legacy event.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-nonascii-library-relevance
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/server/services/__tests__/library-neighborhood-discovery.test.ts
+      - app/domain/__tests__/research-route-payload-schema.test.ts
+      - app/server/services/__tests__/search-hydration.test.ts
+      - app/server/services/__tests__/search-hydration.provider-outcome.test.ts
+      - app/server/services/__tests__/search-execution.test.ts
+      - app/server/services/__tests__/search-execution.library-grounding-outcome.test.ts
+      - app/server/domain-access/__tests__/reviewed-paper-access.auth-boundary.test.ts
+      - app/server/repository/__tests__/reviewed-papers.test.ts
+      - app/api/library-context/bootstrap/__tests__/route.test.ts
+      - app/server/services/__tests__/episteme-literature.test.ts
+      - app/server/services/__tests__/paper-neighborhood.test.ts
+      - app/server/external-http-gateway/__tests__/literature-provider-fetch.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-interest-sort.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-facet-projection.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-basis-badge.test.tsx
+      - app/components/research-route-renderers/__tests__/SearchView.similar-paper.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx
+      - app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+      - app/lib/__tests__/api-routes.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-content.analytics.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-knowledge-map.test.ts
+      - app/lib/__tests__/view-snapshot.test.ts
+      - app/lib/__tests__/track.test.ts
+      - app/lib/analytics/__tests__/event-router.test.ts
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/server/services/__tests__/library-anchor-blend.test.ts
+implementationContracts:
+  - 새 검색 결과 배열은 keyword provider 결과 최대 40편과 graph 결과 최대 40편을 함께 담고 `libraryOnlyPaperIds`로 출처를 구분한다. paper-id/title-family 중복 전 최대 80편이며 저장된 과거 snapshot은 기존 reader의 호환 범위를 유지한다.
+  - reviewed_papers source는 owner principal로 제한한 뒤 `reviewed_at DESC, id DESC`로 결정적으로 읽는다. Unit evidence가 repository query shape를 고정하고 `app/server/repository/__tests__/reviewed-papers.postgres.integration.ts`는 같은 timestamp tie와 matching composite index를 production repository 경계에서 검증한다. 이 실제 DB profile은 `.github/workflows/quality.yml`의 `db-integration` job이 current migration을 적용한 뒤 `npm run test:db:gap-report-concurrency`로 실행한다. 범용 Evidence Ledger runner는 로컬 서비스 bootstrap을 소유하지 않으므로 structured execution으로 중복 등록하지 않는다.
+  - reviewed_papers source가 정해지면 query-aware PaperNeighborhood preflight가 현재 anchor를 읽고 graph candidate와 관계 점수를 첫 payload 안에서 확정한다. 검색 응답 뒤 citation provider warm이나 process cache fill을 시작하지 않는다.
+  - "`interestWeights`는 query-aware graph 근거가 양수인 paperId만 담고, keyword 포함 여부와 관계없이 해당 카드에 `내 연구와 가까움` marker를 하나 붙인다. keyword-only, 0 이하 weight, DOI exact lookup에는 marker를 붙이지 않는다. 정렬 전용 `combinedRankWeights`는 keyword provider 최종 순위와 Episteme 3 `fusion_score`를 매핑한 라이브러리 근접도를 각각 환산해 같은 최대 기여도로 더한다. 정확한 정규화와 relation 내부 비중은 `docs/runtime-flows/search-retrieval-ranking.md`가 단독 소유한다. 같은 논문은 두 축의 점수를 모두 받고, 고정 위치를 배급하지 않는다."
+  - PaperNeighborhood 상위 40편을 hydrate한 뒤 keyword 중복과 연도 범위를 제거하고 남은 후보 전부를 같은 결과 pool에 합류시킨다.
+  - 첫 payload의 현재 writer는 `applied / no_signal / unavailable`을 기록한다. `not_requested`는 과거 snapshot 호환 상태로만 읽는다. `unavailable`만 결과 header의 안내를 만들고, raw provider·HTTP·circuit 원인은 client payload가 아니라 gateway와 search timing telemetry가 소유한다.
+  - 사용자가 선택하는 basis projection과 preference store는 없다. 기존 `personalize=false` 입력은 검증 뒤 현재 단일 결과로 정규화하고 신규 writer와 canonical search identity는 이 값을 만들거나 사용하지 않는다.
+  - 합류 후보는 결과 수·더보기·facet·후속 입력에 참여한다. `rankingMode:combined_score`가 active reader를 legacy interleave reader와 구분한다.
+  - Tier 2 shared references/citers와 hydration 이후 rerank는 커버리지 측정 전까지 열지 않는다.
+verdict: met

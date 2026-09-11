@@ -1,0 +1,102 @@
+schemaVersion: 2
+slug: search-ephemeral-execution
+review: reviews/search-ephemeral-execution.reviews.md
+sourcePromises:
+  - promise:search-url-restores-search
+  - promise:search-failure-degraded-at-url
+  - promise:search-query-route-transition
+appliedAspects:
+  - aspect:search-first-url-model
+  - aspect:first-paint-persistence-independence
+  - aspect:immediate-navigation
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:search-url-restores-search#acceptance-check:search-url-restores-search-url-carries-state
+    assertion: vitest @ `app/(research)/__tests__/research-routes.test.tsx` — query·정렬·연도·facet 조건이 `/search?q=...` URL에서 실행 입력으로 해석되고 refine 조작이 URL을 갱신한다.
+    executionRefs:
+      - execution:run-004
+      - execution:run-002
+      - execution:run-003
+    scenarios:
+      - scenario:research-route-search-shell
+  - key: promise:search-url-restores-search#acceptance-check:search-url-restores-search-executes-in-place
+    assertion: vitest @ `app/(research)/__tests__/relationship-route-page.test.tsx` ("executes search from query URL params in place") + `app/server/services/__tests__/search-execution.test.ts` ("builds the search execution from URL params with live library preflight eligibility"; "starts keyword retrieval beside the live library read, then starts graph retrieval when ids arrive"; "applies a completed My Library graph preflight to a direct search URL first payload"; "keeps production view identity on canonical conditions and changes it with conditions") + `app/server/services/__tests__/ephemeral-view-id.test.ts` ("ignores result snapshot changes while preserving the canonical condition"; "changes identity when the canonical execution condition changes"; "does not alias the previous 32-bit collision pair") — `/search?q=` 진입이 문서 reserve·pending 기록·id redirect 없이 provider 실행으로 시작하고, 개인화된 라이브러리 검색은 같은 route 실행에서 current owner source read와 keyword fetch를 동시에 시작한 뒤 My Library graph preflight를 같은 첫 payload에 합류시키며, 같은 주소에서 결과를 렌더한다. Ephemeral view id는 결과 snapshot이 아니라 canonical 실행 조건에서 충돌 저항성 digest로 산출한다.
+    executionRefs:
+      - execution:run-004
+    scenarios:
+      - scenario:research-route-search-shell
+  - key: promise:search-url-restores-search#acceptance-check:search-url-restores-search-share-reload
+    assertion: vitest @ `app/(research)/__tests__/research-routes.test.tsx` + `app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx` — 같은 URL 재진입이 같은 조건의 재실행으로 해석되고 결과 기준 설명이 현재 실행 기준을 보여 준다.
+    executionRefs:
+      - execution:run-004
+    scenarios:
+      - scenario:research-route-canonical-url
+  - key: promise:search-url-restores-search#acceptance-check:search-url-restores-search-current-conditions-preserved
+    assertion: vitest @ `app/components/research/__tests__/ResearchBackgroundTasks.hydration.test.tsx` ("rejects a late personalized supplement after the first result pool is revealed"; "preserves the first-reveal basis when card hydration returns"; "rejects enrichment from a prior execution that reused the same view snapshot") + `app/components/research/__tests__/ResearchBackgroundTasks.condition-ownership.test.ts` ("rejects enrichment whose response query differs from the URL execution query"; "rejects enrichment after the current query changes inside the same execution"). 늦은 enrichment는 첫 공개 paper id 순서가 정확히 같은 응답의 논문 상세만 반영하고, 보충 후보·library basis·graph evidence를 새로 받아들이지 않으며 현재 정렬·연도·facet 조건도 이전 값으로 되돌리지 않는다. 응답 query나 현재 query가 실행을 시작한 URL query와 다르거나 active execution이 달라지면, 같은 view id와 paper 순서를 재사용해도 해당 응답을 적용하지 않는다.
+    executionRefs:
+      - execution:run-004
+    scenarios:
+      - scenario:research-route-canonical-url
+  - key: promise:search-failure-degraded-at-url#acceptance-check:search-failure-degraded-at-url-degraded-surface
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view-states.test.tsx` — provider 실패가 같은 주소에서 명시적 degraded 안내와 재시도 affordance로 렌더된다.
+    executionRefs:
+      - execution:run-004
+    scenarios:
+      - scenario:search-provider-failure-degraded
+      - scenario:search-hard-error
+  - key: promise:search-failure-degraded-at-url#acceptance-check:search-failure-degraded-at-url-retry-reruns
+    assertion: vitest @ `app/components/research-route-renderers/__tests__/search-view-states.test.tsx` — 재시도가 저장 상태 없이 같은 조건의 검색을 다시 실행한다.
+    executionRefs:
+      - execution:run-004
+    scenarios:
+      - scenario:search-provider-failure-degraded
+  - key: promise:search-query-route-transition#acceptance-check:search-query-route-transition-immediate-submit
+    assertion: vitest @ `app/components/research/__tests__/ResearchRouteSearchBar.test.tsx` ("navigates immediately to the search entry route on submit"; "does not activate when submitting the exact current entry URL"; "pushes a new query route while keeping provider processing destination-owned") — route command search submit은 reserve POST 없이 즉시 `/search?q=`로 이동하고 destination route가 provider 실행을 소유한다. origin shell은 bounded click receipt만 가질 수 있고, 같은 route 재제출은 activation을 만들지 않는다.
+    executionRefs:
+      - execution:run-004
+    scenarios:
+      - scenario:research-route-search-shell
+  - key: promise:search-query-route-transition#acceptance-check:search-query-route-transition-url-owned
+    assertion: contract-check @ `scripts/evidence-ledger/helpers/contract-check.ts search-first-url-model no-store-url-sync` + vitest @ `app/stores/__tests__/research-route-store.test.ts` ("stores exactly one active route execution"; "ignores stale timestamps inside the current execution"). 클라이언트 view store는 단일 `currentView`와 active execution 스칼라만 소유하고, store-to-URL sync prop/runtime router push·replace/state→URL sync 경로가 없다. URL 변경은 명시적 user action handler 또는 server route response가 소유한다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-004
+    scenarios:
+      - scenario:research-route-canonical-url
+executions:
+  - id: execution:run-001
+    kind: contract-check
+    target: search-first-url-model
+    subcase: no-store-url-sync
+  - id: execution:run-002
+    kind: guard
+    script: guard:state-boundaries
+  - id: execution:run-003
+    kind: guard
+    script: guard:search-condition-url-budget
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - app/server/services/__tests__/search-execution.test.ts
+      - app/server/services/__tests__/ephemeral-view-id.test.ts
+      - app/(research)/__tests__/research-routes.test.tsx
+      - app/(research)/__tests__/relationship-route-page.test.tsx
+      - app/server/domain-access/__tests__/server-analytics.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-states.test.tsx
+      - app/components/research-route-renderers/__tests__/SearchView.citation-lineage.test.tsx
+      - app/components/research-route-renderers/__tests__/use-graph-neighbors-handler.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+      - app/components/research/__tests__/ResearchBackgroundTasks.hydration.test.tsx
+      - app/components/research/__tests__/ResearchBackgroundTasks.condition-ownership.test.ts
+      - app/components/research-route-renderers/__tests__/search-view-content.result-basis.test.tsx
+      - app/stores/__tests__/research-route-store.test.ts
+implementationContracts:
+  - The listed Promise(s) are verified by the Acceptance Check entries and structured executions on this ledger.
+  - "`guard:search-first-paint-no-db` — 검색 첫 결과 경로가 route-owned provider boundary 안에서 실행되는지 static/dynamic import graph로 검증한다. Fire-and-forget server analytics mirror의 `analytics-events` repository chain과 `search-execution.ts`에서 명시 marker로 keyword fetch와 동시에 시작하는 owner-shaped live My Library source chain만 bounded repository side-channel로 허용한다 (`quality:guards` wiring, operational-readiness anti-pattern lint family)."
+  - "`guard:state-boundaries` — 한 production analysis에서 search와 relationship route policy를 함께 평가한다. URL condition에서 server execution input으로 이어지는 단일 authority 경로, standard Array·Set dependency와 deterministic facet normalization, literal-prefix `node:crypto` SHA-256 canonical ephemeral view identity, active route execution의 `currentView` hydration/cleanup owner를 TypeScript·JavaScript symbol과 AST에서 인벤토리화한다. Production source가 inventory에서 제외되는 `__tests__`·`.test` module을 획득하거나 비정적 module acquisition·CommonJS loader alias를 사용하는 경로는 세 inventory fact를 모두 fail-closed로 닫는다. Alias를 거친 병렬 owner, store capability escape, dynamic/symbol-aliased reflection·`Object.assign` direct write도 거부한다."
+  - "`guard:search-condition-url-budget` — `/search`, `/citation`, `/similar`의 production builder와 parser가 같은 `URLSearchParams`·UTF-8 byte owner를 거치고, 초과 조건을 provider 실행과 canonical identity 생성 전에 truncate/omit 없이 거부하는지 확인한다. 사용자-visible 공통 거부 약속과 정확한 evidence는 `research-route-cap-feedback.ledger.yaml`이 소유한다."
+verdict: met

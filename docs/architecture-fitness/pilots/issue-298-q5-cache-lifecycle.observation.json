@@ -1,0 +1,214 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-observation",
+  "serviceId": "lighthouse",
+  "policySetRef": "issue-298-q5-cache-lifecycle",
+  "policySetVersion": "2026-07-28.v5",
+  "policyDigest": "c058460560c0d81291d9425d71aae4c34b7139d25e8fab1f40631d2772a4c7f1",
+  "revision": "fe7f37ab87a1ccc2f05de3111821fdccc4a4fe41",
+  "collector": {
+    "adapterRef": "scripts/architecture-fitness/collect-q5-cache-lifecycle.mjs",
+    "id": "lighthouse-issue-298-q5-cache-lifecycle-collector",
+    "version": "4",
+    "scope": "exact-revision preset-title source policy and collector-authority concurrent-fill probe",
+    "definitionDigest": "1acf7ab50cac6dc81f43380cce0515893437278c1f7cd77f7db815076c8571f5",
+    "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+    "runRef": "fixture-run:issue-298-q5-cache-lifecycle:fe7f37ab",
+    "command": "node scripts/architecture-fitness/collect-q5-cache-lifecycle.mjs --policy docs/architecture-fitness/pilots/issue-298-q5-cache-lifecycle.policy.json --revision fe7f37ab87a1ccc2f05de3111821fdccc4a4fe41 --run-ref fixture-run:issue-298-q5-cache-lifecycle:fe7f37ab",
+    "attestation": {
+      "algorithm": "hmac-sha256",
+      "keyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1",
+      "payloadDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "evidence": [
+    {
+      "id": "cache-lifecycle-coverage-static:q5",
+      "kind": "static",
+      "role": "cache-lifecycle-coverage-static",
+      "source": "app/server/services/library-anchor-display.ts",
+      "sourceRevision": "fe7f37ab87a1ccc2f05de3111821fdccc4a4fe41",
+      "summary": "The inventory contains the selected preset-title cache and concurrent-fill scenario.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q5-cache-lifecycle.mjs --policy docs/architecture-fitness/pilots/issue-298-q5-cache-lifecycle.policy.json --revision fe7f37ab87a1ccc2f05de3111821fdccc4a4fe41 --run-ref fixture-run:issue-298-q5-cache-lifecycle:fe7f37ab",
+      "commandExitCode": 0,
+      "artifactDigest": "eb799f260131ecb1f2065589e1086d58ba0a52a83086b48118e545446102ca45",
+      "collectorRunRef": "fixture-run:issue-298-q5-cache-lifecycle:fe7f37ab",
+      "target": {
+        "policyRef": "issue-298:preset-title-cache-lifecycle",
+        "capabilityRef": "capability:lighthouse-preset-title-display",
+        "cacheRefs": [
+          "cache:lighthouse-preset-title"
+        ],
+        "lifecycleScenarioRefs": [
+          "scenario:lighthouse-preset-title-concurrent-fill"
+        ],
+        "factRefs": [
+          "coverage:all-cache-lifecycle-objects"
+        ]
+      }
+    },
+    {
+      "id": "cache-lifecycle-coverage-negative-guard:q5",
+      "kind": "test",
+      "role": "cache-lifecycle-coverage-negative-guard",
+      "source": "scripts/architecture-fitness/__tests__/q5-cache-lifecycle-boundaries.test.ts",
+      "sourceRevision": "fe7f37ab87a1ccc2f05de3111821fdccc4a4fe41",
+      "summary": "The collector-authority guard detects changed freshness, capacity, fill control, and measured scenario outcomes.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/q5-cache-lifecycle-boundaries.test.ts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "ffe79dde40136006b9b9e7da91df056bc583645e612e325f07210d0bff488e10",
+      "collectorRunRef": "fixture-run:issue-298-q5-cache-lifecycle:fe7f37ab",
+      "target": {
+        "policyRef": "issue-298:preset-title-cache-lifecycle",
+        "capabilityRef": "capability:lighthouse-preset-title-display",
+        "cacheRefs": [
+          "cache:lighthouse-preset-title"
+        ],
+        "lifecycleScenarioRefs": [
+          "scenario:lighthouse-preset-title-concurrent-fill"
+        ],
+        "factRefs": [
+          "coverage:cache-lifecycle-negative-guard"
+        ]
+      }
+    },
+    {
+      "id": "cache-lifecycle-policy-static:preset-title",
+      "kind": "static",
+      "role": "cache-lifecycle-policy-static",
+      "source": "app/server/services/library-anchor-display.ts",
+      "sourceRevision": "fe7f37ab87a1ccc2f05de3111821fdccc4a4fe41",
+      "summary": "The collector normalizes the preset-title source, identity, freshness, invalidation, failure, fill, and scope facts.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-q5-cache-lifecycle.mjs --policy docs/architecture-fitness/pilots/issue-298-q5-cache-lifecycle.policy.json --revision fe7f37ab87a1ccc2f05de3111821fdccc4a4fe41 --run-ref fixture-run:issue-298-q5-cache-lifecycle:fe7f37ab",
+      "commandExitCode": 0,
+      "artifactDigest": "eb799f260131ecb1f2065589e1086d58ba0a52a83086b48118e545446102ca45",
+      "collectorRunRef": "fixture-run:issue-298-q5-cache-lifecycle:fe7f37ab",
+      "target": {
+        "policyRef": "issue-298:preset-title-cache-lifecycle",
+        "capabilityRef": "capability:lighthouse-preset-title-display",
+        "cacheRefs": [
+          "cache:lighthouse-preset-title"
+        ],
+        "lifecycleScenarioRefs": [],
+        "factRefs": [
+          "cache-observation-sha256:cd43ef584c4b810f76b27f4dfe5b9d522610644d143b6881aeea49487475c2d9",
+          "structure:cache-policy-observed"
+        ]
+      }
+    },
+    {
+      "id": "cache-lifecycle-behavior-test:preset-title",
+      "kind": "test",
+      "role": "cache-lifecycle-behavior-test",
+      "source": "scripts/architecture-fitness/__tests__/q5-cache-lifecycle-probe.test.ts",
+      "sourceRevision": "fe7f37ab87a1ccc2f05de3111821fdccc4a4fe41",
+      "summary": "The collector-authority probe executes the exact-revision preset-title cache through controlled provider fills.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "AF_Q5_TARGET_ROOT=<revision:fe7f37ab87a1ccc2f05de3111821fdccc4a4fe41> node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/q5-cache-lifecycle-probe.test.ts --config scripts/architecture-fitness/q5-vitest.config.mts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "68eaec0b68a269aa6c0fb70f3f1b4853c6847e2a6246501ac131acce97d95d0e",
+      "collectorRunRef": "fixture-run:issue-298-q5-cache-lifecycle:fe7f37ab",
+      "target": {
+        "policyRef": "issue-298:preset-title-cache-lifecycle",
+        "capabilityRef": "capability:lighthouse-preset-title-display",
+        "cacheRefs": [
+          "cache:lighthouse-preset-title"
+        ],
+        "lifecycleScenarioRefs": [],
+        "factRefs": [
+          "cache-observation-sha256:cd43ef584c4b810f76b27f4dfe5b9d522610644d143b6881aeea49487475c2d9",
+          "behavior:cache-lifecycle-observed"
+        ]
+      }
+    },
+    {
+      "id": "cache-lifecycle-scenario-test:preset-title",
+      "kind": "test",
+      "role": "cache-lifecycle-scenario-test",
+      "source": "scripts/architecture-fitness/__tests__/q5-cache-lifecycle-probe.test.ts",
+      "sourceRevision": "fe7f37ab87a1ccc2f05de3111821fdccc4a4fe41",
+      "summary": "The probe records provider-fill count, waiter results, and caller-abort isolation without declaring a verdict.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "AF_Q5_TARGET_ROOT=<revision:fe7f37ab87a1ccc2f05de3111821fdccc4a4fe41> node_modules/.bin/vitest run scripts/architecture-fitness/__tests__/q5-cache-lifecycle-probe.test.ts --config scripts/architecture-fitness/q5-vitest.config.mts --reporter=json",
+      "commandExitCode": 0,
+      "artifactDigest": "68eaec0b68a269aa6c0fb70f3f1b4853c6847e2a6246501ac131acce97d95d0e",
+      "collectorRunRef": "fixture-run:issue-298-q5-cache-lifecycle:fe7f37ab",
+      "target": {
+        "policyRef": "issue-298:preset-title-cache-lifecycle",
+        "capabilityRef": "capability:lighthouse-preset-title-display",
+        "cacheRefs": [
+          "cache:lighthouse-preset-title"
+        ],
+        "lifecycleScenarioRefs": [
+          "scenario:lighthouse-preset-title-concurrent-fill"
+        ],
+        "factRefs": [
+          "cache-scenario-observation-sha256:14f19b9cdd223fd6047e899ba17d60da2dca6f2b02afacff764c247b5506ad56",
+          "behavior:cache-scenario-observed"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation:issue-298-q5-cache-lifecycle",
+      "policyRef": "issue-298:preset-title-cache-lifecycle",
+      "capabilityRef": "capability:lighthouse-preset-title-display",
+      "completeness": "complete",
+      "coverageEvidenceRefs": [
+        "cache-lifecycle-coverage-static:q5",
+        "cache-lifecycle-coverage-negative-guard:q5"
+      ],
+      "caches": [
+        {
+          "id": "observed-lighthouse-preset-title",
+          "cacheRef": "cache:lighthouse-preset-title",
+          "sourceOwnerRef": "source:episteme-paper-title",
+          "keyRefs": [
+            "key:public-raw-paper-id"
+          ],
+          "freshnessRef": "freshness:positive-900000ms-negative-30000ms",
+          "invalidationRefs": [
+            "invalidation:ttl-expiry",
+            "invalidation:lru-capacity-1024"
+          ],
+          "missRef": "miss:provider-fill-deadline-800ms",
+          "negativeResultRef": "negative:cache-null-30000ms",
+          "failureRef": "failure:do-not-cache-timeout-or-provider-error",
+          "fillControlRef": "fill:process-single-flight-per-id",
+          "sharingScope": "process",
+          "persistenceScope": "ephemeral",
+          "evidenceRefs": [
+            "cache-lifecycle-policy-static:preset-title",
+            "cache-lifecycle-behavior-test:preset-title"
+          ]
+        }
+      ],
+      "lifecycleScenarios": [
+        {
+          "id": "observed-lighthouse-preset-title-concurrent-fill",
+          "scenarioRef": "scenario:lighthouse-preset-title-concurrent-fill",
+          "cacheRef": "cache:lighthouse-preset-title",
+          "scenarioKind": "concurrent-fill",
+          "outcomeRefs": [
+            "outcome:one-provider-fill",
+            "outcome:waiters-share-title",
+            "outcome:caller-abort-isolated"
+          ],
+          "evidenceRefs": [
+            "cache-lifecycle-scenario-test:preset-title"
+          ]
+        }
+      ]
+    }
+  ]
+}

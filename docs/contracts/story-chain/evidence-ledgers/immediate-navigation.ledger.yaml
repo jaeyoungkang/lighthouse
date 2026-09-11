@@ -1,0 +1,146 @@
+schemaVersion: 2
+slug: immediate-navigation
+review: reviews/immediate-navigation.reviews.md
+sourcePromises:
+  - promise:search-failure-degraded-at-url
+  - promise:search-url-restores-search
+  - promise:search-query-route-transition
+  - promise:search-results-suggest-english-terms
+  - promise:inline-analysis-auto-run
+  - promise:gap-led-next-search
+  - promise:gap-network-detection-from-search
+  - promise:citation-lineage
+  - promise:similar-papers-discovery
+  - promise:graph-neighbor-papers
+appliedAspects:
+  - aspect:immediate-navigation
+intent:
+  mode: explicit
+  checks:
+    - key: promise:inline-analysis-auto-run#intent-check:semantic-profile-is-phrase-not-keyword
+      evidence: The receipt preserves the existing inline-analysis card and delegates semantic-profile prose quality to `inline-analysis.ledger.yaml`; immediate navigation neither rewrites nor replaces that output.
+    - key: promise:gap-network-detection-from-search#intent-check:cluster-narrative-describes-research-work
+      evidence: The receipt preserves the focused gap report and delegates cluster narrative quality to `gap-network-e2.ledger.yaml`; the seed handoff does not replace the report.
+    - key: promise:gap-network-detection-from-search#intent-check:representative-papers-show-cluster-grain
+      evidence: Representative-paper grain stays visible in the origin report and remains judged by `gap-network-e2.ledger.yaml`.
+    - key: promise:gap-network-detection-from-search#intent-check:adjacency-shows-network-position
+      evidence: Network-position explanation stays visible in the origin report and remains judged by `gap-network-e2.ledger.yaml`.
+    - key: promise:citation-lineage#intent-check:body-explains-citation-flow-not-counts
+      evidence: The receipt preserves the citation-lineage body and delegates its relationship explanation quality to `citation-lineage.ledger.yaml`.
+  delegations: []
+acceptanceChecks:
+  - key: promise:search-url-restores-search#acceptance-check:search-url-restores-search-executes-in-place
+    assertion: "`search-ephemeral-execution.ledger.yaml`가 `/search?q=` 조건 주소에서 reserve/redirect 없이 실행이 시작됨을 검증한다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:research-route-search-shell
+  - key: promise:search-failure-degraded-at-url#acceptance-check:search-failure-degraded-at-url-degraded-surface
+    assertion: "`search-ephemeral-execution.ledger.yaml`가 provider 실패도 같은 목적지 주소의 degraded surface로 닫힘을 검증한다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:search-provider-failure-degraded
+  - key: promise:search-query-route-transition#acceptance-check:search-query-route-transition-immediate-submit
+    assertion: "`search-ephemeral-execution.ledger.yaml`와 `ResearchRouteSearchBar.test.tsx`가 검색 submit 앞에 client fetch나 origin-owned provider processing state가 없고, shell activation은 클릭 receipt로만 남음을 잠근다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:research-route-search-shell
+  - key: promise:search-query-route-transition#acceptance-check:search-query-route-transition-submit-feedback
+    assertion: "`search-query-route-transition.ledger.yaml`와 production React vitest가 첫 화면·상단 `논문검색` 버튼의 즉시 회전 표시, `aria-busy`, 중복 제출 비활성화와 같은 activation 정리 경계를 잠근다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:research-route-search-shell
+  - key: promise:search-results-suggest-english-terms#acceptance-check:search-results-suggest-english-terms-click-feedback
+    assertion: "`search-result-window.ledger.yaml`와 production React vitest가 연구 용어 plain click의 activation 생성, 현재 viewport 수신 상태, origin 결과 유지, detached/no-op 불변, activation identity별 destination cleanup을 소유한다. `relationship-seed-sticky-browser-check.mjs`는 그 상태 전이를 재구현하는 제품 통합 검사가 아니라, 실제 Chrome pointer click 뒤 persistent status surface가 deep-scroll container 상단에 고정되고 origin card가 mount 상태임을 검증하는 물리 배치 증거다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:search-english-term-discovery
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-search-click-feedback
+    assertion: "`inline-analysis.ledger.yaml`가 `다른 입장` 후보의 같은 수신 상태와 lifecycle을 소유한다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:search-inline-analysis-visible-first
+  - key: promise:gap-led-next-search#acceptance-check:gap-led-next-search-click-feedback
+    assertion: "`gap-led-next-search.ledger.yaml`가 focused seed button의 plain/modifier/middle event와 plain click 버튼 피드백을 실제 호출부부터 검증한다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:search-gap-analysis-entry
+  - key: promise:similar-papers-discovery#acceptance-check:similar-papers-discovery-author-topic-search
+    assertion: "`similar-papers.ledger.yaml`가 저자명·주제 keyword의 즉시 URL 이동과 현재 viewport 수신 상태를 소유한다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:search-similar-papers-entry
+  - key: promise:gap-network-detection-from-search#acceptance-check:gap-network-detection-from-search-entry-from-ai-comment
+    assertion: "`search-gap-handoff.ledger.yaml`가 product-owned `/gap?opening=1` detached target을 user activation 안에서 먼저 여는 handoff를 검증한다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:search-gap-analysis-entry
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-immediate-navigation
+    assertion: "`citation-lineage.ledger.yaml`가 citation seed URL의 즉시 전환과 detached current-window 불변을 검증한다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-keyword-click-feedback
+    assertion: "`citation-lineage.ledger.yaml`가 AI comment 연구 용어와 반복 카드 keyword의 현재 viewport receipt를 검증한다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-immediate-navigation
+    assertion: "`graph-neighbor-papers.ledger.yaml`가 graph seed URL의 즉시 전환과 detached current-window 불변을 검증한다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-keyword-click-feedback
+    assertion: "`graph-neighbor-papers.ledger.yaml`가 AI comment 연구 용어와 반복 카드 keyword의 현재 viewport receipt를 검증한다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research/__tests__/ResearchRouteSearchBar.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+      - app/components/research/__tests__/search-followup-activation.test.tsx
+      - app/components/research/__tests__/research-route-shell.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-followup-handlers.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item.interactions.test.tsx
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkFocusedSelectionSummary.feedback.test.tsx
+      - app/components/research-route-renderers/knowledge-map/__tests__/GapNetworkReport.gap-led-next-search.test.tsx
+      - app/components/research-route-renderers/__tests__/GapNetworkView.test.tsx
+      - app/components/research/__tests__/SearchResultsOverviewPanel.test.tsx
+  - id: execution:run-002
+    kind: registered-script
+    script: relationship-seed-sticky-browser
+implementationContracts:
+  - same-window keyword follow-up receipt는 `ResearchRouteShell` 아래 Context가 소유한다. 전역 Zustand store, URL state, destination processing state가 아니다.
+  - "`논문검색`과 `[검색어] 으로 논문 검색` 버튼의 회전 표시, `aria-busy`, 비활성 상태는 같은 Context의 현재 activation에서 파생한다."
+  - persistent `role="status"` region은 현재 scroll viewport 상단에 sticky로 남고 `aria-busy`를 사용하지 않는다. origin content는 그대로 mount된다.
+  - destination route arrival, synchronous navigation invocation failure, 30초 bounded timeout, shell unmount가 cleanup boundary다. identity comparison은 이전 cleanup이 새 클릭을 지우지 못하게 한다.
+  - Ctrl/Cmd/가운데 클릭은 동일 entry URL을 detached tab에서 열며 현재 창 Context를 시작하지 않는다. exact same-route no-op도 receipt를 시작하지 않는다.
+verdict: met

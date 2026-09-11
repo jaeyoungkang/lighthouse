@@ -1,0 +1,84 @@
+schemaVersion: 2
+slug: progressive-content-spatial-stability
+review: reviews/progressive-content-spatial-stability.reviews.md
+sourcePromises:
+  - promise:route-view-ai-comment-inline-surface
+  - promise:inline-analysis-auto-run
+  - promise:search-results-fast-window
+  - promise:citation-lineage
+  - promise:graph-neighbor-papers
+appliedAspects:
+  - aspect:progressive-content-spatial-stability
+intent:
+  mode: delegated
+  checks: []
+  delegations:
+    - key: promise:inline-analysis-auto-run#intent-check:semantic-profile-is-phrase-not-keyword
+      ledger: immediate-navigation
+    - key: promise:citation-lineage#intent-check:body-explains-citation-flow-not-counts
+      ledger: citation-lineage
+acceptanceChecks:
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-generation-pending-visible
+    assertion: Before the first body arrives, automatic search and queued relationship generation render an explicit `role="status"`, `data-state="loading"` AI comment at the content-rail top. Route-renderer chunk loading preserves that pending surface, pending and settled comments replace content inside the same bounded generated-content region, and failed, snapshot-mismatched, or null-result generation settles the route-owned pending flag instead of leaving a false completed comment.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:route-view-ai-comment-inline-surface#acceptance-check:route-view-ai-comment-inline-surface-bounded-preview-flow
+    assertion: Pending and settled route comments stay in the same generated-content region. Body prose uses a three-line preview; actual rendered overflow after line breaks or width changes controls the aria-expanded disclosure, and full natural height returns only after the user opens it.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-status-badge-distinguishes-states
+    assertion: The four queued/running/done/error states resolve to four distinct labels, more than one visual class, and a spinner only for `분석 중`. Repeated paper cards replace running, error, and settled content inside the same generated-content region so the distinguishable status does not create a second shifting frame.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-inline-analysis-visible-first
+  - key: promise:inline-analysis-auto-run#acceptance-check:inline-analysis-auto-run-evidence-limit-preview
+    assertion: A card without an analysis task keeps the shared analysis region. Missing or whitespace-only abstracts render a metadata-only clue from visible fields and an explicit evidence limit without using author identity, while an available abstract with no task shows a neutral not-started state instead of a false queued state.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-inline-analysis-visible-first
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-card-triage-metadata
+    assertion: Search cards use the shared responsive collapsed-card minimum and one card-owned generated-content region beneath the action row. Titles stay on one line, summaries use at most two, and the settled source badge is expanded-only. The year·venue·fields metadata row and separate three-author-default row preserve their order and neutral missing copy, while hydration, unavailable, not-started, and settled analysis replace content inside that frame instead of changing the repeated-card rhythm.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-card-data-hydration
+    assertion: Citation-lineage repeated cards use the shared `SearchResultItem`, including the bounded hydration/analysis region, whole-card non-interactive-region disclosure, and explicit-action isolation.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-card-data-hydration
+    assertion: Graph-neighbor lightweight cards use the same generated-content region while metadata and inline analysis settle, preserving the shared search-card spatial rule.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research/__tests__/AgentPanel.test.tsx
+      - app/components/research/__tests__/ResearchRouteLayout.reactions.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.reaction-generation-queue.test.tsx
+      - app/components/research/__tests__/ResearchRouteRuntime.bootstrap.test.tsx
+      - app/components/research/__tests__/inline-ai-comment-treatment.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view.helpers.test.ts
+      - app/components/research-route-renderers/__tests__/search-result-item-spatial-stability.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view.whitespace-abstract.test.ts
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbor-states.test.tsx
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx
+      - app/lib/__tests__/track.test.ts
+      - app/server/services/analytics/__tests__/event-router.ai-comment-expand.test.ts
+implementationContracts:
+  - The route AI comment pending shell and settled preview use `data-generated-content-region="route-ai-comment"` and the shared bounded-region class.
+  - Repeated paper-card hydration, analysis progress, error, evidence limit, and settled summary use `data-generated-content-region="paper-card-analysis"` below the action row.
+  - Repeated cards use one responsive collapsed-card minimum-height class. The value remains a design value rather than an Acceptance Check threshold.
+  - Automatic generated prose uses a bounded preview. Only the owning disclosure removes the preview limit.
+  - The paper-card owning disclosure is the card's non-interactive region plus an icon-only accessible button; nested links and controls never trigger it.
+  - 카드 disclosure 상태는 현재 route document identity에만 속한다. 같은 document의 hydration은 상태를 유지하지만 인용 관계·비슷한 논문 document id가 바뀌면 새 카드가 접힌 상태로 시작한다.
+  - Generated body text is not included in the AI comment expansion analytics payload.
+verdict: met

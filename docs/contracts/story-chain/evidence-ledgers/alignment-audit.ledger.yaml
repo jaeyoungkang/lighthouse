@@ -1,0 +1,304 @@
+schemaVersion: 2
+slug: alignment-audit
+review: reviews/alignment-audit.reviews.md
+sourcePromises:
+  - promise:evidence-ledger-implementation-trace
+  - promise:domain-aspect-visibility
+  - promise:alignment-baseline-debt-burndown
+  - promise:release-verdict-aspect-integration
+  - promise:ac-trace-bidirectional-enforcement
+appliedAspects: []
+intentJudgmentRefs:
+  - promise: promise:evidence-ledger-implementation-trace
+    anchor: promise:evidence-ledger-implementation-trace
+  - promise: promise:domain-aspect-visibility
+    anchor: promise:domain-aspect-visibility
+  - promise: promise:alignment-baseline-debt-burndown
+    anchor: promise:alignment-baseline-debt-burndown
+  - promise: promise:release-verdict-aspect-integration
+    anchor: promise:release-verdict-aspect-integration
+  - promise: promise:ac-trace-bidirectional-enforcement
+    anchor: promise:ac-trace-bidirectional-enforcement
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:ac-trace-bidirectional-enforcement#acceptance-check:ac-trace-bidirectional-enforcement-coverage-entries-parsed
+    assertion: 정합성 파서가 YAML v2 `acceptanceChecks[].key`에서 Promise ref와 Acceptance Check ref를 한 번만 분해하고 같은 구조화 그래프를 validator와 alignment audit에 전달한다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+    scenarios: []
+  - key: promise:ac-trace-bidirectional-enforcement#acceptance-check:ac-trace-bidirectional-enforcement-mismatch-finding-emitted
+    assertion: Promise의 Acceptance Check에 대응하는 YAML 원장 entry가 없으면 `missing_ac_ledger` critical finding이 발생하고 원장 key가 정본과 다르면 strict parser 또는 validator가 실패한다.
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+    scenarios: []
+  - key: promise:ac-trace-bidirectional-enforcement#acceptance-check:ac-trace-bidirectional-enforcement-mismatch-blocks-critical-gate
+    assertion: "`missing_ac_ledger`와 strict Story Chain validation failure가 current-critical gate 및 `quality:contract`에 통합되어 Promise ↔ Evidence Ledger 불일치를 차단한다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+    scenarios: []
+  - key: promise:ac-trace-bidirectional-enforcement#acceptance-check:ac-trace-bidirectional-enforcement-foundational-ledgers-exempt
+    assertion: vitest @ `app/server/services/story-chain/__tests__/loader-review-ownership.test.ts`와 `scripts/mission-control/lib/__tests__/alignment-audit.test.ts` ("does not treat foundational Markdown as Acceptance Check evidence"). `evidence-ledgers/foundational/*.md`가 YAML loader와 AC 매핑에서 제외되는지 검증한다.
+    executionRefs:
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-012
+      - execution:run-013
+    scenarios: []
+  - key: promise:alignment-baseline-debt-burndown#acceptance-check:alignment-baseline-debt-burndown-staged-fast-skip-on-unrelated-paths
+    assertion: "`mc:check-critical-findings -- --staged`는 staged file이 alignment 정본과 무관할 때 fast-skip exit 0 한다"
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+      - execution:run-014
+    scenarios: []
+  - key: promise:alignment-baseline-debt-burndown#acceptance-check:alignment-baseline-debt-burndown-exit-on-current-criticals
+    assertion: 현재 alignment snapshot에 critical finding이 있으면 `mc:check-critical-findings`가 exit 1 한다
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+      - execution:run-014
+    scenarios: []
+  - key: promise:alignment-baseline-debt-burndown#acceptance-check:alignment-baseline-debt-burndown-warning-nonblocking
+    assertion: warning finding은 current critical과 분리되어 표시되며 release blocking 조건이 아니다
+    executionRefs:
+      - execution:run-007
+      - execution:run-008
+    scenarios: []
+  - key: promise:domain-aspect-visibility#acceptance-check:domain-aspect-visibility-aspect-rows-emitted-in-snapshot
+    assertion: "`buildIntentTraceabilitySnapshot`은 `loadAspectDeclarations`로 도메인 aspect(`kind: aspect`) row(`id`/`title`/`kind`/`appliesTo`/`coveringLedger`)를 별도 collection으로 emit한다"
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+    scenarios: []
+  - key: promise:release-verdict-aspect-integration#acceptance-check:release-verdict-aspect-integration-four-dimension-shape
+    assertion: "`ReleaseVerdictReport` 도메인 타입에 `intent` / `acTrace` / `servicePolicy` / `aspect` 네 필드가 포함되고, unresolved core-product Service Policy Coverage Review가 다른 세 차원의 green과 무관하게 release를 차단한다."
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+    scenarios: []
+  - key: promise:release-verdict-aspect-integration#acceptance-check:release-verdict-aspect-integration-aspect-verdict-from-covering-review
+    assertion: "`computeReleaseVerdict()`가 모든 `kind: aspect`의 covering Evidence Ledger §5에서 aspectRef 명시 최신 dated entry verdict를 읽어 met/not-met/unknown/unverified 4-state로 분류한다"
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+    scenarios: []
+  - key: promise:release-verdict-aspect-integration#acceptance-check:release-verdict-aspect-integration-aspect-finding-categories-block-release
+    assertion: "`aspect_verdict_unverified`/`aspect_verdict_not_met`/`aspect_verdict_unknown` 3종 finding category가 critical severity로 alignment audit에 emit되어 current-critical gate에 자동 통합된다"
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+    scenarios: []
+  - key: promise:release-verdict-aspect-integration#acceptance-check:release-verdict-aspect-integration-cli-axis-cluster-grouping
+    assertion: "`formatReleaseVerdict` renders Intent/AC trace as the longitudinal axis, Service Policy Coverage as a separate composition state, and Aspect as the cross-cutting axis; any blocked dimension blocks Release."
+    executionRefs:
+      - execution:run-011
+    scenarios: []
+  - key: promise:evidence-ledger-implementation-trace#acceptance-check:evidence-ledger-implementation-trace-ledger-row-target-counts
+    assertion: Evidence Ledger implementation 행은 Source Promises/Applied Aspects, run evidence, execution target, code target 수를 표시한다
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+    scenarios: []
+  - key: promise:evidence-ledger-implementation-trace#acceptance-check:evidence-ledger-implementation-trace-run-check-target-exposure
+    assertion: run-check 행은 명령문, execution target, code target, missing target을 그대로 노출한다
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+      - execution:run-003
+      - execution:run-004
+      - execution:run-005
+      - execution:run-006
+      - execution:run-007
+      - execution:run-008
+      - execution:run-009
+      - execution:run-010
+      - execution:run-011
+      - execution:run-012
+    scenarios: []
+  - key: promise:evidence-ledger-implementation-trace#acceptance-check:evidence-ledger-implementation-trace-internal-admin-domain
+    assertion: vitest @ `app/server/auth/__tests__/internal-admin.test.ts` ("treats @corca.ai emails as internal admins") + `app/server/auth/__tests__/access-policy.test.ts` ("allows internal users and exact external allowlist entries"). Asserts the internal admin gate's `@corca.ai` rule and the separate external user allowlist (current `promise:evidence-ledger-implementation-trace internal-admin-domain`; cross-cuts `aspect:admin-access-control`).
+    executionRefs:
+      - execution:run-001
+      - execution:run-002
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/server/auth/__tests__/internal-admin.test.ts
+  - id: execution:run-002
+    kind: vitest
+    files:
+      - app/server/auth/__tests__/access-policy.test.ts
+  - id: execution:run-003
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/alignment-audit.test.ts
+    testNamePattern: reports a missing target from a structured execution
+  - id: execution:run-004
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/alignment-audit.test.ts
+    testNamePattern: traces a run check through a test file into imported app code
+  - id: execution:run-005
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/alignment-audit.test.ts
+    testNamePattern: reports duplicated high-level Story Chain concept labels as adjustment candidates
+  - id: execution:run-006
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/intent-traceability-snapshot.test.ts
+    testNamePattern: emits Aspect rows from the Story Chain bridge
+  - id: execution:run-007
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/baseline-check.test.ts
+    testNamePattern: affectsAlignmentFiles
+  - id: execution:run-008
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/baseline-check.test.ts
+    testNamePattern: partitionAlignmentFindings
+  - id: execution:run-009
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/aspect-verdict.test.ts
+    testNamePattern: extractLatestAspectReview
+  - id: execution:run-010
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/aspect-finding.test.ts
+    testNamePattern: buildAlignmentFindings
+  - id: execution:run-011
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/release-verdict.test.ts
+  - id: execution:run-012
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/alignment-audit.test.ts
+    testNamePattern: reports a missing AC ledger entry from the single structured graph|does not treat foundational Markdown as Acceptance Check evidence
+  - id: execution:run-013
+    kind: vitest
+    files:
+      - app/server/services/story-chain/__tests__/loader-review-ownership.test.ts
+  - id: execution:run-014
+    kind: registered-script
+    script: mc-check-critical-findings
+implementationContracts:
+  - The alignment snapshot is a pure deterministic function of the shared Story Chain graph (`docs/contracts/story-chain/promises/`, `aspects/`, and strict `evidence-ledgers/*.ledger.yaml` v2 entries and executions); no LLM or live judge is involved.
+  - Contract update history is derived from local git metadata for Story Chain Markdown and `*.ledger.yaml` files; working tree changes are classified by deterministic audit findings and CLI gates.
+  - Aspect rows are emitted as a separate collection from Promise rows, each carrying id / appliesTo / coveringLedger / verdict for Mission Control CLI calculation.
+  - "`mc:check-critical-findings` partitions the current alignment snapshot into critical and warning findings, and exits non-zero on any current critical."
+  - The release verdict consumes 4 dimensions (Intent verdict / AC trace / Service Policy Coverage / Aspect) and reports three clusters (종단축 = Intent + AC trace; 구성 전 서비스 정책; 횡단축 = Aspect) through `mc:status`.
+  - "Promise ↔ Evidence Ledger trace is bidirectional: a missing YAML v2 `acceptanceChecks` entry emits `missing_ac_ledger`, while an unknown Promise or Acceptance Check key fails strict Story Chain validation. Foundational Markdown is outside the executable ledger graph."
+  - High-level concept duplication is surfaced as `duplicate_high_level_concept` warning findings for exact normalized Experience/Moment label collisions; adjustment remains a Mission Control merge/split/rename/remove decision, not an automatic rewrite.
+verdict: met

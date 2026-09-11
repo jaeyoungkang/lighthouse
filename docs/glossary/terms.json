@@ -1,0 +1,256 @@
+{
+  "version": 1,
+  "terms": [
+    {
+      "id": "experience",
+      "ko": "경험 영역",
+      "en": "Experience",
+      "aliases": [],
+      "kind": "story-chain-concept",
+      "authorityRef": "docs/contracts/story-chain/concepts.md#experience"
+    },
+    {
+      "id": "moment",
+      "ko": "워크플로 순간",
+      "en": "Moment",
+      "aliases": [],
+      "kind": "story-chain-concept",
+      "authorityRef": "docs/contracts/story-chain/concepts.md#moment"
+    },
+    {
+      "id": "promise",
+      "ko": "약속",
+      "en": "Promise",
+      "aliases": [],
+      "kind": "story-chain-concept",
+      "authorityRef": "docs/contracts/story-chain/concepts.md#promise"
+    },
+    {
+      "id": "aspect",
+      "ko": "횡단 규약",
+      "en": "Aspect",
+      "aliases": [],
+      "kind": "story-chain-concept",
+      "authorityRef": "docs/contracts/story-chain/concepts.md#aspect"
+    },
+    {
+      "id": "intent-check",
+      "ko": "의도 점검",
+      "en": "Intent Check",
+      "aliases": [
+        "IC"
+      ],
+      "kind": "story-chain-concept",
+      "authorityRef": "docs/intent-traceability.md#2-intent-check"
+    },
+    {
+      "id": "acceptance-check",
+      "ko": "수용 검증",
+      "en": "Acceptance Check",
+      "aliases": [
+        "AC"
+      ],
+      "kind": "story-chain-concept",
+      "authorityRef": "docs/intent-traceability.md#3-acceptance-check"
+    },
+    {
+      "id": "evidence-ledger",
+      "ko": "검증 원장",
+      "en": "Evidence Ledger",
+      "aliases": [],
+      "kind": "story-chain-concept",
+      "authorityRef": "docs/contracts/story-chain/concepts.md#evidence-ledger"
+    },
+    {
+      "id": "my-library",
+      "ko": "내 라이브러리",
+      "en": "My Library",
+      "aliases": [],
+      "kind": "product-surface",
+      "authorityRef": "docs/contracts/story-chain/aspects/library-grounded-research.md#library-grounded-research"
+    },
+    {
+      "id": "my-research-proximity",
+      "ko": "내 연구와 가까움",
+      "en": "Close To My Research",
+      "aliases": [],
+      "kind": "product-surface",
+      "authorityRef": "docs/contracts/story-chain/aspects/library-grounded-research.md#library-grounded-research"
+    },
+    {
+      "id": "similar-papers",
+      "ko": "비슷한 논문",
+      "en": "Similar Papers",
+      "aliases": [
+        "유사 논문",
+        "그래프 이웃",
+        "graph neighbor",
+        "graph neighbors",
+        "graph_neighbors",
+        "graph_neighbors_viewed",
+        "product.graph_neighbors.viewed",
+        "similar_papers_discovery",
+        "similar_papers_opened",
+        "product.similar_papers_discovery.clicked",
+        "similar_papers_discovery_clicked"
+      ],
+      "kind": "product-surface",
+      "authorityRef": "docs/contracts/story-chain/promises/graph-neighbor-papers.md#promise"
+    },
+    {
+      "id": "citation-lineage",
+      "ko": "인용 계보",
+      "en": "Citation Lineage",
+      "aliases": [
+        "citation_lineage",
+        "citation_lineage_opened",
+        "citation_lineage_viewed",
+        "product.citation_lineage.viewed"
+      ],
+      "kind": "product-surface",
+      "authorityRef": "docs/contracts/story-chain/promises/citation-lineage.md#promise"
+    },
+    {
+      "id": "route-ai-comment",
+      "ko": "AI 코멘트",
+      "en": "Route View AI Comment",
+      "aliases": [
+        "코멘트",
+        "AI comment",
+        "route-view AI comment",
+        "RouteAiComment",
+        "product.ai_comment_card.viewed",
+        "ai_comment_card_viewed",
+        "AI 반응",
+        "AI Reaction",
+        "ai-reaction",
+        "반응",
+        "검색 반응",
+        "리액션",
+        "reaction"
+      ],
+      "kind": "product-surface",
+      "authorityRef": "docs/contracts/story-chain/promises/route-view-ai-comment-inline-surface.md#promise"
+    },
+    {
+      "id": "result-terrain",
+      "ko": "결과 지형",
+      "en": "Result Terrain",
+      "aliases": [
+        "지형",
+        "검색 결과 지형",
+        "논문 지형"
+      ],
+      "kind": "product-surface",
+      "authorityRef": "docs/contracts/story-chain/promises/search-reaction-summarizes-terrain.md#promise"
+    },
+    {
+      "id": "research-gap",
+      "ko": "연구 공백",
+      "en": "Research Gap",
+      "aliases": [
+        "공백",
+        "gap",
+        "gap network",
+        "gap_network",
+        "연구 공백 지도",
+        "연구 공백 리포트"
+      ],
+      "kind": "product-surface",
+      "authorityRef": "docs/contracts/story-chain/promises/gap-network-detection-from-search.md#promise"
+    },
+    {
+      "id": "representative-paper",
+      "ko": "대표 논문",
+      "en": "Representative Paper",
+      "aliases": [
+        "대표 논문 표시",
+        "representative papers"
+      ],
+      "kind": "product-surface",
+      "authorityRef": "docs/contracts/story-chain/promises/search-reaction-summarizes-terrain.md#promise"
+    },
+    {
+      "id": "research-term",
+      "ko": "연구 용어",
+      "en": "Research Term",
+      "aliases": [
+        "검색 용어",
+        "research terms",
+        "product.research_terms.viewed",
+        "research_terms_served"
+      ],
+      "kind": "product-surface",
+      "authorityRef": "docs/contracts/story-chain/promises/search-results-suggest-english-terms.md#promise"
+    },
+    {
+      "id": "inline-analysis",
+      "ko": "인라인 분석",
+      "en": "Inline Analysis",
+      "aliases": [
+        "inline_analysis",
+        "search_result_inspected"
+      ],
+      "kind": "product-surface",
+      "authorityRef": "docs/contracts/story-chain/promises/inline-analysis-auto-run.md#promise"
+    }
+  ],
+  "i18nRefs": [
+    {
+      "termId": "my-library",
+      "key": "search.label.research-route-search-bar.libraryList.label"
+    },
+    {
+      "termId": "my-library",
+      "key": "search.label.library-context-source.internalReviewedFolder"
+    },
+    {
+      "termId": "my-research-proximity",
+      "key": "search.label.search-result-item.myResearchProximity"
+    },
+    {
+      "termId": "similar-papers",
+      "key": "search.label.search-result-item.findSimilar"
+    },
+    {
+      "termId": "similar-papers",
+      "key": "search.label.search-result-item.graphNeighbors"
+    },
+    {
+      "termId": "similar-papers",
+      "key": "search.label.graph-neighbors.kicker"
+    },
+    {
+      "termId": "similar-papers",
+      "key": "document.label.rendering.graphNeighbors"
+    },
+    {
+      "termId": "citation-lineage",
+      "key": "search.label.search-result-item.citationLineage.lineage"
+    },
+    {
+      "termId": "citation-lineage",
+      "key": "document.label.rendering.citationLineage"
+    },
+    {
+      "termId": "research-gap",
+      "key": "commitment.graphSample.output.gap.label"
+    },
+    {
+      "termId": "representative-paper",
+      "key": "gapNetwork.label.gap-network-report.focusedClusterRepresentativePapers"
+    },
+    {
+      "termId": "representative-paper",
+      "key": "search.label.search-view-content.facets.representative"
+    },
+    {
+      "termId": "representative-paper",
+      "key": "commitment.graphSample.output.representative.label"
+    },
+    {
+      "termId": "research-term",
+      "key": "commitment.graphSample.output.terms.label"
+    }
+  ]
+}

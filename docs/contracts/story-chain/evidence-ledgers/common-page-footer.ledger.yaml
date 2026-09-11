@@ -1,0 +1,63 @@
+schemaVersion: 2
+slug: common-page-footer
+review: reviews/common-page-footer.reviews.md
+sourcePromises:
+  - promise:invited-user-access-management
+  - promise:research-route-cap-feedback
+  - promise:search-results-fast-window
+  - promise:researcher-prose-promises-page
+  - promise:story-chain-event-contract
+appliedAspects:
+  - aspect:common-page-footer
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:invited-user-access-management#acceptance-check:invited-user-access-management-admin-surface
+    assertion: The invited-access admin page renders the shared footer after the management surface.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:research-route-cap-feedback#acceptance-check:research-route-cap-feedback-route-search-visible
+    assertion: The research shell owns exactly one footer after its route content in non-search, pending-query, and completed-query states.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:research-route-search-shell
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-post-search-layout-about
+    assertion: Search result content renders no page footer; the research shell renders one full-width Scholar footer after the result content.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:researcher-prose-promises-page#acceptance-check:researcher-prose-promises-page-search-mechanism-explainer
+    assertion: The public about family shares navigation and the common footer.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+  - key: promise:story-chain-event-contract#acceptance-check:story-chain-event-contract-admin-event-catalog
+    assertion: The retained analytics event catalog renders the shared footer after its catalog content.
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research/__tests__/research-route-shell.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+      - app/about/__tests__/about-page.test.tsx
+      - app/about/__tests__/promises-page.test.tsx
+      - app/about/__tests__/search-mechanism-page.test.tsx
+      - app/about/__tests__/gap-network-mechanism-page.test.tsx
+      - app/about/__tests__/graph-sample-page.test.tsx
+      - app/about/__tests__/ai-comments-page.test.tsx
+      - app/admin/__tests__/admin-access.test.tsx
+      - app/components/admin/__tests__/AnalyticsEventsDashboard.test.tsx
+implementationContracts:
+  - Shared footer content is implemented as one reusable page footer surface.
+  - Page and route chrome are the sole owners of the common footer.
+  - Search result content never injects the shared footer or suppresses the route shell footer.
+  - Redirect-only and API routes are outside the pointcut.
+verdict: met

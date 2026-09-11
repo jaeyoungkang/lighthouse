@@ -1,0 +1,723 @@
+{
+  "schemaVersion": 1,
+  "kind": "lighthouse-architecture-fitness-coverage-projection",
+  "issueRef": "github:corca-ai/lighthouse#401",
+  "decisionRegistryRef": "github:corca-ai/lighthouse#275",
+  "ratificationRef": "github:corca-ai/lighthouse#275@issuecomment-5185805199",
+  "ratificationScope": "approved-registry-decisions-and-policy-compatibility-only; service-wide classification remains an evidence projection",
+  "coreVersion": "0.9.1",
+  "requiredDecisionRefs": [
+    "decision:url-owned-search",
+    "decision:route-ai-comment-ephemeral",
+    "decision:gap-report-shared-artifact",
+    "decision:gap-reaction-persisted-preference",
+    "decision:least-authority-boundaries",
+    "decision:episteme-breaker-instance-self-protection",
+    "decision:effect-owner-chokepoints"
+  ],
+  "entries": [
+    {
+      "projectionRef": "coverage:url-owned-keyword-search-state",
+      "decisionRef": "decision:url-owned-search",
+      "relatedDecisionRefs": ["decision:invalid-year-condition-meaning"],
+      "authorityRefs": [
+        "github:corca-ai/lighthouse#275",
+        "github:corca-ai/lighthouse#276",
+        "github:corca-ai/lighthouse#408"
+      ],
+      "invariantRefs": [
+        "docs/architecture-fitness/pilots/issue-276.policy.json#issue-276:keyword-search-state-boundary"
+      ],
+      "architectureCharacteristic": "URL conditions own keyword-search execution while the result snapshot remains route-owned and ephemeral.",
+      "owner": "Lighthouse search route state boundaries",
+      "caseKind": "state-boundary",
+      "disposition": "included",
+      "binding": {
+        "profileId": "issue-276-search-state-boundary",
+        "policyCoverageRef": "coverage:issue-276-keyword-search-state-boundary",
+        "caseRefs": ["issue-276:keyword-search-state-boundary"]
+      },
+      "evidenceRefs": [
+        "docs/architecture-fitness/pilots/issue-276.observation.json",
+        "scripts/architecture-fitness/check-search-state-boundaries.mjs",
+        "github:corca-ai/lighthouse@01b757f2"
+      ],
+      "reentryTrigger": "URL authority, normalized condition carrier, route result ownership, or ephemeral identity changes.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:url-owned-relationship-seed-state",
+      "decisionRef": "decision:url-owned-search",
+      "relatedDecisionRefs": [],
+      "authorityRefs": [
+        "github:corca-ai/lighthouse#275",
+        "github:corca-ai/lighthouse#276"
+      ],
+      "invariantRefs": [
+        "docs/architecture-fitness/pilots/issue-276-relationship.policy.json#issue-276:relationship-seed-state-boundary"
+      ],
+      "architectureCharacteristic": "Citation and similar-paper routes preserve the canonical relationship seed across URL, server input, and route identity.",
+      "owner": "Lighthouse relationship route state boundaries",
+      "caseKind": "state-boundary",
+      "disposition": "included",
+      "binding": {
+        "profileId": "issue-276-relationship-state-boundary",
+        "policyCoverageRef": "coverage:issue-276-relationship-state-boundary",
+        "caseRefs": ["issue-276:relationship-seed-state-boundary"]
+      },
+      "evidenceRefs": [
+        "docs/architecture-fitness/pilots/issue-276-relationship.observation.json",
+        "scripts/architecture-fitness/check-relationship-state-boundaries.mjs"
+      ],
+      "reentryTrigger": "Citation or similar-paper seed authority, carrier, or canonical identity changes.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:url-owned-first-ready-critical-path",
+      "decisionRef": "decision:url-owned-search",
+      "relatedDecisionRefs": [
+        "decision:first-ready-search-payload",
+        "decision:library-grounding-first-ready-degrade"
+      ],
+      "authorityRefs": [
+        "github:corca-ai/lighthouse#275",
+        "github:corca-ai/lighthouse#281",
+        "github:corca-ai/lighthouse#419@issuecomment-5140089462"
+      ],
+      "invariantRefs": [
+        "docs/architecture-fitness/pilots/issue-280-281.policy.json#issue-281:first-ready-search-payload"
+      ],
+      "architectureCharacteristic": "The first usable search payload preserves its approved await and failure-isolation graph.",
+      "owner": "Lighthouse search execution",
+      "caseKind": "critical-path",
+      "disposition": "included",
+      "binding": {
+        "profileId": "issue-280-281-q2-macro",
+        "policyCoverageRef": "coverage:issue-281-first-ready-search-critical-path",
+        "caseRefs": ["issue-281:first-ready-search-payload"]
+      },
+      "evidenceRefs": [
+        "docs/architecture-fitness/pilots/issue-280-281.observation.json",
+        "github:corca-ai/lighthouse@56276247"
+      ],
+      "reentryTrigger": "The first-ready await graph, milestone, or keyword-only failure isolation changes.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:url-owned-search-condition-budget",
+      "decisionRef": "decision:url-owned-search",
+      "relatedDecisionRefs": ["decision:search-condition-url-budget"],
+      "authorityRefs": [
+        "github:corca-ai/lighthouse#275",
+        "github:corca-ai/lighthouse#399"
+      ],
+      "invariantRefs": [
+        "docs/architecture-fitness/pilots/issue-399-serialized-input-budget.policy.json#issue-399:search-first-condition-url-budget"
+      ],
+      "architectureCharacteristic": "Application-internal search condition URLs enforce the approved encoded-byte envelope before provider work.",
+      "owner": "Lighthouse search condition ingress",
+      "caseKind": "serialized-input-budget",
+      "disposition": "included",
+      "binding": {
+        "profileId": "issue-399-serialized-input-budget",
+        "policyCoverageRef": "coverage:issue-399-search-first-condition-urls",
+        "caseRefs": ["issue-399:search-first-condition-url-budget"]
+      },
+      "evidenceRefs": [
+        "docs/architecture-fitness/pilots/issue-399-serialized-input-budget.observation.json",
+        "scripts/architecture-fitness/check-search-condition-url-budget.mjs"
+      ],
+      "reentryTrigger": "A condition field, serializer, encoding rule, or application byte ceiling changes.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:least-authority-broad-boundary",
+      "decisionRef": "decision:least-authority-boundaries",
+      "relatedDecisionRefs": ["decision:episteme-runtime-effect-owner"],
+      "authorityRefs": [
+        "github:corca-ai/lighthouse#275",
+        "github:corca-ai/lighthouse#278"
+      ],
+      "invariantRefs": [
+        "docs/architecture-fitness/pilots/issue-278.policy.json#issue-278:least-authority-boundary-conformance"
+      ],
+      "architectureCharacteristic": "Broad service-role, repository, trusted-background, and admin capability boundaries remain explicit even when current evidence is incomplete.",
+      "owner": "Lighthouse least-authority boundaries",
+      "caseKind": "least-authority",
+      "disposition": "included",
+      "binding": {
+        "profileId": "issue-278-least-authority",
+        "policyCoverageRef": "coverage:issue-278-least-authority",
+        "caseRefs": ["issue-278:least-authority-boundary-conformance"]
+      },
+      "evidenceRefs": [
+        "docs/architecture-fitness/pilots/issue-278.observation.json",
+        "scripts/architecture-fitness/check-least-authority-boundaries.mjs"
+      ],
+      "reentryTrigger": "A service-role, repository, trusted-background, internal-admin, or operation capability boundary changes.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:reviewed-paper-owner-read",
+      "decisionRef": "decision:least-authority-boundaries",
+      "relatedDecisionRefs": ["decision:reviewed-paper-owner-read"],
+      "authorityRefs": [
+        "github:corca-ai/lighthouse#275",
+        "github:corca-ai/lighthouse#278"
+      ],
+      "invariantRefs": [
+        "docs/architecture-fitness/pilots/issue-278.policy.json#issue-278:reviewed-paper-owner-read"
+      ],
+      "architectureCharacteristic": "Authenticated reviewed-paper reads remain principal-scoped and do not expose a raw privileged client.",
+      "owner": "Lighthouse reviewed-paper repository boundary",
+      "caseKind": "least-authority",
+      "disposition": "included",
+      "binding": {
+        "profileId": "issue-278-least-authority",
+        "policyCoverageRef": "coverage:issue-278-least-authority",
+        "caseRefs": ["issue-278:reviewed-paper-owner-read"]
+      },
+      "evidenceRefs": [
+        "docs/architecture-fitness/pilots/issue-278.observation.json",
+        "scripts/architecture-fitness/check-least-authority-boundaries.mjs"
+      ],
+      "reentryTrigger": "Reviewed-paper ownership, request identity, repository capability, or RLS enforcement changes.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:episteme-breaker-process-scope",
+      "decisionRef": "decision:episteme-breaker-instance-self-protection",
+      "relatedDecisionRefs": [],
+      "authorityRefs": [
+        "github:corca-ai/lighthouse#275",
+        "github:corca-ai/lighthouse#280",
+        "github:corca-ai/lighthouse#404"
+      ],
+      "invariantRefs": [
+        "docs/architecture-fitness/pilots/issue-280-281.policy.json#issue-280:episteme-breaker-process-scope"
+      ],
+      "architectureCharacteristic": "Episteme breaker state protects one process and is not presented as a fleet or provider-account hard cap.",
+      "owner": "Lighthouse Episteme provider gateway",
+      "caseKind": "topology-scope",
+      "disposition": "included",
+      "binding": {
+        "profileId": "issue-280-281-q2-macro",
+        "policyCoverageRef": "coverage:issue-280-breaker-process-topology",
+        "caseRefs": ["issue-280:episteme-breaker-process-scope"]
+      },
+      "evidenceRefs": [
+        "docs/architecture-fitness/pilots/issue-280-281.observation.json"
+      ],
+      "reentryTrigger": "Breaker state ownership moves across a process boundary or correlated fleet/provider failures appear.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:search-launch-workload-envelope",
+      "decisionRef": "decision:search-launch-workload-envelope",
+      "relatedDecisionRefs": [
+        "decision:episteme-runtime-effect-owner",
+        "decision:structured-ai-gateway-effect-owner"
+      ],
+      "authorityRefs": ["github:corca-ai/lighthouse#286"],
+      "invariantRefs": [
+        "docs/architecture-fitness/pilots/issue-286-q3-workload.policy.json#issue-286:search-workload-envelope"
+      ],
+      "architectureCharacteristic": "The approved small-cohort search workload envelope keeps burst, sustained, and controlled-provider scenarios distinct.",
+      "owner": "Lighthouse operational readiness",
+      "caseKind": "workload-envelope",
+      "disposition": "included",
+      "binding": {
+        "profileId": "issue-286-q3-workload",
+        "policyCoverageRef": "coverage:issue-286-launch-workload-envelope",
+        "caseRefs": ["issue-286:search-workload-envelope"]
+      },
+      "evidenceRefs": [
+        "docs/architecture-fitness/pilots/issue-286-q3-workload.observation.json",
+        "docs/architecture-fitness/pilots/q3-workload/v6-active"
+      ],
+      "reentryTrigger": "Launch cohort, local admission, route fan-out, report compatibility, or production capacity evidence changes.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:approved-effect-owner-chokepoints",
+      "decisionRef": "decision:effect-owner-chokepoints",
+      "relatedDecisionRefs": [],
+      "authorityRefs": [
+        "github:corca-ai/lighthouse#275",
+        "github:corca-ai/lighthouse#297",
+        "github:corca-ai/lighthouse#404",
+        "github:corca-ai/lighthouse#435"
+      ],
+      "invariantRefs": [
+        "docs/architecture-fitness/pilots/issue-297-q4-technical-grain.policy.json#issue-297:technical-grain-conformance"
+      ],
+      "architectureCharacteristic": "Approved external HTTP, AI generation, repository, and client/server lifetime seams remain the effect owners.",
+      "owner": "Lighthouse architecture owner and effect gateway owners",
+      "caseKind": "technical-grain",
+      "disposition": "included",
+      "binding": {
+        "profileId": "issue-297-q4-technical-grain",
+        "policyCoverageRef": "coverage:issue-297-q4-technical-grain",
+        "caseRefs": ["issue-297:technical-grain-conformance"]
+      },
+      "evidenceRefs": [
+        "docs/architecture-fitness/pilots/issue-297-q4-technical-grain.observation.json",
+        "docs/architecture-fitness/issue-297-q4-technical-grain.md",
+        "github:corca-ai/lighthouse@697f6e19",
+        "github:corca-ai/lighthouse@ca4cc94a"
+      ],
+      "reentryTrigger": "A provider, DB, structured-generation, or background-lifetime owner path changes.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:preset-title-cache-lifecycle",
+      "decisionRef": "decision:preset-title-process-cache",
+      "relatedDecisionRefs": [],
+      "authorityRefs": [
+        "github:corca-ai/lighthouse#298",
+        "github:corca-ai/lighthouse#320"
+      ],
+      "invariantRefs": [
+        "docs/architecture-fitness/pilots/issue-298-q5-cache-lifecycle.policy.json#issue-298:preset-title-cache-lifecycle"
+      ],
+      "architectureCharacteristic": "Preset-title cache source, key, TTL, LRU, failure, single-flight, and caller-abort isolation remain bounded to one process.",
+      "owner": "Lighthouse preset-title cache owner",
+      "caseKind": "cache-lifecycle",
+      "disposition": "included",
+      "binding": {
+        "profileId": "issue-298-q5-cache-lifecycle",
+        "policyCoverageRef": "coverage:issue-298-preset-title-cache-lifecycle",
+        "caseRefs": ["issue-298:preset-title-cache-lifecycle"]
+      },
+      "evidenceRefs": [
+        "docs/architecture-fitness/pilots/issue-298-q5-cache-lifecycle.observation.json",
+        "docs/architecture-fitness/q5-cache-policy.md"
+      ],
+      "reentryTrigger": "Preset-title source, key, freshness, eviction, fill ownership, or caller-abort policy changes.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:route-ai-comment-visible-basis",
+      "decisionRef": "decision:route-ai-comment-ephemeral",
+      "relatedDecisionRefs": [],
+      "authorityRefs": [
+        "github:corca-ai/lighthouse#275@issuecomment-5185805199",
+        "github:corca-ai/lighthouse#401@issuecomment-5185813087"
+      ],
+      "invariantRefs": [
+        "docs/runtime-flows/ai-response-generation.md",
+        "docs/contracts/story-chain/promises/reaction-from-visible-snapshot.md"
+      ],
+      "architectureCharacteristic": "Route-AI comments use the exact visible ViewSnapshot basis and remain ephemeral to the active route execution.",
+      "owner": "Lighthouse route-AI state-boundary owner",
+      "caseKind": "state-boundary",
+      "disposition": "unsupported",
+      "binding": null,
+      "evidenceRefs": [
+        "github:corca-ai/lighthouse#401@issuecomment-5187237922",
+        "github:corca-ai/lighthouse@c08abd5be29753ddce5af78e4736089e221a5814"
+      ],
+      "reentryTrigger": "A complete carrier-edge authority, direct runtime owner reshape, or supported semantic evidence contract becomes available.",
+      "legacyRefs": ["github:corca-ai/lighthouse#285"]
+    },
+    {
+      "projectionRef": "coverage:route-ai-comment-hydration-critical-path",
+      "decisionRef": "decision:route-ai-comment-ephemeral",
+      "relatedDecisionRefs": [],
+      "authorityRefs": ["github:corca-ai/lighthouse#275"],
+      "invariantRefs": ["docs/runtime-flows/ai-response-generation.md"],
+      "architectureCharacteristic": "Hydration readiness and provider generation timing remain independent from visible-basis state ownership.",
+      "owner": "Lighthouse route-AI runtime owner",
+      "caseKind": "critical-path",
+      "disposition": "unsupported",
+      "binding": null,
+      "evidenceRefs": ["github:corca-ai/lighthouse#401@issuecomment-5185813087"],
+      "reentryTrigger": "A Human-approved hydration milestone and deterministic runtime timing authority are available.",
+      "legacyRefs": ["github:corca-ai/lighthouse#285"]
+    },
+    {
+      "projectionRef": "coverage:gap-artifact-viewer-state",
+      "decisionRef": "decision:gap-report-shared-artifact",
+      "ownedDecisionRefs": [
+        "decision:gap-report-shared-artifact",
+        "decision:gap-reaction-persisted-preference"
+      ],
+      "relatedDecisionRefs": [],
+      "authorityRefs": [
+        "github:corca-ai/lighthouse#275",
+        "github:corca-ai/lighthouse#277",
+        "github:corca-ai/lighthouse#283"
+      ],
+      "invariantRefs": [
+        "docs/runtime-flows/gap-network-analysis.md",
+        "docs/contracts/story-chain/promises/shared-gap-report-member-access.md"
+      ],
+      "architectureCharacteristic": "A creator-less shared GapReportArtifact remains distinct from viewer-scoped reaction preference and identity.",
+      "owner": "Lighthouse gap artifact and viewer state owners",
+      "caseKind": "state-boundary",
+      "disposition": "included",
+      "binding": {
+        "profileId": "issue-401-gap-shared-state-boundary",
+        "policyCoverageRef": "coverage:issue-401-gap-shared-artifact-state-boundary",
+        "caseRefs": ["issue-401:gap-shared-artifact-viewer-state-boundary"]
+      },
+      "evidenceRefs": [
+        "docs/architecture-fitness/pilots/issue-401-gap-shared-state.observation.json"
+      ],
+      "reentryTrigger": "Artifact ownership, viewer identity, preference persistence, retired owner alias, or member-read policy changes.",
+      "legacyRefs": [
+        "github:corca-ai/lighthouse@04ced5e421f9994ae1db3f6511326dc9d1062969:docs/architecture-fitness/pilots/legacy-v2/issue-283.assessment.json"
+      ]
+    },
+    {
+      "projectionRef": "coverage:gap-build-principal-topology",
+      "decisionRef": "decision:gap-build-per-principal-admission",
+      "relatedDecisionRefs": [],
+      "authorityRefs": ["github:corca-ai/lighthouse#417"],
+      "invariantRefs": [
+        "docs/runtime-flows/gap-network-analysis.md",
+        "docs/contracts/story-chain/aspects/gap-build-principal-admission.md"
+      ],
+      "architectureCharacteristic": "One principal owns at most one active Gap build across the fleet while reads remain non-blocking.",
+      "owner": "Lighthouse gap build topology owner",
+      "caseKind": "topology-scope",
+      "disposition": "unsupported",
+      "binding": null,
+      "evidenceRefs": [
+        "app/server/repository/__tests__/gap-build-principal-admissions.postgres.integration.ts",
+        "scripts/architecture-fitness/check-least-authority-boundaries.mjs",
+        "docs/runtime-flows/gap-network-analysis.md"
+      ],
+      "reentryTrigger": "The principal admission identity, lease lifetime, fleet scope, command pointcut, or report-state interaction changes; repeated contention or release failure may justify a supported topology policy.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:gap-core-enrichment-critical-path",
+      "decisionRef": "decision:gap-core-enrichment-lifecycle",
+      "relatedDecisionRefs": [],
+      "authorityRefs": ["github:corca-ai/lighthouse#414"],
+      "invariantRefs": [
+        "docs/runtime-flows/gap-network-analysis.md",
+        "docs/contracts/story-chain/evidence-ledgers/gap-network-e2.ledger.yaml"
+      ],
+      "architectureCharacteristic": "Core persistence, display readiness, enrichment failure, and explicit retry remain separate milestones.",
+      "owner": "Lighthouse gap runtime and Story Chain owners",
+      "caseKind": "critical-path",
+      "disposition": "excluded",
+      "binding": null,
+      "evidenceRefs": ["github:corca-ai/lighthouse#401@issuecomment-5014995121"],
+      "reentryTrigger": "A worker or queue changes the graph, the existing runner/CAS lifecycle is reshaped, or a repeated lifecycle incident shows distinct machine value. Issue #414's explicit retry reused the existing report/version/attempt/lease owners and did not add a new fitness case.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:gap-report-serialized-input-budget",
+      "decisionRef": "decision:gap-report-request-body-budget",
+      "relatedDecisionRefs": [],
+      "authorityRefs": [],
+      "invariantRefs": [
+        "app/lib/gap-report-input-budget.ts",
+        "docs/runtime-flows/gap-network-analysis.md"
+      ],
+      "architectureCharacteristic": "Gap creation needs a Human-approved UTF-8 JSON envelope, dimensional caps, and overflow action before becoming an executable policy.",
+      "owner": "Lighthouse gap ingress and operational-readiness owners",
+      "caseKind": "serialized-input-budget",
+      "disposition": "authority-missing",
+      "binding": null,
+      "evidenceRefs": [
+        "github:corca-ai/lighthouse#430",
+        "app/lib/__tests__/gap-report-input-budget.test.ts"
+      ],
+      "reentryTrigger": "Human approves the exact 1,000,000-byte boundary, paper and field caps, serializer, and reject/truncate policy.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:inline-analysis-deterministic-cache-lifecycle",
+      "decisionRef": "decision:inline-analysis-shared-cache-lifecycle",
+      "relatedDecisionRefs": [],
+      "authorityRefs": [
+        "github:corca-ai/lighthouse#298@issuecomment-4964179322",
+        "github:corca-ai/lighthouse#435@issuecomment-5015983405"
+      ],
+      "invariantRefs": [
+        "docs/architecture-fitness/q5-cache-policy.md",
+        "docs/runtime-flows/search-background-enrichment.md"
+      ],
+      "architectureCharacteristic": "Exact source/version/fingerprint identity, ready-only reuse, DB claim ownership, subscriber isolation, and durable explicit-retry failure fences govern inline-analysis artifacts.",
+      "owner": "Lighthouse inline-analysis shared-cache owner",
+      "caseKind": "cache-lifecycle",
+      "disposition": "included",
+      "binding": {
+        "profileId": "issue-401-inline-analysis-cache-lifecycle",
+        "policyCoverageRef": "coverage:issue-401-inline-analysis-deterministic-lifecycle",
+        "caseRefs": ["issue-401:inline-analysis-cache-lifecycle"]
+      },
+      "evidenceRefs": [
+        "docs/architecture-fitness/pilots/issue-401-inline-analysis-cache-lifecycle.observation.json",
+        "scripts/quality/check-inline-analysis-cache-contract.mjs"
+      ],
+      "reentryTrigger": "Inline-analysis source, version, fingerprint, claim/lease, ready/failure state, subscriber, or explicit-retry policy changes.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:inline-analysis-fleet-recovery",
+      "decisionRef": "decision:inline-analysis-shared-cache-lifecycle",
+      "relatedDecisionRefs": ["decision:inline-analysis-fleet-recovery"],
+      "authorityRefs": ["github:corca-ai/lighthouse#321"],
+      "invariantRefs": ["github:corca-ai/lighthouse#321"],
+      "architectureCharacteristic": "Instance movement, process loss, duplicate provider generation, and production waiter latency require live fleet evidence.",
+      "owner": "Lighthouse operational readiness",
+      "caseKind": "topology-scope",
+      "disposition": "unsupported",
+      "binding": null,
+      "evidenceRefs": ["github:corca-ai/lighthouse#321@issuecomment-5009907172"],
+      "reentryTrigger": "Exact deployment and reproducible cross-instance failure evidence become available.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:inline-analysis-cleanup-effects",
+      "decisionRef": "decision:inline-analysis-shared-cache-lifecycle",
+      "relatedDecisionRefs": ["decision:inline-analysis-cleanup-effects"],
+      "authorityRefs": ["github:corca-ai/lighthouse#319"],
+      "invariantRefs": ["github:corca-ai/lighthouse#319"],
+      "architectureCharacteristic": "Cleanup size, lock, pool, and route effects require current-version operational evidence rather than deterministic lifecycle inference.",
+      "owner": "Lighthouse operational readiness and cache cleanup owner",
+      "caseKind": "cache-lifecycle",
+      "disposition": "unsupported",
+      "binding": null,
+      "evidenceRefs": [
+        "scripts/architecture-fitness/inline-analysis-cache-retention-smoke.sql"
+      ],
+      "reentryTrigger": "Cleanup parameters bind to current version and an exact production run reports before/after size, locks, pool, and route effects.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:search-result-window-policy",
+      "decisionRef": "decision:keyword-library-result-window-policy",
+      "relatedDecisionRefs": [],
+      "authorityRefs": [],
+      "invariantRefs": ["github:corca-ai/lighthouse#407"],
+      "architectureCharacteristic": "Keyword and library candidate allocation, admission, deduplication, ranking, final cap, and degrade semantics need explicit product authority.",
+      "owner": "Lighthouse product and search execution owners",
+      "caseKind": "state-boundary",
+      "disposition": "authority-missing",
+      "binding": null,
+      "evidenceRefs": ["github:corca-ai/lighthouse#407"],
+      "reentryTrigger": "Human approves the complete result-window policy and its canonical carrier.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:library-grounding-outcome-carrier",
+      "decisionRef": "decision:library-grounding-outcome-carrier",
+      "relatedDecisionRefs": [],
+      "authorityRefs": ["github:corca-ai/lighthouse#419@issuecomment-5140089462"],
+      "invariantRefs": [
+        "docs/contracts/story-chain/evidence-ledgers/library-grounded-research.ledger.yaml"
+      ],
+      "architectureCharacteristic": "The tagged grounding outcome and its UI projection remain Story Chain-owned rather than being inferred from the Q2 critical-path case.",
+      "owner": "Lighthouse search product contract owner",
+      "caseKind": "state-boundary",
+      "disposition": "excluded",
+      "binding": null,
+      "evidenceRefs": ["github:corca-ai/lighthouse@56276247"],
+      "reentryTrigger": "The carrier owner or lifetime changes, null-collapse recurs, or Human selects it as a bounded executable slice.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:supabase-request-least-authority",
+      "decisionRef": "decision:least-authority-boundaries",
+      "relatedDecisionRefs": ["decision:supabase-request-least-authority"],
+      "authorityRefs": ["github:corca-ai/lighthouse#410"],
+      "invariantRefs": ["github:corca-ai/lighthouse#410"],
+      "architectureCharacteristic": "Normal request graphs should use session-bound identity and operation-specific capability without a broad RLS-bypass client.",
+      "owner": "Lighthouse identity, repository, and DB policy owners",
+      "caseKind": "least-authority",
+      "disposition": "unsupported",
+      "binding": null,
+      "evidenceRefs": [
+        "github:corca-ai/lighthouse#410@issuecomment-5024233483",
+        "docs/architecture-fitness/pilots/issue-278.observation.json"
+      ],
+      "reentryTrigger": "A coherent #410 implementation, DB-enforced A/B isolation, and exact path-correlated evidence exist.",
+      "legacyRefs": ["github:corca-ai/lighthouse@b20b4482f099904b5fafa28403e72faa63300e28"]
+    },
+    {
+      "projectionRef": "coverage:moonlight-auth-bootstrap-legacy",
+      "decisionRef": "decision:moonlight-auth-bootstrap-session-handoff",
+      "relatedDecisionRefs": [],
+      "authorityRefs": ["github:corca-ai/lighthouse#410"],
+      "invariantRefs": ["github:corca-ai/lighthouse#410"],
+      "architectureCharacteristic": "The legacy Moonlight auth bootstrap shape is not a desired future architecture decision even while removal remains incomplete.",
+      "owner": "Lighthouse identity owner",
+      "caseKind": "state-boundary",
+      "disposition": "excluded",
+      "binding": null,
+      "evidenceRefs": [
+        "app/components/MoonlightAuthBootstrap.tsx",
+        "app/api/auth/moonlight-scholar/session/route.ts"
+      ],
+      "reentryTrigger": "Human explicitly reopens a compatibility requirement for the legacy handoff.",
+      "legacyRefs": ["github:corca-ai/lighthouse#410@issuecomment-5024233483"]
+    },
+    {
+      "projectionRef": "coverage:provider-observation-sink",
+      "decisionRef": "decision:provider-observation-sink",
+      "relatedDecisionRefs": [],
+      "authorityRefs": ["github:corca-ai/lighthouse#422"],
+      "invariantRefs": ["github:corca-ai/lighthouse#422"],
+      "architectureCharacteristic": "A privacy-bounded append-only provider observation sink must exist before it can re-enter effect-seam or least-authority coverage.",
+      "owner": "Lighthouse provider observation owner",
+      "caseKind": "technical-grain",
+      "disposition": "unsupported",
+      "binding": null,
+      "evidenceRefs": ["github:corca-ai/lighthouse#422"],
+      "reentryTrigger": "The narrow sink, persistence boundary, and admin report are implemented with deterministic isolation evidence.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:rds-platform-metrics-ownership",
+      "decisionRef": "decision:rds-platform-metrics-ownership",
+      "relatedDecisionRefs": [],
+      "authorityRefs": ["github:corca-ai/lighthouse#428"],
+      "invariantRefs": ["docs/operational-readiness.md"],
+      "architectureCharacteristic": "DB and OS metrics stay with RDS and Operational Readiness rather than becoming an Architecture Fitness case.",
+      "owner": "Lighthouse operational readiness",
+      "caseKind": "topology-scope",
+      "disposition": "excluded",
+      "binding": null,
+      "evidenceRefs": ["github:corca-ai/lighthouse#428"],
+      "reentryTrigger": "No AF reentry; use the owning operational evidence workflow unless a separate structural invariant is approved.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:gap-domain-event-sink",
+      "decisionRef": "decision:gap-domain-event-sink",
+      "relatedDecisionRefs": [],
+      "authorityRefs": ["github:corca-ai/lighthouse#428"],
+      "invariantRefs": ["github:corca-ai/lighthouse#428"],
+      "architectureCharacteristic": "A narrow best-effort Gap event sink remains unimplemented and cannot yet trigger effect-seam or least-authority evaluation.",
+      "owner": "Lighthouse gap observation owner",
+      "caseKind": "technical-grain",
+      "disposition": "unsupported",
+      "binding": null,
+      "evidenceRefs": ["github:corca-ai/lighthouse#428"],
+      "reentryTrigger": "The Gap event sink merges; then reassess #297 and #278 independently.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:structured-generation-failure-contract",
+      "decisionRef": "decision:structured-generation-failure-contract",
+      "relatedDecisionRefs": [],
+      "authorityRefs": [
+        "github:corca-ai/lighthouse#435@issuecomment-5015951439",
+        "github:corca-ai/lighthouse#435@issuecomment-5015983405"
+      ],
+      "invariantRefs": [
+        "docs/contracts/story-chain/evidence-ledgers/provider-failure-degraded-mode.ledger.yaml"
+      ],
+      "architectureCharacteristic": "Primary/secondary ordering, no-third retry, durable fences, and explicit retry remain directly owned by Story Chain and failure-injection tests.",
+      "owner": "Lighthouse structured-generation and product contract owners",
+      "caseKind": "critical-path",
+      "disposition": "excluded",
+      "binding": null,
+      "evidenceRefs": ["github:corca-ai/lighthouse@ca4cc94a"],
+      "reentryTrigger": "Failure order, deadline, owner, or recovery meaning changes or a repeated regression demonstrates distinct executable-case value.",
+      "legacyRefs": ["github:corca-ai/lighthouse#435@issuecomment-5024233735"]
+    },
+    {
+      "projectionRef": "coverage:structured-generation-process-breaker",
+      "decisionRef": "decision:structured-generation-process-breaker",
+      "relatedDecisionRefs": [],
+      "authorityRefs": ["github:corca-ai/lighthouse#435@issuecomment-5015951439"],
+      "invariantRefs": [
+        "github:corca-ai/lighthouse@5d71bbed3b47afbf770eae496b28dff956e25916:app/server/ai-generation/llm-circuit-breaker.ts"
+      ],
+      "architectureCharacteristic": "The process-local Gemini breaker remains deterministically tested but is not inferred from the Episteme topology case.",
+      "owner": "Lighthouse structured-generation gateway",
+      "caseKind": "topology-scope",
+      "disposition": "excluded",
+      "binding": null,
+      "evidenceRefs": [
+        "github:corca-ai/lighthouse@5d71bbed3b47afbf770eae496b28dff956e25916:app/server/ai-generation/__tests__/llm-circuit-breaker.test.ts"
+      ],
+      "reentryTrigger": "Breaker state ownership moves across a process boundary or Human selects a distinct bounded profile.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:llm-fixed-cap-candidate",
+      "decisionRef": "decision:llm-fixed-process-cap-candidate",
+      "relatedDecisionRefs": [],
+      "authorityRefs": ["github:corca-ai/lighthouse#442@issuecomment-5018154832"],
+      "invariantRefs": ["github:corca-ai/lighthouse#442"],
+      "architectureCharacteristic": "The former 200/100/100/50 candidate is superseded and is not desired service or fleet policy.",
+      "owner": "Lighthouse operational readiness",
+      "caseKind": "workload-envelope",
+      "disposition": "excluded",
+      "binding": null,
+      "evidenceRefs": ["github:corca-ai/lighthouse#442@issuecomment-5018154832"],
+      "reentryTrigger": "Never reactivate the fixed numbers without a new measured Human decision.",
+      "legacyRefs": ["github:corca-ai/lighthouse#435"]
+    },
+    {
+      "projectionRef": "coverage:llm-function-admission-and-region-policy",
+      "decisionRef": "decision:llm-function-admission-and-region-policy",
+      "relatedDecisionRefs": [],
+      "authorityRefs": [],
+      "invariantRefs": ["github:corca-ai/lighthouse#442"],
+      "architectureCharacteristic": "Exact per-Function admission numbers and a region performance choice require measurement and Human thresholds.",
+      "owner": "Lighthouse operational readiness and deployment owners",
+      "caseKind": "workload-envelope",
+      "disposition": "authority-missing",
+      "binding": null,
+      "evidenceRefs": ["github:corca-ai/lighthouse#442@issuecomment-5018131082"],
+      "reentryTrigger": "Human approves measured admission numbers and region thresholds for an exact deployment topology.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:llm-fleet-admission-topology",
+      "decisionRef": "decision:llm-fleet-admission-topology",
+      "relatedDecisionRefs": [],
+      "authorityRefs": ["github:corca-ai/lighthouse#442"],
+      "invariantRefs": ["github:corca-ai/lighthouse#442"],
+      "architectureCharacteristic": "Fleet-wide admission, overlapping runtime work, and provider-account hard caps require exact deployment telemetry.",
+      "owner": "Lighthouse operational readiness",
+      "caseKind": "topology-scope",
+      "disposition": "unsupported",
+      "binding": null,
+      "evidenceRefs": ["docs/architecture-fitness/README.md#남은-unknown"],
+      "reentryTrigger": "Exact deployment overlap telemetry and provider allowance evidence satisfy the shared-admission gate.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:canonical-production-host",
+      "decisionRef": "decision:canonical-production-host",
+      "relatedDecisionRefs": [],
+      "authorityRefs": [
+        "docs/runtime-flows/search-mechanism.md#contract-architecture-impact-review"
+      ],
+      "invariantRefs": ["docs/runtime-flows/search-mechanism.md"],
+      "architectureCharacteristic": "The canonical host and compatibility redirect require live deployment and auth-origin evidence outside current supported cases.",
+      "owner": "Lighthouse deployment and auth owners",
+      "caseKind": "topology-scope",
+      "disposition": "unsupported",
+      "binding": null,
+      "evidenceRefs": ["docs/architecture-fitness/README.md"],
+      "reentryTrigger": "A supported deployment-topology evidence contract can bind Vercel and Supabase configuration to one exact deployment.",
+      "legacyRefs": []
+    },
+    {
+      "projectionRef": "coverage:canonical-analytics-router",
+      "decisionRef": "decision:canonical-analytics-router",
+      "relatedDecisionRefs": [],
+      "authorityRefs": [],
+      "invariantRefs": ["docs/analytics"],
+      "architectureCharacteristic": "Canonical event authority, privacy allowlist, internal store, external sink, and failure isolation need durable Human architecture authority.",
+      "owner": "Lighthouse analytics owner",
+      "caseKind": "technical-grain",
+      "disposition": "authority-missing",
+      "binding": null,
+      "evidenceRefs": ["docs/analytics/events.yaml"],
+      "reentryTrigger": "Human approves the event authority and store/sink failure-isolation characteristic.",
+      "legacyRefs": []
+    }
+  ]
+}

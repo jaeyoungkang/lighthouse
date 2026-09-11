@@ -1,0 +1,50 @@
+schemaVersion: 2
+slug: paper-card-action-loading-feedback
+review: reviews/paper-card-action-loading-feedback.reviews.md
+sourcePromises:
+  - promise:search-results-fast-window
+  - promise:citation-lineage
+  - promise:graph-neighbor-papers
+appliedAspects:
+  - aspect:paper-card-action-loading-feedback
+intent:
+  mode: delegated
+  checks: []
+  delegations:
+    - key: promise:citation-lineage#intent-check:body-explains-citation-flow-not-counts
+      ledger: citation-lineage
+acceptanceChecks:
+  - key: promise:search-results-fast-window#acceptance-check:search-results-fast-window-card-triage-metadata
+    assertion: "Search result paper cards keep the triage hierarchy required by this AC: title → year·venue·fields metadata row → author row → DOI/PDF/citation/similar action row → inline analysis. This Aspect row additionally verifies that the same action row exposes per-action loading state without changing the card metadata order, that pending progressive hydration shows unknown PDF availability as `PDF 확인 중` rather than a false no-PDF disabled state, and that the card keeps a final-layout-like detail frame below the action row with `논문 정보 보강 중`, `저자·초록 보강`, and `분석 입력 보강` while card content/analysis inputs are still being hydrated."
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:search-initial-visible-window
+  - key: promise:citation-lineage#acceptance-check:citation-lineage-paper-row-actions-preserved
+    assertion: Citation-lineage paper cards pass citation/graph loading ids into the shared card action row.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:citation-03-03-02
+  - key: promise:graph-neighbor-papers#acceptance-check:graph-neighbor-papers-neighbor-card-action-parity
+    assertion: Graph-neighbor paper cards pass citation/graph loading ids into the shared card action row, and pending graph-neighbor card metadata uses the same `PDF 확인 중` and paper detail hydration frame inside `SearchResultItem` rather than a surface-specific skeleton.
+    executionRefs:
+      - execution:run-001
+    scenarios:
+      - scenario:graph-neighbor-axes-shown
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - app/components/research-route-renderers/__tests__/search-result-item.graph-neighbors.test.tsx
+      - app/components/research-route-renderers/__tests__/search-result-item.test.tsx
+      - app/components/research-route-renderers/__tests__/CitationLineageView.graph-neighbors.test.tsx
+      - app/components/research-route-renderers/__tests__/search-view-content.test.tsx
+      - app/components/research-route-renderers/__tests__/use-graph-neighbors-handler.test.tsx
+implementationContracts:
+  - "`SearchResultItem` owns the visual loading affordance for paper-card actions."
+  - Document renderers pass only the currently loading paper id for their local handlers.
+  - Loading disables only the clicked action on the matching paper card.
+  - "Pending card metadata for search and graph-neighbor views also stays inside `SearchResultItem`: unknown PDF availability appears as `PDF 확인 중`, and content/analysis preparation appears as the shared paper detail hydration frame below the action row."
+  - The pending frame uses the same collapsed-card baseline and analysis region as metadata-only, not-started, error, and settled states. Loading feedback changes the state inside that region rather than the card rhythm.
+verdict: met

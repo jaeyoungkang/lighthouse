@@ -1,0 +1,24 @@
+schemaVersion: 2
+slug: respond-contract
+review: reviews/respond-contract.reviews.md
+sourcePromises:
+  - promise:respond-contract-mutation-pilot
+appliedAspects: []
+intent:
+  mode: absorbed
+  checks: []
+  delegations: []
+acceptanceChecks:
+  - key: promise:respond-contract-mutation-pilot#acceptance-check:respond-contract-mutation-pilot-baseline-tracking
+    assertion: "Retired historical marker only. The active executable wiring checks live in `respond-contract-mutation-pilot.ledger.yaml`; this file preserves the `mutationScore: ≥ 50%` baseline marker that those governance checks read."
+    executionRefs:
+      - execution:run-001
+    scenarios: []
+executions:
+  - id: execution:run-001
+    kind: vitest
+    files:
+      - scripts/mission-control/lib/__tests__/respond-contract-mutation-pilot.test.ts
+    testNamePattern: respond-contract ledger carries the mutationScore threshold
+implementationContracts: []
+verdict: met

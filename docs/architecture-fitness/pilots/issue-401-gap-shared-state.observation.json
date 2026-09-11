@@ -1,0 +1,453 @@
+{
+  "schemaVersion": "2",
+  "kind": "architecture-fitness-observation",
+  "serviceId": "lighthouse",
+  "policySetRef": "issue-401-gap-shared-state-boundary",
+  "policySetVersion": "2026-08-05.v2",
+  "policyDigest": "0c787d3827a35895053a7780bc1964ff8733c1f9b8ebce88497aa09e64100494",
+  "revision": "ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+  "collector": {
+    "adapterRef": "scripts/architecture-fitness/collect-gap-shared-state-boundary.mjs",
+    "id": "lighthouse-issue-401-gap-shared-state-collector",
+    "version": "2",
+    "scope": "materialized exact-revision active gap schema, sole direct table repository owner, strict gap DTO, creator-less and viewer-independent artifact schema, row and insert projection, shared reads and writes, viewer preference composite key and CAS predicates, canonical content digest, id-only API response and /gap/:id destination carrier, exact-revision focused product tests, and bounded ownership, tuple, identity, and carrier negative mutations",
+    "definitionDigest": "567df2d20bba9d834a86fc1c6e503cfe0c39387baaf9492012a6080723b15487",
+    "attestorRef": "github-actions:corca-ai/lighthouse:architecture-fitness-attestation@v1",
+    "runRef": "fixture-run:issue-401-gap-shared-state:ef76b100",
+    "command": "node scripts/architecture-fitness/collect-gap-shared-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-401-gap-shared-state.policy.json --revision ef76b100212d19c76a44b8e49d1eb730645f4e8b --run-ref fixture-run:issue-401-gap-shared-state:ef76b100",
+    "attestation": {
+      "algorithm": "hmac-sha256",
+      "keyRef": "env:ARCHITECTURE_FITNESS_ATTESTATION_KEY_V1",
+      "payloadDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signature": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "evidence": [
+    {
+      "id": "gap-state-coverage-static:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "kind": "static",
+      "role": "state-coverage-static",
+      "source": "collector:gap-state-inventory:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "sourceRevision": "ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "summary": "The exact-revision collector inspected the active shared-artifact migration, sole direct table repository owner, strict gap DTO, canonical source digest, API response, and destination route carrier.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-gap-shared-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-401-gap-shared-state.policy.json --revision ef76b100212d19c76a44b8e49d1eb730645f4e8b --run-ref fixture-run:issue-401-gap-shared-state:ef76b100",
+      "commandExitCode": 0,
+      "artifactDigest": "2af188c9963c7f71ad6436d86c398a44198546836b1aeb1e6fd69d6bf6a5f1f9",
+      "collectorRunRef": "fixture-run:issue-401-gap-shared-state:ef76b100",
+      "target": {
+        "policyRef": "issue-401:gap-shared-artifact-viewer-state-boundary",
+        "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+        "stateRefs": [
+          "state:gap-shared-artifact-body",
+          "state:gap-viewer-preference"
+        ],
+        "identityRefs": [
+          "identity:gap-artifact-id",
+          "identity:gap-source-digest",
+          "identity:gap-viewer-preference"
+        ],
+        "factRefs": [
+          "coverage:all-state-boundaries"
+        ]
+      }
+    },
+    {
+      "id": "gap-state-coverage-negative-guard:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "kind": "test",
+      "role": "state-coverage-negative-guard",
+      "source": "collector:gap-state-negative-mutations",
+      "sourceRevision": "ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "summary": "The collector injected creator ownership, viewer-scoped shared reads, a non-composite preference key, a missing viewer predicate, the retired DTO alias, viewer-coupled source identity, and viewer-owned handoff carriers; every mutation had to be rejected.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-gap-shared-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-401-gap-shared-state.policy.json --revision ef76b100212d19c76a44b8e49d1eb730645f4e8b --run-ref fixture-run:issue-401-gap-shared-state:ef76b100",
+      "commandExitCode": 0,
+      "artifactDigest": "a2e1a23046f6710e442350eb4914b5b5c8eaef0a7bf8ea6efae7d8fc262379db",
+      "collectorRunRef": "fixture-run:issue-401-gap-shared-state:ef76b100",
+      "target": {
+        "policyRef": "issue-401:gap-shared-artifact-viewer-state-boundary",
+        "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+        "stateRefs": [
+          "state:gap-shared-artifact-body",
+          "state:gap-viewer-preference"
+        ],
+        "identityRefs": [
+          "identity:gap-artifact-id",
+          "identity:gap-source-digest",
+          "identity:gap-viewer-preference"
+        ],
+        "factRefs": [
+          "coverage:undeclared-state-and-identity-rejected"
+        ]
+      }
+    },
+    {
+      "id": "gap-state-static:artifact:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "kind": "static",
+      "role": "state-static",
+      "source": "supabase/migrations/00019_shared_gap_report_artifacts.sql,app/server/repository/gap-reports.ts,app/domain/research-route-payload-schema.ts,app/api/gap-reports/route.ts,app/components/research-route-renderers/search-view-agent-actions.ts",
+      "sourceRevision": "ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "summary": "The durable gap body is a creator-less gap_reports row, projected with the current viewer only at read time and handed to /gap/:id by artifact id.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-gap-shared-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-401-gap-shared-state.policy.json --revision ef76b100212d19c76a44b8e49d1eb730645f4e8b --run-ref fixture-run:issue-401-gap-shared-state:ef76b100",
+      "commandExitCode": 0,
+      "artifactDigest": "2af188c9963c7f71ad6436d86c398a44198546836b1aeb1e6fd69d6bf6a5f1f9",
+      "collectorRunRef": "fixture-run:issue-401-gap-shared-state:ef76b100",
+      "target": {
+        "policyRef": "issue-401:gap-shared-artifact-viewer-state-boundary",
+        "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+        "stateRefs": [
+          "state:gap-shared-artifact-body"
+        ],
+        "identityRefs": [],
+        "factRefs": [
+          "authority:gap-reports-row",
+          "carrier:gap-reports-row",
+          "carrier:gap-network-view",
+          "carrier:gap-destination-route",
+          "coordination:gap-source-digest-unique-reservation"
+        ]
+      }
+    },
+    {
+      "id": "gap-state-test:artifact:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "kind": "test",
+      "role": "state-test",
+      "source": "app/server/repository/__tests__/gap-reports.test.ts,app/api/gap-reports/__tests__/route.test.ts,app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts",
+      "sourceRevision": "ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "summary": "Exact-revision repository and route tests exercise creator-less persistence, cross-viewer shared lookup, id-only API handoff, and /gap/:id navigation.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run app/server/repository/__tests__/gap-reports.test.ts app/server/domain-access/__tests__/gap-report-source-identity.test.ts app/api/gap-reports/__tests__/route.test.ts app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "c5650709441076dfc5e37e02dd8b3fd8771696d4cdbe7c9f1caddc6d6a875b1c",
+      "collectorRunRef": "fixture-run:issue-401-gap-shared-state:ef76b100",
+      "target": {
+        "policyRef": "issue-401:gap-shared-artifact-viewer-state-boundary",
+        "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+        "stateRefs": [
+          "state:gap-shared-artifact-body"
+        ],
+        "identityRefs": [],
+        "factRefs": [
+          "authority:gap-reports-row",
+          "carrier:gap-reports-row",
+          "carrier:gap-network-view",
+          "carrier:gap-destination-route"
+        ]
+      }
+    },
+    {
+      "id": "gap-state-static:viewer-preference:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "kind": "static",
+      "role": "state-static",
+      "source": "supabase/migrations/00019_shared_gap_report_artifacts.sql,app/server/repository/gap-reports.ts",
+      "sourceRevision": "ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "summary": "Reaction preference has its own row authority and every read/write is keyed by gap_report_id plus viewer_principal_id, with artifact and reaction versions retained for CAS.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-gap-shared-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-401-gap-shared-state.policy.json --revision ef76b100212d19c76a44b8e49d1eb730645f4e8b --run-ref fixture-run:issue-401-gap-shared-state:ef76b100",
+      "commandExitCode": 0,
+      "artifactDigest": "2af188c9963c7f71ad6436d86c398a44198546836b1aeb1e6fd69d6bf6a5f1f9",
+      "collectorRunRef": "fixture-run:issue-401-gap-shared-state:ef76b100",
+      "target": {
+        "policyRef": "issue-401:gap-shared-artifact-viewer-state-boundary",
+        "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+        "stateRefs": [
+          "state:gap-viewer-preference"
+        ],
+        "identityRefs": [],
+        "factRefs": [
+          "authority:gap-viewer-preference-row",
+          "carrier:gap-report-reactions-row",
+          "carrier:viewer-gap-projection",
+          "coordination:artifact-and-reaction-version-cas"
+        ]
+      }
+    },
+    {
+      "id": "gap-state-test:viewer-preference:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "kind": "test",
+      "role": "state-test",
+      "source": "app/server/repository/__tests__/gap-reports.test.ts",
+      "sourceRevision": "ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "summary": "The exact-revision repository test exercises the viewer tuple, separate preference payload, artifact-version fence, and reaction-version CAS.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run app/server/repository/__tests__/gap-reports.test.ts app/server/domain-access/__tests__/gap-report-source-identity.test.ts app/api/gap-reports/__tests__/route.test.ts app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "c4d4aca5ebdf8c0fcd3ea75d51ae230e74164b4420dcb3acdf023090ecdaaee2",
+      "collectorRunRef": "fixture-run:issue-401-gap-shared-state:ef76b100",
+      "target": {
+        "policyRef": "issue-401:gap-shared-artifact-viewer-state-boundary",
+        "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+        "stateRefs": [
+          "state:gap-viewer-preference"
+        ],
+        "identityRefs": [],
+        "factRefs": [
+          "authority:gap-viewer-preference-row",
+          "carrier:gap-report-reactions-row",
+          "carrier:viewer-gap-projection"
+        ]
+      }
+    },
+    {
+      "id": "gap-identity-static:artifact-id:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "kind": "static",
+      "role": "identity-static",
+      "source": "supabase/migrations/00019_shared_gap_report_artifacts.sql,app/server/repository/gap-reports.ts,app/api/gap-reports/route.ts,app/components/research-route-renderers/search-view-agent-actions.ts",
+      "sourceRevision": "ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "summary": "gap_reports.id is the durable artifact identity carried by the API response and destination /gap/:id route without viewer ownership.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-gap-shared-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-401-gap-shared-state.policy.json --revision ef76b100212d19c76a44b8e49d1eb730645f4e8b --run-ref fixture-run:issue-401-gap-shared-state:ef76b100",
+      "commandExitCode": 0,
+      "artifactDigest": "2af188c9963c7f71ad6436d86c398a44198546836b1aeb1e6fd69d6bf6a5f1f9",
+      "collectorRunRef": "fixture-run:issue-401-gap-shared-state:ef76b100",
+      "target": {
+        "policyRef": "issue-401:gap-shared-artifact-viewer-state-boundary",
+        "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+        "stateRefs": [],
+        "identityRefs": [
+          "identity:gap-artifact-id"
+        ],
+        "factRefs": [
+          "state:gap-shared-artifact-body",
+          "normalization:gap-report-uuid-v1"
+        ]
+      }
+    },
+    {
+      "id": "gap-identity-test:artifact-id:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "kind": "test",
+      "role": "identity-test",
+      "source": "app/server/repository/__tests__/gap-reports.test.ts,app/api/gap-reports/__tests__/route.test.ts,app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts",
+      "sourceRevision": "ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "summary": "Exact-revision focused product tests exercise artifact-id stability and separation.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run app/server/repository/__tests__/gap-reports.test.ts app/server/domain-access/__tests__/gap-report-source-identity.test.ts app/api/gap-reports/__tests__/route.test.ts app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "af503c7352c265509116e14a59dd950e2f2ab89ae798f4d8685d7f09f21becbf",
+      "collectorRunRef": "fixture-run:issue-401-gap-shared-state:ef76b100",
+      "target": {
+        "policyRef": "issue-401:gap-shared-artifact-viewer-state-boundary",
+        "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+        "stateRefs": [],
+        "identityRefs": [
+          "identity:gap-artifact-id"
+        ],
+        "factRefs": [
+          "state:gap-shared-artifact-body",
+          "normalization:gap-report-uuid-v1"
+        ]
+      }
+    },
+    {
+      "id": "gap-identity-static:source-digest:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "kind": "static",
+      "role": "identity-static",
+      "source": "app/server/domain-access/gap-report-source-identity.ts,supabase/migrations/00019_shared_gap_report_artifacts.sql,app/server/repository/gap-reports.ts",
+      "sourceRevision": "ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "summary": "The global reuse identity hashes only canonical share-safe build input and is unique independently of source route id or viewer.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-gap-shared-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-401-gap-shared-state.policy.json --revision ef76b100212d19c76a44b8e49d1eb730645f4e8b --run-ref fixture-run:issue-401-gap-shared-state:ef76b100",
+      "commandExitCode": 0,
+      "artifactDigest": "2af188c9963c7f71ad6436d86c398a44198546836b1aeb1e6fd69d6bf6a5f1f9",
+      "collectorRunRef": "fixture-run:issue-401-gap-shared-state:ef76b100",
+      "target": {
+        "policyRef": "issue-401:gap-shared-artifact-viewer-state-boundary",
+        "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+        "stateRefs": [],
+        "identityRefs": [
+          "identity:gap-source-digest"
+        ],
+        "factRefs": [
+          "state:gap-shared-artifact-body",
+          "normalization:canonical-gap-source-sha256-v2"
+        ]
+      }
+    },
+    {
+      "id": "gap-identity-test:source-digest:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "kind": "test",
+      "role": "identity-test",
+      "source": "app/server/domain-access/__tests__/gap-report-source-identity.test.ts",
+      "sourceRevision": "ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "summary": "Exact-revision focused product tests exercise source-digest stability and separation.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run app/server/repository/__tests__/gap-reports.test.ts app/server/domain-access/__tests__/gap-report-source-identity.test.ts app/api/gap-reports/__tests__/route.test.ts app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "d3f050cc7ae7778cf867e262e8ec27461d1f4ab18df1abf2a275b3fda93fc2ba",
+      "collectorRunRef": "fixture-run:issue-401-gap-shared-state:ef76b100",
+      "target": {
+        "policyRef": "issue-401:gap-shared-artifact-viewer-state-boundary",
+        "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+        "stateRefs": [],
+        "identityRefs": [
+          "identity:gap-source-digest"
+        ],
+        "factRefs": [
+          "state:gap-shared-artifact-body",
+          "normalization:canonical-gap-source-sha256-v2"
+        ]
+      }
+    },
+    {
+      "id": "gap-identity-static:viewer-preference:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "kind": "static",
+      "role": "identity-static",
+      "source": "supabase/migrations/00019_shared_gap_report_artifacts.sql,app/server/repository/gap-reports.ts",
+      "sourceRevision": "ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "summary": "Viewer preference identity is exactly the composite (gap_report_id, viewer_principal_id) primary key and repository predicate.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node scripts/architecture-fitness/collect-gap-shared-state-boundary.mjs --policy docs/architecture-fitness/pilots/issue-401-gap-shared-state.policy.json --revision ef76b100212d19c76a44b8e49d1eb730645f4e8b --run-ref fixture-run:issue-401-gap-shared-state:ef76b100",
+      "commandExitCode": 0,
+      "artifactDigest": "2af188c9963c7f71ad6436d86c398a44198546836b1aeb1e6fd69d6bf6a5f1f9",
+      "collectorRunRef": "fixture-run:issue-401-gap-shared-state:ef76b100",
+      "target": {
+        "policyRef": "issue-401:gap-shared-artifact-viewer-state-boundary",
+        "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+        "stateRefs": [],
+        "identityRefs": [
+          "identity:gap-viewer-preference"
+        ],
+        "factRefs": [
+          "state:gap-shared-artifact-body",
+          "state:gap-viewer-preference",
+          "normalization:gap-report-viewer-tuple-v1"
+        ]
+      }
+    },
+    {
+      "id": "gap-identity-test:viewer-preference:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "kind": "test",
+      "role": "identity-test",
+      "source": "app/server/repository/__tests__/gap-reports.test.ts",
+      "sourceRevision": "ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "summary": "Exact-revision focused product tests exercise viewer-preference stability and separation.",
+      "freshness": "fresh",
+      "reproducible": true,
+      "command": "node_modules/.bin/vitest run app/server/repository/__tests__/gap-reports.test.ts app/server/domain-access/__tests__/gap-report-source-identity.test.ts app/api/gap-reports/__tests__/route.test.ts app/components/research-route-renderers/__tests__/search-view-agent-actions.test.ts --config '<collector-authority>/scripts/architecture-fitness/path-vitest.config.mts' --reporter=json --maxWorkers=2",
+      "commandExitCode": 0,
+      "artifactDigest": "c4d4aca5ebdf8c0fcd3ea75d51ae230e74164b4420dcb3acdf023090ecdaaee2",
+      "collectorRunRef": "fixture-run:issue-401-gap-shared-state:ef76b100",
+      "target": {
+        "policyRef": "issue-401:gap-shared-artifact-viewer-state-boundary",
+        "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+        "stateRefs": [],
+        "identityRefs": [
+          "identity:gap-viewer-preference"
+        ],
+        "factRefs": [
+          "state:gap-shared-artifact-body",
+          "state:gap-viewer-preference",
+          "normalization:gap-report-viewer-tuple-v1"
+        ]
+      }
+    }
+  ],
+  "observations": [
+    {
+      "id": "observation:issue-401-gap-shared-state:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+      "policyRef": "issue-401:gap-shared-artifact-viewer-state-boundary",
+      "capabilityRef": "capability:gap-shared-artifact-viewer-state",
+      "completeness": "complete",
+      "coverageEvidenceRefs": [
+        "gap-state-coverage-static:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+        "gap-state-coverage-negative-guard:ef76b100212d19c76a44b8e49d1eb730645f4e8b"
+      ],
+      "states": [
+        {
+          "id": "observed-state:gap-shared-artifact:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+          "stateRef": "state:gap-shared-artifact-body",
+          "authorityRefs": [
+            "authority:gap-reports-row"
+          ],
+          "coordinationRefs": [
+            "coordination:gap-source-digest-unique-reservation"
+          ],
+          "carrierRefs": [
+            "carrier:gap-reports-row",
+            "carrier:gap-network-view",
+            "carrier:gap-destination-route"
+          ],
+          "evidenceRefs": [
+            "gap-state-static:artifact:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+            "gap-state-test:artifact:ef76b100212d19c76a44b8e49d1eb730645f4e8b"
+          ]
+        },
+        {
+          "id": "observed-state:gap-viewer-preference:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+          "stateRef": "state:gap-viewer-preference",
+          "authorityRefs": [
+            "authority:gap-viewer-preference-row"
+          ],
+          "coordinationRefs": [
+            "coordination:artifact-and-reaction-version-cas"
+          ],
+          "carrierRefs": [
+            "carrier:gap-report-reactions-row",
+            "carrier:viewer-gap-projection"
+          ],
+          "evidenceRefs": [
+            "gap-state-static:viewer-preference:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+            "gap-state-test:viewer-preference:ef76b100212d19c76a44b8e49d1eb730645f4e8b"
+          ]
+        }
+      ],
+      "canonicalIdentities": [
+        {
+          "id": "observed-identity:artifact-id:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+          "identityRef": "identity:gap-artifact-id",
+          "participatingStateRefs": [
+            "state:gap-shared-artifact-body"
+          ],
+          "normalizationRefs": [
+            "normalization:gap-report-uuid-v1"
+          ],
+          "evidenceRefs": [
+            "gap-identity-static:artifact-id:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+            "gap-identity-test:artifact-id:ef76b100212d19c76a44b8e49d1eb730645f4e8b"
+          ]
+        },
+        {
+          "id": "observed-identity:source-digest:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+          "identityRef": "identity:gap-source-digest",
+          "participatingStateRefs": [
+            "state:gap-shared-artifact-body"
+          ],
+          "normalizationRefs": [
+            "normalization:canonical-gap-source-sha256-v2"
+          ],
+          "evidenceRefs": [
+            "gap-identity-static:source-digest:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+            "gap-identity-test:source-digest:ef76b100212d19c76a44b8e49d1eb730645f4e8b"
+          ]
+        },
+        {
+          "id": "observed-identity:viewer-preference:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+          "identityRef": "identity:gap-viewer-preference",
+          "participatingStateRefs": [
+            "state:gap-shared-artifact-body",
+            "state:gap-viewer-preference"
+          ],
+          "normalizationRefs": [
+            "normalization:gap-report-viewer-tuple-v1"
+          ],
+          "evidenceRefs": [
+            "gap-identity-static:viewer-preference:ef76b100212d19c76a44b8e49d1eb730645f4e8b",
+            "gap-identity-test:viewer-preference:ef76b100212d19c76a44b8e49d1eb730645f4e8b"
+          ]
+        }
+      ]
+    }
+  ]
+}
